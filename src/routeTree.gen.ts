@@ -13,6 +13,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -35,6 +36,11 @@ const CustomersRoute = CustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/customers': typeof CustomersRoute
   '/inbox': typeof InboxRoute
   '/members': typeof MembersRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/customers': typeof CustomersRoute
   '/inbox': typeof InboxRoute
   '/members': typeof MembersRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/audit': typeof AuditRoute
   '/customers': typeof CustomersRoute
   '/inbox': typeof InboxRoute
   '/members': typeof MembersRoute
@@ -65,14 +74,22 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/customers' | '/inbox' | '/members' | '/settings'
+  fullPaths: '/' | '/audit' | '/customers' | '/inbox' | '/members' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/customers' | '/inbox' | '/members' | '/settings'
-  id: '__root__' | '/' | '/customers' | '/inbox' | '/members' | '/settings'
+  to: '/' | '/audit' | '/customers' | '/inbox' | '/members' | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/audit'
+    | '/customers'
+    | '/inbox'
+    | '/members'
+    | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuditRoute: typeof AuditRoute
   CustomersRoute: typeof CustomersRoute
   InboxRoute: typeof InboxRoute
   MembersRoute: typeof MembersRoute
@@ -109,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +145,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuditRoute: AuditRoute,
   CustomersRoute: CustomersRoute,
   InboxRoute: InboxRoute,
   MembersRoute: MembersRoute,
