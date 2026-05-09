@@ -1,17 +1,40 @@
-import type { ConvStatus, Channel } from "@/lib/mock-data";
+import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
 
-const statusStyles: Record<ConvStatus, string> = {
+const chipStyles: Record<ChipStatus, string> = {
+  new: "bg-info/10 text-info border-info/20",
   open: "bg-success/10 text-success border-success/20",
-  pending: "bg-warning/15 text-warning-foreground border-warning/30",
-  snoozed: "bg-info/10 text-info border-info/20",
+  waiting: "bg-warning/15 text-warning-foreground border-warning/30",
   closed: "bg-muted text-muted-foreground border-border",
+  "needs-review": "bg-primary-soft text-primary border-primary/20",
+  "access-denied": "bg-destructive/10 text-destructive border-destructive/20",
+  future: "bg-surface-muted text-muted-foreground border-dashed border-border",
 };
 
-export function StatusChip({ status }: { status: ConvStatus }) {
+const chipLabel: Record<ChipStatus, string> = {
+  new: "New",
+  open: "Open",
+  waiting: "Waiting",
+  closed: "Closed",
+  "needs-review": "Needs review",
+  "access-denied": "Access denied",
+  future: "Future",
+};
+
+export function StatusChip({ status }: { status: ChipStatus | ConvStatus }) {
+  // Map legacy ConvStatus values onto the chip status set
+  const map: Record<string, ChipStatus> = {
+    open: "open",
+    pending: "waiting",
+    snoozed: "waiting",
+    closed: "closed",
+  };
+  const key = (map[status as string] ?? (status as ChipStatus)) as ChipStatus;
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium capitalize ${statusStyles[status]}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${chipStyles[key]}`}
+    >
       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-      {status}
+      {chipLabel[key]}
     </span>
   );
 }
@@ -64,6 +87,20 @@ export function PageHeader({
         )}
       </div>
       {action}
+    </div>
+  );
+}
+
+export function MockBanner() {
+  return (
+    <div className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3">
+      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-warning/30 text-[10px] font-bold text-warning-foreground">
+        i
+      </span>
+      <div className="text-[13px] leading-snug text-warning-foreground">
+        <span className="font-semibold">This prototype uses mock data.</span>{" "}
+        MVP is async and human-review-first. AI prepares drafts; an operator sends every reply.
+      </div>
     </div>
   );
 }

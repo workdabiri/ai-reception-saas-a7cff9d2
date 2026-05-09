@@ -1,6 +1,16 @@
 export type ConvStatus = "open" | "pending" | "snoozed" | "closed";
 export type Channel = "email" | "webform" | "sms" | "whatsapp" | "voice";
 
+// Extended chip statuses for the dashboard surface
+export type ChipStatus =
+  | "new"
+  | "open"
+  | "waiting"
+  | "closed"
+  | "needs-review"
+  | "access-denied"
+  | "future";
+
 export const channelLabel: Record<Channel, string> = {
   email: "Email",
   webform: "Web form",
@@ -9,33 +19,79 @@ export const channelLabel: Record<Channel, string> = {
   voice: "Voice (planned)",
 };
 
+export type WorkspaceRole = "Owner" | "Admin" | "Operator" | "Viewer";
+
+export type Workspace = {
+  id: string;
+  name: string;
+  industry: string;
+  role: WorkspaceRole;
+  status: "Active" | "Trial" | "Demo";
+  initials: string;
+  members: number;
+  openConversations: number;
+};
+
+export const workspaces: Workspace[] = [
+  {
+    id: "ws_1",
+    name: "Tehran Dental Clinic",
+    industry: "Healthcare · Dental",
+    role: "Owner",
+    status: "Active",
+    initials: "TD",
+    members: 6,
+    openConversations: 12,
+  },
+  {
+    id: "ws_2",
+    name: "Pars Repair Services",
+    industry: "Field service",
+    role: "Admin",
+    status: "Active",
+    initials: "PR",
+    members: 4,
+    openConversations: 7,
+  },
+  {
+    id: "ws_3",
+    name: "Noor Restaurant",
+    industry: "Hospitality",
+    role: "Operator",
+    status: "Trial",
+    initials: "NR",
+    members: 3,
+    openConversations: 3,
+  },
+  {
+    id: "ws_4",
+    name: "Demo Ecommerce Support",
+    industry: "Retail · Demo",
+    role: "Viewer",
+    status: "Demo",
+    initials: "DE",
+    members: 2,
+    openConversations: 5,
+  },
+];
+
+export const currentWorkspace = workspaces[0];
+
 export type Member = {
   id: string;
   name: string;
   email: string;
-  role: "Owner" | "Admin" | "Operator" | "Viewer";
+  role: WorkspaceRole;
   status: "Active" | "Invited";
   initials: string;
 };
 
-export const currentWorkspace = {
-  id: "ws_1",
-  name: "Northwind Dental",
-  plan: "Mock workspace",
-};
-
-export const workspaces = [
-  { id: "ws_1", name: "Northwind Dental" },
-  { id: "ws_2", name: "Atlas Auto Service" },
-  { id: "ws_3", name: "Lumen Wellness Studio" },
-];
-
 export const members: Member[] = [
-  { id: "u1", name: "Amelia Hart", email: "amelia@northwind.co", role: "Owner", status: "Active", initials: "AH" },
-  { id: "u2", name: "Daniel Cho", email: "daniel@northwind.co", role: "Admin", status: "Active", initials: "DC" },
-  { id: "u3", name: "Priya Raman", email: "priya@northwind.co", role: "Operator", status: "Active", initials: "PR" },
-  { id: "u4", name: "Marcus Lee", email: "marcus@northwind.co", role: "Operator", status: "Active", initials: "ML" },
-  { id: "u5", name: "Sofia Alvarez", email: "sofia@northwind.co", role: "Viewer", status: "Invited", initials: "SA" },
+  { id: "u1", name: "Amelia Hart", email: "amelia@tehrandental.co", role: "Owner", status: "Active", initials: "AH" },
+  { id: "u2", name: "Daniel Cho", email: "daniel@tehrandental.co", role: "Admin", status: "Active", initials: "DC" },
+  { id: "u3", name: "Priya Raman", email: "priya@tehrandental.co", role: "Operator", status: "Active", initials: "PR" },
+  { id: "u4", name: "Marcus Lee", email: "marcus@tehrandental.co", role: "Operator", status: "Active", initials: "ML" },
+  { id: "u5", name: "Sofia Alvarez", email: "sofia@tehrandental.co", role: "Viewer", status: "Invited", initials: "SA" },
 ];
 
 export type Customer = {
@@ -92,7 +148,7 @@ export const conversations: Conversation[] = [
     updated: "12 min",
     messages: [
       { id: "m1", author: "customer", authorName: "Eleanor Whitfield", time: "10:42", body: "Hi — could we move my Thursday 3pm cleaning to next week if possible? Something came up at work." },
-      { id: "m2", author: "ai-draft", authorName: "AI draft", time: "10:43", body: "Hi Eleanor, of course — we have openings next Tuesday at 2:00pm or Wednesday at 10:30am. Which works best? — Northwind Dental" },
+      { id: "m2", author: "ai-draft", authorName: "AI draft", time: "10:43", body: "Hi Eleanor, of course — we have openings next Tuesday at 2:00pm or Wednesday at 10:30am. Which works best? — Tehran Dental Clinic" },
     ],
   },
   {
@@ -167,12 +223,81 @@ export const conversations: Conversation[] = [
   },
 ];
 
+// --- Dashboard-specific mock datasets ---
+
+export type QueueItem = {
+  id: string;
+  customer: string;
+  initials: string;
+  subject: string;
+  channel: Channel;
+  status: ChipStatus;
+  waiting: string;
+  assignee?: string;
+};
+
+export const todaysQueue: QueueItem[] = [
+  { id: "q1", customer: "Eleanor Whitfield", initials: "EW", subject: "Reschedule Thursday cleaning", channel: "email", status: "needs-review", waiting: "12 min", assignee: "Priya R." },
+  { id: "q2", customer: "Jonas Reuter", initials: "JR", subject: "New patient — insurance question", channel: "webform", status: "waiting", waiting: "38 min", assignee: "Marcus L." },
+  { id: "q3", customer: "Naomi Tanaka", initials: "NT", subject: "Invoice double-charge", channel: "email", status: "open", waiting: "2 hr", assignee: "Priya R." },
+  { id: "q4", customer: "Carlos Mendes", initials: "CM", subject: "Whitening consultation", channel: "webform", status: "new", waiting: "—", assignee: undefined },
+  { id: "q5", customer: "Owen Fitzgerald", initials: "OF", subject: "Forms before first visit", channel: "webform", status: "waiting", waiting: "4 d", assignee: undefined },
+];
+
+export type RecentMessage = {
+  id: string;
+  customer: string;
+  initials: string;
+  snippet: string;
+  channel: Channel;
+  time: string;
+};
+
+export const recentMessages: RecentMessage[] = [
+  { id: "rm1", customer: "Eleanor Whitfield", initials: "EW", snippet: "Could we move my Thursday 3pm cleaning to next week?", channel: "email", time: "12 min" },
+  { id: "rm2", customer: "Jonas Reuter", initials: "JR", snippet: "Do you accept Aetna and what does a first cleaning cost?", channel: "webform", time: "38 min" },
+  { id: "rm3", customer: "Naomi Tanaka", initials: "NT", snippet: "I think the fluoride was charged twice on my invoice.", channel: "email", time: "2 hr" },
+  { id: "rm4", customer: "Carlos Mendes", initials: "CM", snippet: "What's the price range for whitening? Payment plans?", channel: "webform", time: "Yesterday" },
+];
+
+export type OperatorLoad = {
+  id: string;
+  name: string;
+  initials: string;
+  role: WorkspaceRole;
+  open: number;
+  drafts: number;
+  resolvedToday: number;
+};
+
+export const operatorLoad: OperatorLoad[] = [
+  { id: "u3", name: "Priya Raman", initials: "PR", role: "Operator", open: 6, drafts: 3, resolvedToday: 8 },
+  { id: "u4", name: "Marcus Lee", initials: "ML", role: "Operator", open: 4, drafts: 2, resolvedToday: 5 },
+  { id: "u2", name: "Daniel Cho", initials: "DC", role: "Admin", open: 2, drafts: 1, resolvedToday: 3 },
+  { id: "u1", name: "Amelia Hart", initials: "AH", role: "Owner", open: 1, drafts: 0, resolvedToday: 2 },
+];
+
+export type DraftReview = {
+  id: string;
+  customer: string;
+  initials: string;
+  subject: string;
+  draft: string;
+  confidence: "High" | "Medium" | "Low";
+  prepared: string;
+};
+
+export const draftQueue: DraftReview[] = [
+  { id: "d1", customer: "Eleanor Whitfield", initials: "EW", subject: "Reschedule Thursday cleaning", draft: "Hi Eleanor, of course — we have openings next Tuesday at 2:00pm or Wednesday at 10:30am…", confidence: "High", prepared: "1 min ago" },
+  { id: "d2", customer: "Jonas Reuter", initials: "JR", subject: "New patient — insurance", draft: "Hi Jonas, welcome! Yes, we accept Aetna PPO. A first cleaning typically runs $120–$160…", confidence: "Medium", prepared: "5 min ago" },
+  { id: "d3", customer: "Carlos Mendes", initials: "CM", subject: "Whitening consultation", draft: "Hi Carlos, professional whitening starts at $290. We also offer 3-month payment plans…", confidence: "Medium", prepared: "22 min ago" },
+];
+
 export const auditEvents = [
-  { id: "a1", actor: "Amelia Hart", action: "Invited member", target: "sofia@northwind.co", time: "Today, 09:14" },
-  { id: "a2", actor: "Daniel Cho", action: "Closed conversation", target: "Thank you · Hannah Berg", time: "Today, 08:51" },
-  { id: "a3", actor: "Priya Raman", action: "Sent reply", target: "Invoice question · Naomi Tanaka", time: "Yesterday, 17:22" },
-  { id: "a4", actor: "Amelia Hart", action: "Updated workspace name", target: "Northwind Dental", time: "Yesterday, 14:03" },
-  { id: "a5", actor: "Marcus Lee", action: "Assigned conversation", target: "New patient questions → Marcus Lee", time: "Yesterday, 11:40" },
-  { id: "a6", actor: "Priya Raman", action: "Snoozed conversation", target: "Forms before first visit", time: "Mon, 16:08" },
-  { id: "a7", actor: "Amelia Hart", action: "Changed role", target: "Marcus Lee → Operator", time: "Last week" },
+  { id: "a1", actor: "Amelia Hart", action: "Invited member", target: "sofia@tehrandental.co", time: "Today, 09:14", tone: "open" as ChipStatus },
+  { id: "a2", actor: "Daniel Cho", action: "Closed conversation", target: "Thank you · Hannah Berg", time: "Today, 08:51", tone: "closed" as ChipStatus },
+  { id: "a3", actor: "Priya Raman", action: "Sent reply", target: "Invoice question · Naomi Tanaka", time: "Yesterday, 17:22", tone: "open" as ChipStatus },
+  { id: "a4", actor: "System", action: "Blocked export attempt", target: "Viewer tried to export customer list", time: "Yesterday, 15:40", tone: "access-denied" as ChipStatus },
+  { id: "a5", actor: "Marcus Lee", action: "Assigned conversation", target: "New patient questions → Marcus Lee", time: "Yesterday, 11:40", tone: "waiting" as ChipStatus },
+  { id: "a6", actor: "Priya Raman", action: "Edited AI draft", target: "Reschedule Thursday cleaning", time: "Yesterday, 10:55", tone: "needs-review" as ChipStatus },
 ];

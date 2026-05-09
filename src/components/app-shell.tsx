@@ -6,13 +6,13 @@ import {
   UserCog,
   Settings,
   ScrollText,
-  ChevronsUpDown,
+  
   Search,
   Sparkles,
   Bell,
   Plus,
 } from "lucide-react";
-import { currentWorkspace } from "@/lib/mock-data";
+import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 
 type NavItem = {
   to: string;
@@ -38,21 +38,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
     <div className="min-h-screen flex w-full bg-background text-foreground">
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
-        {/* Workspace switcher */}
-        <button className="m-3 flex items-center gap-3 rounded-xl border border-sidebar-border bg-surface px-3 py-2.5 text-left transition hover:bg-sidebar-accent">
-          <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground font-semibold text-sm">
-            N
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-semibold text-sidebar-foreground">
-              {currentWorkspace.name}
-            </div>
-            <div className="truncate text-[11px] text-muted-foreground">
-              {currentWorkspace.plan}
-            </div>
-          </div>
-          <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
-        </button>
+        <WorkspaceSwitcher />
 
         <nav className="px-2 py-1 space-y-0.5">
           {navItems.map((item) => {
