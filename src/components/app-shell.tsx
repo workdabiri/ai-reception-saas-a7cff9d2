@@ -6,7 +6,7 @@ import {
   UserCog,
   Settings,
   ScrollText,
-  ChevronsUpDown,
+  
   Search,
   Sparkles,
   Bell,
