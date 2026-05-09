@@ -14,14 +14,22 @@ import {
 } from "lucide-react";
 import { currentWorkspace } from "@/lib/mock-data";
 
-const navItems = [
+type NavItem = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+  badge?: number;
+};
+
+const navItems: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/members", label: "Members", icon: UserCog },
   { to: "/settings", label: "Settings", icon: Settings },
   { to: "/audit", label: "Audit log", icon: ScrollText },
-] as const;
+];
 
 export function AppShell({ children }: { children?: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
