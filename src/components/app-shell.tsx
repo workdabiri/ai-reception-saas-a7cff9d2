@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Inbox,
@@ -146,7 +146,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen flex w-full bg-app text-foreground">
-        <AppSidebar
+        <Sidebar
           collapsed={collapsed}
           onToggle={toggle}
           isActive={isActive}
@@ -191,7 +191,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
           </header>
 
           <main className="flex-1 min-w-0 pb-20 md:pb-0">
-            {children ?? <Outlet />}
+            {children}
           </main>
         </div>
 
@@ -278,7 +278,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
 
 /* ───────────────────────── Unified sidebar ───────────────────────── */
 
-function AppSidebar({
+function Sidebar({
   collapsed,
   onToggle,
   isActive,
