@@ -6,7 +6,7 @@ import {
   UserCog,
   Settings,
   ScrollText,
-  
+  LayoutGrid,
   Search,
   Sparkles,
   Bell,
@@ -29,6 +29,7 @@ const navItems: NavItem[] = [
   { to: "/members", label: "Members", icon: UserCog },
   { to: "/settings", label: "Settings", icon: Settings },
   { to: "/audit", label: "Audit log", icon: ScrollText },
+  { to: "/states", label: "States", icon: LayoutGrid },
 ];
 
 export function AppShell({ children }: { children?: React.ReactNode }) {
