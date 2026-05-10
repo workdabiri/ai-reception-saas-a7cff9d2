@@ -85,9 +85,9 @@ function SettingsPage() {
               description="Identity used across customer-facing surfaces and audit records."
             >
               <Field label="Business name" value={currentWorkspace.name} />
-              <Field label="Workspace slug" value="northwind" suffix=".airec.app" />
-              <Select label="Locale" value="English (United States)" options={["English (United States)", "English (UK)", "Español", "Français"]} />
-              <Select label="Timezone" value="America/Los_Angeles" options={["America/Los_Angeles", "America/New_York", "Europe/London", "Asia/Singapore"]} />
+              <Field label="Workspace slug" value="tehran-dental" suffix=".airec.app" />
+              <Select label="Locale" value="Persian / English" options={["Persian / English", "English (United States)", "English (UK)", "Español", "Français"]} />
+              <Select label="Timezone" value="Asia/Tehran" options={["Asia/Tehran", "Asia/Dubai", "Europe/London", "America/New_York", "Asia/Singapore"]} />
               <div className="grid gap-1.5 mb-1 sm:grid-cols-[180px_1fr] sm:items-center">
                 <label className="text-xs font-medium text-muted-foreground">Status</label>
                 <div>
