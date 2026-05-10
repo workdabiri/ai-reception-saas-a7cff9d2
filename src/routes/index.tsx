@@ -122,25 +122,27 @@ function DashboardPage() {
           })}
         </div>
 
-        {/* Channel pulse */}
+        {/* Channel command center */}
         <div className="rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
-              <h2 className="text-sm font-semibold">Messages by channel</h2>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">Channel command center</p>
+              <h2 className="mt-0.5 text-sm font-semibold">Where customers are reaching you</h2>
               <p className="text-xs text-muted-foreground">
-                Where customers are reaching you. Mock data — not all sources are connected.
+                Unread, customers, waiting and health per source. Mock data — only Web Chat & Email are active in MVP.
               </p>
             </div>
             <Link
               to="/channels"
               className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
             >
-              Channel overview <ArrowUpRight className="h-3 w-3" />
+              All sources <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="-mx-px grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 divide-x divide-y sm:divide-y-0 divide-border">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 divide-x divide-y sm:divide-y-0 divide-border">
             {channelOverview.map((c) => {
               const active = c.status === "Mock Active";
+              const healthDot = c.health === "healthy" ? "bg-success" : c.health === "degraded" ? "bg-warning" : c.health === "offline" ? "bg-destructive" : "bg-muted-foreground/40";
               return (
                 <Link
                   key={c.key}
@@ -149,18 +151,21 @@ function DashboardPage() {
                 >
                   <div className="flex items-center justify-between">
                     <ChannelIcon channel={c.key} size={28} />
-                    {c.unread > 0 && (
-                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">
-                        {c.unread}
-                      </span>
+                    {c.unread > 0 ? (
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">{c.unread}</span>
+                    ) : (
+                      <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} title={c.health} />
                     )}
                   </div>
                   <div className="text-xs font-semibold">{c.name}</div>
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span>{active ? `${c.customers} customers` : c.status}</span>
-                    {active && c.waiting > 0 && (
-                      <span className="text-warning-foreground">{c.waiting} waiting</span>
-                    )}
+                  <div className="space-y-0.5 text-[10px] text-muted-foreground">
+                    <div className="flex items-center justify-between">
+                      <span>{active ? `${c.customers} customers` : c.status}</span>
+                      {active && c.waiting > 0 && (
+                        <span className="text-warning-foreground font-medium">{c.waiting} waiting</span>
+                      )}
+                    </div>
+                    <div className="truncate opacity-80">Last: {c.lastMessage}</div>
                   </div>
                 </Link>
               );

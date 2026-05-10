@@ -214,15 +214,21 @@ export type Customer = {
   lastSeen: string;
   conversations: number;
   initials: string;
+  // Reception context
+  primaryChannel: Channel;
+  lastInboundChannel: Channel;
+  openConversations: number;
+  unreadMessages: number;
+  needsFollowUp: boolean;
 };
 
 export const customers: Customer[] = [
-  { id: "c1", name: "Eleanor Whitfield", email: "eleanor.w@gmail.com", phone: "+1 (415) 555-0142", tags: ["VIP", "Returning"], lastSeen: "12 min ago", conversations: 8, initials: "EW" },
-  { id: "c2", name: "Jonas Reuter", email: "j.reuter@hey.com", phone: "+49 30 5550 8821", tags: ["New"], lastSeen: "1 hr ago", conversations: 1, initials: "JR" },
-  { id: "c3", name: "Naomi Tanaka", email: "naomi.t@outlook.com", phone: "+81 90 5550 1133", tags: ["Returning"], lastSeen: "3 hr ago", conversations: 4, initials: "NT" },
-  { id: "c4", name: "Carlos Mendes", email: "carlos.m@proton.me", phone: "+55 11 95550 4422", tags: ["Lead"], lastSeen: "Yesterday", conversations: 2, initials: "CM" },
-  { id: "c5", name: "Hannah Berg", email: "hannah.berg@me.com", phone: "+47 400 55 991", tags: ["VIP"], lastSeen: "2 days ago", conversations: 12, initials: "HB" },
-  { id: "c6", name: "Owen Fitzgerald", email: "owen.f@gmail.com", phone: "+353 87 555 0099", tags: [], lastSeen: "4 days ago", conversations: 1, initials: "OF" },
+  { id: "c1", name: "Eleanor Whitfield", email: "eleanor.w@gmail.com", phone: "+1 (415) 555-0142", tags: ["VIP", "Returning"], lastSeen: "12 min ago", conversations: 8, initials: "EW", primaryChannel: "email", lastInboundChannel: "email", openConversations: 2, unreadMessages: 3, needsFollowUp: true },
+  { id: "c2", name: "Jonas Reuter", email: "j.reuter@hey.com", phone: "+49 30 5550 8821", tags: ["New"], lastSeen: "1 hr ago", conversations: 1, initials: "JR", primaryChannel: "webform", lastInboundChannel: "webform", openConversations: 1, unreadMessages: 1, needsFollowUp: false },
+  { id: "c3", name: "Naomi Tanaka", email: "naomi.t@outlook.com", phone: "+81 90 5550 1133", tags: ["Returning"], lastSeen: "3 hr ago", conversations: 4, initials: "NT", primaryChannel: "email", lastInboundChannel: "email", openConversations: 1, unreadMessages: 0, needsFollowUp: true },
+  { id: "c4", name: "Carlos Mendes", email: "carlos.m@proton.me", phone: "+55 11 95550 4422", tags: ["Lead"], lastSeen: "Yesterday", conversations: 2, initials: "CM", primaryChannel: "webform", lastInboundChannel: "webform", openConversations: 1, unreadMessages: 0, needsFollowUp: false },
+  { id: "c5", name: "Hannah Berg", email: "hannah.berg@me.com", phone: "+47 400 55 991", tags: ["VIP"], lastSeen: "2 days ago", conversations: 12, initials: "HB", primaryChannel: "email", lastInboundChannel: "email", openConversations: 0, unreadMessages: 0, needsFollowUp: false },
+  { id: "c6", name: "Owen Fitzgerald", email: "owen.f@gmail.com", phone: "+353 87 555 0099", tags: [], lastSeen: "4 days ago", conversations: 1, initials: "OF", primaryChannel: "webform", lastInboundChannel: "webform", openConversations: 1, unreadMessages: 0, needsFollowUp: true },
 ];
 
 export type ThreadKind =
