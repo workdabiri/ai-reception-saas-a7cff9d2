@@ -18,8 +18,10 @@ import {
   MockBanner,
   StatusChip,
 } from "@/components/ui-bits";
+import { ChannelCard } from "@/components/channel-card";
 import {
   channelLabel,
+  channels,
   todaysQueue,
   recentMessages,
   operatorLoad,
@@ -92,8 +94,8 @@ function DashboardPage() {
 
         <MockBanner />
 
-        {/* Summary stats */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {/* Channel-first KPIs */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {stats.map((s) => {
             const Icon = s.icon;
             return (
@@ -119,6 +121,31 @@ function DashboardPage() {
             );
           })}
         </div>
+
+        {/* Channel overview */}
+        <section className="space-y-3">
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-sm font-semibold">Messages by channel</h2>
+              <p className="text-xs text-muted-foreground">
+                Where customers are reaching you right now.
+              </p>
+            </div>
+            <Link
+              to="/channels"
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+            >
+              All channels <ArrowUpRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 xl:grid-cols-4">
+            {channels.slice(0, 4).map((c) => (
+              <div key={c.id} className="w-[280px] shrink-0 snap-start sm:w-auto">
+                <ChannelCard c={c} compact />
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Today's queue + Recent messages */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

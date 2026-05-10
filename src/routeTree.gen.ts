@@ -14,6 +14,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
@@ -43,6 +44,11 @@ const CustomersRoute = CustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChannelsRoute = ChannelsRouteImport.update({
+  id: '/channels',
+  path: '/channels',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuditRoute = AuditRouteImport.update({
   id: '/audit',
   path: '/audit',
@@ -62,6 +68,7 @@ const CustomersCustomerIdRoute = CustomersCustomerIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/audit': typeof AuditRoute
+  '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
   '/inbox': typeof InboxRoute
   '/members': typeof MembersRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audit': typeof AuditRoute
+  '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
   '/inbox': typeof InboxRoute
   '/members': typeof MembersRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/audit': typeof AuditRoute
+  '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
   '/inbox': typeof InboxRoute
   '/members': typeof MembersRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/audit'
+    | '/channels'
     | '/customers'
     | '/inbox'
     | '/members'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/audit'
+    | '/channels'
     | '/customers'
     | '/inbox'
     | '/members'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/audit'
+    | '/channels'
     | '/customers'
     | '/inbox'
     | '/members'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuditRoute: typeof AuditRoute
+  ChannelsRoute: typeof ChannelsRoute
   CustomersRoute: typeof CustomersRouteWithChildren
   InboxRoute: typeof InboxRoute
   MembersRoute: typeof MembersRoute
@@ -170,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/channels': {
+      id: '/channels'
+      path: '/channels'
+      fullPath: '/channels'
+      preLoaderRoute: typeof ChannelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/audit': {
       id: '/audit'
       path: '/audit'
@@ -209,6 +229,7 @@ const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuditRoute: AuditRoute,
+  ChannelsRoute: ChannelsRoute,
   CustomersRoute: CustomersRouteWithChildren,
   InboxRoute: InboxRoute,
   MembersRoute: MembersRoute,

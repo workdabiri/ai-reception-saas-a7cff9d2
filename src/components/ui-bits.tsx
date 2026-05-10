@@ -40,19 +40,24 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus }) {
 }
 
 const channelTone: Record<Channel, string> = {
-  email: "bg-secondary text-secondary-foreground",
+  email: "bg-info/10 text-info border-info/20",
   webform: "bg-secondary text-secondary-foreground",
-  sms: "bg-muted text-muted-foreground",
-  whatsapp: "bg-muted text-muted-foreground",
-  voice: "bg-muted text-muted-foreground",
+  "web-chat": "bg-primary-soft text-primary border-primary/20",
+  instagram: "bg-[oklch(0.95_0.05_330)] text-[oklch(0.45_0.15_330)] border-[oklch(0.85_0.08_330)]",
+  whatsapp: "bg-[oklch(0.95_0.06_150)] text-[oklch(0.4_0.15_150)] border-[oklch(0.85_0.1_150)]",
+  telegram: "bg-[oklch(0.95_0.05_215)] text-[oklch(0.45_0.15_215)] border-[oklch(0.85_0.08_215)]",
+  sms: "bg-muted text-muted-foreground border-border",
+  voice: "bg-muted text-muted-foreground border-border",
 };
 
+const plannedChannels: Channel[] = ["instagram", "whatsapp", "telegram", "sms", "voice"];
+
 export function ChannelChip({ channel, label }: { channel: Channel; label: string }) {
-  const planned = channel === "sms" || channel === "whatsapp" || channel === "voice";
+  const planned = plannedChannels.includes(channel);
   return (
-    <span className={`inline-flex items-center gap-1 rounded-md border border-border px-1.5 py-0.5 text-[11px] font-medium ${channelTone[channel]}`}>
+    <span className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${channelTone[channel]}`}>
       {label}
-      {planned && <span className="text-[10px] opacity-70">·  planned</span>}
+      {planned && <span className="ml-0.5 text-[9px] opacity-70 uppercase tracking-wider">· planned</span>}
     </span>
   );
 }
