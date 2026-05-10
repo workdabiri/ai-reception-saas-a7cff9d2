@@ -330,12 +330,13 @@ function DashboardPage() {
                   <div className="min-w-0 flex-1">
                     <div className="text-sm">
                       <span className="font-medium">{e.actor}</span>{" "}
-                      <span className="text-muted-foreground">{e.action.toLowerCase()}</span>{" "}
+                      <span className="text-muted-foreground">{e.actionLabel.toLowerCase()}</span>{" "}
                       <span className="text-foreground/80">{e.target}</span>
                     </div>
                     <div className="text-[11px] text-muted-foreground">{e.time}</div>
                   </div>
-                  <StatusChip status={e.tone} />
+                  <StatusChip status={e.result === "Denied" || e.result === "Failed" ? "access-denied" : "open"} />
+
                 </li>
               ))}
             </ul>
