@@ -1,5 +1,13 @@
 export type ConvStatus = "open" | "pending" | "snoozed" | "closed";
-export type Channel = "email" | "webform" | "sms" | "whatsapp" | "voice";
+export type Channel =
+  | "email"
+  | "webform"
+  | "web-chat"
+  | "instagram"
+  | "whatsapp"
+  | "telegram"
+  | "sms"
+  | "voice";
 
 // Extended chip statuses for the dashboard surface
 export type ChipStatus =
@@ -14,10 +22,39 @@ export type ChipStatus =
 export const channelLabel: Record<Channel, string> = {
   email: "Email",
   webform: "Web form",
-  sms: "SMS (planned)",
-  whatsapp: "WhatsApp (planned)",
-  voice: "Voice (planned)",
+  "web-chat": "Web Chat",
+  instagram: "Instagram DM",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  sms: "SMS",
+  voice: "Voice",
 };
+
+export type ChannelStatus = "Mock Active" | "Planned" | "Future" | "Not enabled in MVP";
+export type ChannelHealth = "ok" | "warn" | "off";
+
+export type ChannelInfo = {
+  id: Channel;
+  name: string;
+  status: ChannelStatus;
+  health: ChannelHealth;
+  unread: number;
+  customers: number;
+  waiting: number;
+  lastMessage: string;
+  hue: string; // brand-ish accent (oklch hue)
+  short: string; // 2-letter glyph
+};
+
+export const channels: ChannelInfo[] = [
+  { id: "web-chat",  name: "Web Chat",     status: "Mock Active",       health: "ok",   unread: 5, customers: 12, waiting: 2, lastMessage: "3 min ago",   hue: "175", short: "WC" },
+  { id: "email",     name: "Email",        status: "Mock Active",       health: "ok",   unread: 8, customers: 18, waiting: 4, lastMessage: "12 min ago",  hue: "245", short: "EM" },
+  { id: "instagram", name: "Instagram DM", status: "Planned",           health: "off",  unread: 3, customers: 7,  waiting: 1, lastMessage: "1 hr ago",    hue: "330", short: "IG" },
+  { id: "whatsapp",  name: "WhatsApp",     status: "Planned",           health: "off",  unread: 2, customers: 5,  waiting: 1, lastMessage: "2 hr ago",    hue: "150", short: "WA" },
+  { id: "telegram",  name: "Telegram",     status: "Planned",           health: "off",  unread: 0, customers: 2,  waiting: 0, lastMessage: "Yesterday",   hue: "215", short: "TG" },
+  { id: "sms",       name: "SMS",          status: "Planned",           health: "off",  unread: 0, customers: 0,  waiting: 0, lastMessage: "—",           hue: "60",  short: "SMS" },
+  { id: "voice",     name: "Voice",        status: "Future",            health: "off",  unread: 0, customers: 0,  waiting: 0, lastMessage: "—",           hue: "20",  short: "VO" },
+];
 
 export type WorkspaceRole = "Owner" | "Admin" | "Operator" | "Viewer";
 
