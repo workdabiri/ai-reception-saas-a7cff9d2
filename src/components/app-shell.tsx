@@ -65,38 +65,36 @@ const roleTone: Record<WorkspaceRole, string> = {
 
 export function AppShell({
   children,
-  variant = "default",
+  // Accepted for backwards-compat with existing routes; behavior is now unified.
+  variant: _variant,
 }: {
   children?: React.ReactNode;
-  /** "rail" = default to collapsed (use for chat-priority screens like Inbox). User can still expand. */
   variant?: "default" | "rail";
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  // Persisted collapse state, with per-page default for "rail" variant.
+  // Single persisted collapse state shared across every page.
   const [collapsed, setCollapsed] = useState<boolean>(() => {
-    if (typeof window === "undefined") return variant === "rail";
+    if (typeof window === "undefined") return false;
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === "1") return true;
     if (stored === "0") return false;
-    // No stored preference — fall back to per-page default.
-    return variant === "rail";
+    // No stored preference — auto-collapse on tablet, expanded on desktop.
+    return window.matchMedia("(max-width: 1279px)").matches;
   });
 
-  // Auto-collapse on tablet (<1024) by default, but never override an explicit
-  // user preference within the session.
+  // Auto-adjust on viewport changes only when the user has not set a preference.
   useEffect(() => {
     const stored =
       typeof window !== "undefined"
         ? window.localStorage.getItem(STORAGE_KEY)
         : null;
     if (stored !== null) return;
-    const mql = window.matchMedia("(max-width: 1023px)");
-    const apply = () => setCollapsed(mql.matches ? true : variant === "rail");
-    apply();
+    const mql = window.matchMedia("(max-width: 1279px)");
+    const apply = () => setCollapsed(mql.matches);
     mql.addEventListener("change", apply);
     return () => mql.removeEventListener("change", apply);
-  }, [variant]);
+  }, []);
 
   const toggle = () => {
     setCollapsed((c) => {
