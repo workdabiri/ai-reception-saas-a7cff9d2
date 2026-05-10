@@ -92,48 +92,51 @@ function DashboardPage() {
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-8 lg:py-8 space-y-6">
       {/* Compact command bar header */}
-      <header className="rounded-2xl border border-border bg-card shadow-soft">
-        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 lg:px-6">
+      <header className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+        <div className="pointer-events-none absolute inset-0 opacity-60" aria-hidden>
+          <div className="absolute -top-24 -right-20 h-56 w-56 rounded-full bg-primary/15 blur-3xl" />
+          <div className="absolute -bottom-20 left-32 h-48 w-48 rounded-full bg-[oklch(0.555_0.195_295)]/12 blur-3xl" />
+        </div>
+        <div className="relative flex flex-wrap items-center justify-between gap-3 px-5 py-4 lg:px-6 lg:py-5">
           <div className="min-w-0 flex items-center gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground shadow-ring-primary">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl gradient-primary text-primary-foreground shadow-ring-primary">
               <CircleDot className="h-5 w-5" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/12 px-2 py-0.5 text-success ring-1 ring-success/25">
                   <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
                   Live
                 </span>
-                <span aria-hidden>·</span>
                 <span className="truncate">{currentWorkspace.name}</span>
                 <span aria-hidden>·</span>
                 <span>{currentWorkspace.role}</span>
               </div>
-              <h1 className="mt-0.5 truncate text-[20px] lg:text-[22px] font-semibold tracking-tight leading-tight">
-                Operations Command Center
+              <h1 className="mt-1 truncate text-[22px] lg:text-[26px] font-semibold tracking-tight leading-tight">
+                Operations <span className="gradient-text-primary">Command Center</span>
               </h1>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-[12px] font-medium text-foreground/80 hover:bg-secondary">
+            <button className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-foreground/80 hover:bg-secondary shadow-soft">
               <Calendar className="h-3.5 w-3.5" />
               Today
               <ChevronDown className="h-3.5 w-3.5 opacity-60" />
             </button>
-            <button className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-[12px] font-medium text-foreground/80 hover:bg-secondary">
+            <button className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-foreground/80 hover:bg-secondary shadow-soft">
               <Search className="h-3.5 w-3.5" />
               <span className="text-muted-foreground">Search…</span>
               <kbd className="ml-2 rounded border border-border bg-background px-1 py-0.5 text-[10px] text-muted-foreground">⌘K</kbd>
             </button>
             <Link
               to="/channels"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-[12px] font-medium text-foreground/80 hover:bg-secondary"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-foreground/80 hover:bg-secondary shadow-soft"
             >
               Channels
             </Link>
             <Link
               to="/inbox"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-[12px] font-semibold text-primary-foreground shadow-soft hover:opacity-95 active:translate-y-px"
+              className="inline-flex items-center gap-1.5 rounded-lg gradient-primary px-3.5 py-2 text-[12px] font-semibold text-primary-foreground shadow-ring-primary hover:opacity-95 active:translate-y-px"
             >
               Open inbox <ArrowRight className="h-3.5 w-3.5" />
             </Link>
