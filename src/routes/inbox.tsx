@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Avatar, ChannelChip, StatusChip } from "@/components/ui-bits";
+import { Avatar, ChannelChip } from "@/components/ui-bits";
 import { AIDraftPanel } from "@/components/ai-draft-panel";
 import {
   conversations,
@@ -10,11 +10,11 @@ import {
   type InboxStatus,
   type Priority,
   type Message,
+  type Channel,
 } from "@/lib/mock-data";
 import {
   Search,
   SlidersHorizontal,
-  Sparkles,
   Send,
   MoreHorizontal,
   Tag,
@@ -31,6 +31,24 @@ import {
   ExternalLink,
   ChevronRight,
   PanelRight,
+  Inbox as InboxIcon,
+  Sparkles,
+  Users,
+  Radio,
+  MessageSquare,
+  Instagram,
+  MessageCircle,
+  Send as SendIcon,
+  Smartphone,
+  PhoneCall,
+  Mail as MailIcon,
+  AlertTriangle,
+  Clock,
+  CheckCheck,
+  XCircle,
+  FileSearch,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
