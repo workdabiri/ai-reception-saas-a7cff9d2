@@ -140,31 +140,40 @@ function DashboardPage() {
         {stats.map((s) => {
           const Icon = s.icon;
           const Trend = s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
+          const accent =
+            s.tone === "primary" ? "from-primary/70 via-primary/30 to-transparent" :
+            s.tone === "warning" ? "from-warning/70 via-warning/30 to-transparent" :
+            s.tone === "danger"  ? "from-destructive/70 via-destructive/30 to-transparent" :
+            s.tone === "success" ? "from-success/70 via-success/30 to-transparent" :
+                                   "from-border-strong/80 via-border to-transparent";
           return (
             <div
               key={s.label}
-              className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 shadow-soft transition hover:shadow-card hover:-translate-y-px"
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card hairline-top transition hover:-translate-y-px hover:shadow-elev"
             >
-              <div className="flex items-start justify-between gap-2">
-                <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                  {s.label}
-                </span>
-                <div className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneStyles[s.tone]}`}>
-                  <Icon className="h-3.5 w-3.5" />
-                </div>
-              </div>
-              <div className="mt-2 flex items-end justify-between gap-2">
-                <div className="text-[28px] font-semibold leading-none tracking-tight tabular-nums">
-                  {s.value}
-                </div>
-                {s.delta && (
-                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${deltaStyles[s.delta.dir]}`}>
-                    {Trend && <Trend className="h-3 w-3" />}
-                    {s.delta.value}
+              <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${accent}`} />
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                    {s.label}
                   </span>
-                )}
+                  <div className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneStyles[s.tone]}`}>
+                    <Icon className="h-3.5 w-3.5" />
+                  </div>
+                </div>
+                <div className="mt-2.5 flex items-end justify-between gap-2">
+                  <div className="text-[34px] font-semibold leading-none tracking-tight tabular-nums text-foreground">
+                    {s.value}
+                  </div>
+                  {s.delta && (
+                    <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${deltaStyles[s.delta.dir]}`}>
+                      {Trend && <Trend className="h-3 w-3" />}
+                      {s.delta.value}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2 text-[11.5px] leading-snug text-muted-foreground">{s.hint}</div>
               </div>
-              <div className="mt-1.5 text-[11.5px] leading-snug text-muted-foreground">{s.hint}</div>
             </div>
           );
         })}
@@ -260,17 +269,20 @@ function DashboardPage() {
 
       {/* Channel command center + AI drafts */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
-        <div className="lg:col-span-7 rounded-xl border border-border bg-card shadow-card">
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+        <div className="lg:col-span-7 rounded-2xl border border-border bg-card shadow-card overflow-hidden hairline-top">
+          <div className="flex items-center justify-between border-b border-border bg-gradient-to-b from-surface-muted/40 to-transparent px-5 py-3.5">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">Channel command center</p>
+              <p className="section-eyebrow">Channel command center</p>
               <h2 className="mt-0.5 text-[13px] font-semibold tracking-tight">Where customers reach you</h2>
             </div>
             <Link to="/channels" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
               All sources <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-border">
+          <div
+            className="grid gap-3 p-3"
+            style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))" }}
+          >
             {channelOverview.map((c) => {
               const active = c.status === "Mock Active";
               const planned = c.status === "Planned";
@@ -282,10 +294,14 @@ function DashboardPage() {
                 <Link
                   key={c.key}
                   to={active ? "/inbox" : "/channels"}
-                  className="group flex flex-col gap-2 bg-card px-3.5 py-3 transition hover:bg-surface-muted/60"
+                  className={`group relative flex flex-col gap-2.5 rounded-xl border p-3.5 transition hover:-translate-y-px hover:shadow-card ${
+                    active
+                      ? "border-border bg-card shadow-soft"
+                      : "border-dashed border-border bg-surface-muted/40"
+                  }`}
                 >
                   <div className="flex items-center justify-between">
-                    <ChannelIcon channel={c.key} size={26} />
+                    <ChannelIcon channel={c.key} size={28} />
                     {active ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-success ring-1 ring-success/20">
                         <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} /> Active
@@ -297,17 +313,17 @@ function DashboardPage() {
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="text-[12.5px] font-semibold">{c.name}</div>
+                    <div className="text-[13px] font-semibold tracking-tight">{c.name}</div>
                     {c.unread > 0 && (
                       <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary tabular-nums">{c.unread}</span>
                     )}
                   </div>
                   {active ? (
-                    <div className="space-y-0.5 text-[10.5px] text-muted-foreground">
+                    <div className="space-y-1 text-[10.5px] text-muted-foreground">
                       <div className="flex items-center justify-between">
                         <span className="tabular-nums">{c.customers} customers</span>
                         {c.waiting > 0 && (
-                          <span className="font-medium text-warning-foreground tabular-nums">{c.waiting} waiting</span>
+                          <span className="font-semibold text-warning-foreground tabular-nums">{c.waiting} waiting</span>
                         )}
                       </div>
                       <div className="truncate opacity-80">Last · {c.lastMessage}</div>
