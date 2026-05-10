@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell } from "@/components/app-shell";
 import { PageHeader, MockBanner } from "@/components/ui-bits";
 import { currentWorkspace } from "@/lib/mock-data";
 import {
@@ -48,7 +47,7 @@ const futureIntegrations = [
 
 function SettingsPage() {
   return (
-    <AppShell>
+    <>
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
         <PageHeader
           title="Settings"
@@ -247,7 +246,7 @@ function SettingsPage() {
           </div>
         </div>
       </div>
-    </AppShell>
+    </>
   );
 }
 
