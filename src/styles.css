@@ -54,14 +54,18 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --shadow-soft: 0 1px 2px 0 oklch(0.2 0.03 265 / 0.04);
+  --shadow-soft: 0 1px 2px 0 oklch(0.2 0.03 265 / 0.05);
   --shadow-card:
     0 1px 0 0 oklch(0.2 0.03 265 / 0.04),
-    0 1px 2px 0 oklch(0.2 0.03 265 / 0.04),
-    0 8px 24px -10px oklch(0.2 0.03 265 / 0.08);
+    0 1px 2px 0 oklch(0.2 0.03 265 / 0.05),
+    0 10px 30px -12px oklch(0.2 0.03 265 / 0.10);
+  --shadow-elev:
+    0 1px 0 0 oklch(0.2 0.03 265 / 0.04),
+    0 2px 6px -2px oklch(0.2 0.03 265 / 0.06),
+    0 18px 40px -16px oklch(0.2 0.03 265 / 0.14);
   --shadow-pop:
     0 1px 2px 0 oklch(0.2 0.03 265 / 0.06),
-    0 12px 40px -8px oklch(0.2 0.03 265 / 0.18);
+    0 14px 44px -10px oklch(0.2 0.03 265 / 0.20);
   --shadow-ring-primary: 0 0 0 1px oklch(0.52 0.16 268 / 0.18), 0 6px 20px -8px oklch(0.52 0.16 268 / 0.35);
 }
 
@@ -209,11 +213,30 @@
   }
   .bg-app {
     background-image:
-      radial-gradient(1200px 500px at 100% -10%, oklch(0.52 0.16 268 / 0.05), transparent 60%),
-      radial-gradient(800px 400px at -10% 100%, oklch(0.6 0.13 240 / 0.035), transparent 60%);
+      radial-gradient(1100px 480px at 100% -10%, oklch(0.52 0.16 268 / 0.06), transparent 60%),
+      radial-gradient(900px 420px at -10% 100%, oklch(0.6 0.13 240 / 0.045), transparent 60%),
+      radial-gradient(700px 320px at 50% 110%, oklch(0.78 0.14 75 / 0.025), transparent 60%);
     background-color: var(--color-background);
+    background-attachment: fixed;
   }
   .ring-primary-soft {
     box-shadow: var(--shadow-ring-primary);
+  }
+  .surface-elev {
+    background-image: linear-gradient(180deg, var(--color-card) 0%, color-mix(in oklab, var(--color-card) 96%, var(--color-primary) 4%) 100%);
+  }
+  .gradient-text-primary {
+    background-image: linear-gradient(135deg, var(--color-primary), oklch(0.62 0.18 240));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .grid-noise {
+    background-image:
+      linear-gradient(var(--color-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+    opacity: 0.35;
   }
 }
