@@ -354,7 +354,7 @@ function UnifiedSidebar({
 
       {/* Sections */}
       <div className="flex-1 overflow-y-auto py-2">
-        {NAV_SECTIONS.map((section, idx) => (
+        {MENU_CONFIG.sections.map((section, idx) => (
           <div key={section.id} className={idx > 0 ? "mt-3" : ""}>
             {!collapsed ? (
               <div className="px-4 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">
@@ -393,17 +393,17 @@ function UnifiedSidebar({
 
         {collapsed ? (
           <>
-            {BOTTOM_ITEMS.map((it) => (
-              <BottomIcon key={it.label} icon={it.icon} label={it.label} />
+            {MENU_CONFIG.bottomItems.map((it) => (
+              <BottomIcon key={it.id} icon={it.icon} label={it.label} />
             ))}
           </>
         ) : (
           <div className="flex items-center gap-1 rounded-lg border border-sidebar-border bg-surface p-1">
-            {BOTTOM_ITEMS.map((it) => {
+            {MENU_CONFIG.bottomItems.map((it) => {
               const Icon = it.icon;
               return (
                 <button
-                  key={it.label}
+                  key={it.id}
                   className="flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-[12px] font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
                 >
                   <Icon className="h-3.5 w-3.5" />
