@@ -151,7 +151,7 @@ export function AppShell({
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen flex w-full bg-app text-foreground">
-        <UnifiedSidebar
+        <SharedSidebar
           collapsed={collapsed}
           isActive={isActive}
         />
@@ -290,7 +290,7 @@ export function AppShell({
 
 /* ───────────────────────── Unified sidebar ───────────────────────── */
 
-function UnifiedSidebar({
+function SharedSidebar({
   collapsed,
   isActive,
 }: {
