@@ -228,7 +228,10 @@ function InboxPage() {
               return (
                 <li key={c.id}>
                   <button
-                    onClick={() => setActiveId(c.id)}
+                    onClick={() => {
+                      setActiveId(c.id);
+                      setMobileView("thread");
+                    }}
                     className={`relative w-full border-b border-border px-4 py-3 text-left transition ${
                       selected ? "bg-primary-soft/40" : "hover:bg-surface-muted"
                     }`}
