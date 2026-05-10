@@ -98,8 +98,9 @@ export function MockBanner() {
         i
       </span>
       <div className="text-[13px] leading-snug text-warning-foreground">
-        <span className="font-semibold">This prototype uses mock data.</span>{" "}
-        MVP is async and human-review-first. AI prepares drafts; an operator sends every reply.
+        <span className="font-semibold">Prototype with mock data only.</span>{" "}
+        Async MVP, human-review-first. No backend, auth, or providers connected.
+        AI prepares drafts; an operator sends every reply.
       </div>
     </div>
   );

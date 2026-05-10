@@ -367,9 +367,15 @@ function InboxPage() {
                       Add note
                     </button>
                   ) : (
-                    <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95">
+                    <button
+                      title="Mock — no message will be sent in this prototype"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
+                    >
                       <Send className="h-3.5 w-3.5" />
                       Send reply
+                      <span className="ml-1 rounded bg-primary-foreground/15 px-1 text-[10px] font-medium uppercase tracking-wider">
+                        mock
+                      </span>
                     </button>
                   )}
                 </div>

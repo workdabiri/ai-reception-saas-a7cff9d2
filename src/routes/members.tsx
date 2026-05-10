@@ -307,7 +307,7 @@ function MembersPage() {
           </div>
           <div className="grid gap-3 border-t border-border bg-surface px-4 py-4 sm:grid-cols-2">
             {[
-              ["Owner", "Full access to workspace, billing and members."],
+              ["Owner", "Full workspace access, members and settings. Billing planned."],
               ["Admin", "Manage settings and members; full access to operations."],
               ["Operator", "Reply to conversations and manage customers."],
               ["Viewer", "Read-only access to inbox and customer context."],
@@ -335,7 +335,7 @@ function MembersPage() {
             <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Removed members lose access immediately.</li>
             <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Server verifies membership on every tenant-scoped request.</li>
             <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Client-side checks are UX only — never trusted for authorization.</li>
-            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Suspended members keep records but cannot sign in.</li>
+            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Suspended members keep records but cannot access the workspace. Auth planned.</li>
             <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Role changes are written to the audit log.</li>
           </ul>
         </div>
@@ -409,7 +409,7 @@ function MembersPage() {
                     </span>
                   </div>
                   <p className="mt-1 text-[12px] text-muted-foreground">
-                    {r === "Owner" && "Full access including billing."}
+                    {r === "Owner" && "Full workspace access. Billing planned."}
                     {r === "Admin" && "Manage settings and members."}
                     {r === "Operator" && "Handle conversations and customers."}
                     {r === "Viewer" && "Read-only across the workspace."}
