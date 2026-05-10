@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { Avatar, ChannelChip, StatusChip } from "@/components/ui-bits";
+import { AIDraftPanel } from "@/components/ai-draft-panel";
 import {
   conversations,
   customers,
