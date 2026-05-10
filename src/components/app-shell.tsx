@@ -11,6 +11,7 @@ import {
   Sparkles,
   Bell,
   Plus,
+  Radio,
 } from "lucide-react";
 import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 
@@ -25,6 +26,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
+  { to: "/channels", label: "Channels", icon: Radio, badge: 8 },
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/members", label: "Members", icon: UserCog },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -32,21 +34,30 @@ const navItems: NavItem[] = [
   { to: "/states", label: "States", icon: LayoutGrid },
 ];
 
+const mobileNav: NavItem[] = [
+  { to: "/", label: "Home", icon: LayoutDashboard, exact: true },
+  { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
+  { to: "/channels", label: "Channels", icon: Radio },
+  { to: "/customers", label: "People", icon: Users },
+  { to: "/settings", label: "More", icon: Settings },
+];
+
 export function AppShell({ children }: { children?: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  const isActive = (to: string, exact?: boolean) =>
+    exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
+
   return (
     <div className="min-h-screen flex w-full bg-background text-foreground">
-      {/* Sidebar */}
+      {/* Sidebar — desktop */}
       <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
         <WorkspaceSwitcher />
 
         <nav className="px-2 py-1 space-y-0.5">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = item.exact
-              ? pathname === item.to
-              : pathname === item.to || pathname.startsWith(item.to + "/");
+            const active = isActive(item.to, item.exact);
             return (
               <Link
                 key={item.to}
@@ -78,14 +89,11 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
         <div className="mt-auto m-3 rounded-xl border border-sidebar-border bg-gradient-to-br from-primary-soft to-surface p-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-primary">
             <Sparkles className="h-3.5 w-3.5" />
-            AI draft assistance
+            AI Draft — Human Review Required
           </div>
           <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-            AI suggests replies. An operator reviews and sends every message.
+            AI prepares suggested responses. Operator sends final reply. AI does not auto-send in MVP.
           </p>
-          <span className="mt-2 inline-flex items-center rounded-md bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground border">
-            Human review required
-          </span>
         </div>
       </aside>
 
@@ -98,7 +106,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
               placeholder="Search conversations, customers…"
               className="h-9 w-full rounded-lg border border-input bg-surface pl-8 pr-16 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
             />
-            <kbd className="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-border bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:block rounded border border-border bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
               ⌘K
             </kbd>
           </div>
@@ -107,7 +115,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
               <span className="h-1.5 w-1.5 rounded-full bg-warning" />
               Mock data
             </span>
-            <button className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-soft hover:opacity-95">
+            <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-soft hover:opacity-95">
               <Plus className="h-3.5 w-3.5" />
               New conversation
             </button>
@@ -120,8 +128,33 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 min-w-0">{children ?? <Outlet />}</main>
+        <main className="flex-1 min-w-0 pb-16 md:pb-0">{children ?? <Outlet />}</main>
       </div>
+
+      {/* Mobile bottom nav */}
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-surface/95 backdrop-blur md:hidden">
+        {mobileNav.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.to, item.exact);
+          return (
+            <Link
+              key={item.to}
+              to={item.to as "/"}
+              className={`relative flex flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium ${
+                active ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+              {item.label}
+              {item.badge ? (
+                <span className="absolute right-3 top-1.5 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
+                  {item.badge}
+                </span>
+              ) : null}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
