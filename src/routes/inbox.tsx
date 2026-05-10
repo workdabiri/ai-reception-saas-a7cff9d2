@@ -475,7 +475,11 @@ function CustomerContext({
   linked,
   onOpenConversation,
 }: {
-  customer: ReturnType<typeof customers.find> extends infer T ? NonNullable<T> : never;
+  customer: (typeof customers)[number];
+  active: (typeof conversations)[number];
+  linked: (typeof conversations)[number][];
+  onOpenConversation: (id: string) => void;
+}) {
   active: (typeof conversations)[number];
   linked: (typeof conversations)[number][];
   onOpenConversation: (id: string) => void;
