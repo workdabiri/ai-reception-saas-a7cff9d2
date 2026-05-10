@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { AppShell } from "@/components/app-shell";
 import { Avatar, ChannelChip, StatusChip } from "@/components/ui-bits";
 import { AIDraftPanel } from "@/components/ai-draft-panel";
 import {
@@ -136,7 +137,7 @@ function InboxPage() {
   };
 
   return (
-    <>
+    <AppShell variant="rail">
       <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_340px]">
         {/* Column 1: Conversation list */}
         <div
@@ -475,7 +476,7 @@ function InboxPage() {
           />
         </SheetContent>
       </Sheet>
-    </>
+    </AppShell>
   );
 }
 

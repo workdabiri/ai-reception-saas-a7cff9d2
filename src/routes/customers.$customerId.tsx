@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { AppShell } from "@/components/app-shell";
 import { Avatar, PageHeader } from "@/components/ui-bits";
 import {
   customers,
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/customers/$customerId")({
     return { customer };
   },
   notFoundComponent: () => (
-    <>
+    <AppShell>
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
         <h1 className="text-xl font-semibold">Customer not found</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -53,7 +54,7 @@ export const Route = createFileRoute("/customers/$customerId")({
           <ArrowLeft className="h-3.5 w-3.5" /> Back to customers
         </Link>
       </div>
-    </>
+    </AppShell>
   ),
   component: CustomerProfilePage,
 });
@@ -116,7 +117,7 @@ function CustomerProfilePage() {
     .slice(0, 8);
 
   return (
-    <>
+    <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
         <Link
           to="/customers"
@@ -337,7 +338,7 @@ function CustomerProfilePage() {
           </div>
         </div>
       </div>
-    </>
+    </AppShell>
   );
 }
 

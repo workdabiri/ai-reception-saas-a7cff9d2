@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { AppShell } from "@/components/app-shell";
 import { Avatar, ChannelChip, PageHeader } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
 import {
@@ -116,7 +117,7 @@ function CustomersPage() {
   );
 
   return (
-    <>
+    <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8">
         <PageHeader
           title="Customers"
@@ -326,7 +327,7 @@ function CustomersPage() {
           )}
         </div>
       </div>
-    </>
+    </AppShell>
   );
 }
 

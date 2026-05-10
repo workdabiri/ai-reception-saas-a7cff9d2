@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AppShell } from "@/components/app-shell";
 import { MockBanner, PageHeader } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
 import {
@@ -146,7 +147,7 @@ function ChannelsPage() {
   );
 
   return (
-    <>
+    <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8 space-y-6">
         <PageHeader
           title="Channels"
@@ -177,7 +178,7 @@ function ChannelsPage() {
           Channel data is mock. No provider SDK is connected. Operators send every reply.
         </p>
       </div>
-    </>
+    </AppShell>
   );
 }
 
