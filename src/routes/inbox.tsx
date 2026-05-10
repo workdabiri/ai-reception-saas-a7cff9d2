@@ -137,8 +137,8 @@ function InboxPage() {
   };
 
   return (
-    <AppShell>
-      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr_340px]">
+    <AppShell variant="rail">
+      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_340px]">
         {/* Column 1: Conversation list */}
         <div
           className={`min-h-0 flex-col border-r border-border bg-surface ${
