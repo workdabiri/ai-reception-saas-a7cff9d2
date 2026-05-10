@@ -147,10 +147,14 @@ function InboxPage() {
 
   return (
     <AppShell>
-      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[360px_1fr] xl:grid-cols-[360px_1fr_340px]">
+      <div className="grid h-[calc(100vh-3.5rem-4rem)] md:h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[340px_1fr] xl:grid-cols-[340px_1fr_340px]">
         {/* Column 1: Conversation list */}
-        <div className="flex min-h-0 flex-col border-r border-border bg-surface">
-          <div className="space-y-3 border-b border-border p-4">
+        <div
+          className={`${
+            mobileView === "list" ? "flex" : "hidden"
+          } md:flex min-h-0 flex-col border-r border-border bg-surface`}
+        >
+          <div className="space-y-2.5 border-b border-border p-3">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-semibold">Inbox</h2>
@@ -171,12 +175,12 @@ function InboxPage() {
                 className="h-8 w-full rounded-md border border-border bg-background pl-8 pr-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30"
               />
             </div>
-            <div className="flex flex-wrap gap-1">
+            <div className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-0.5">
               {statusFilters.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setFilter(f.id)}
-                  className={`rounded-md px-2 py-1 text-[11px] font-medium transition ${
+                  className={`shrink-0 rounded-md px-2 py-1 text-[11px] font-medium transition ${
                     filter === f.id
                       ? "bg-foreground text-background"
                       : "text-muted-foreground hover:bg-secondary"
@@ -185,6 +189,34 @@ function InboxPage() {
                   {f.label}
                 </button>
               ))}
+            </div>
+            <div className="-mx-1 flex gap-1 overflow-x-auto px-1">
+              <button
+                onClick={() => setChannelFilter("all")}
+                className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider transition ${
+                  channelFilter === "all"
+                    ? "border-primary bg-primary-soft text-primary"
+                    : "border-border text-muted-foreground hover:bg-secondary"
+                }`}
+              >
+                All channels
+              </button>
+              {activeChannels.map((ch) => {
+                const sel = channelFilter === ch;
+                return (
+                  <button
+                    key={ch}
+                    onClick={() => setChannelFilter(ch)}
+                    className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider transition ${
+                      sel
+                        ? "border-primary bg-primary-soft text-primary"
+                        : "border-border text-muted-foreground hover:bg-secondary"
+                    }`}
+                  >
+                    {channelLabel[ch]}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <ul className="flex-1 overflow-y-auto">
