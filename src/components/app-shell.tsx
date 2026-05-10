@@ -117,7 +117,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
               <span className="h-1.5 w-1.5 rounded-full bg-warning" />
               Mock data
             </span>
-            <button className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-soft hover:opacity-95">
+            <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-soft hover:opacity-95">
               <Plus className="h-3.5 w-3.5" />
               New conversation
             </button>
@@ -130,8 +130,33 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 min-w-0">{children ?? <Outlet />}</main>
+        <main className="flex-1 min-w-0 pb-16 md:pb-0">{children ?? <Outlet />}</main>
       </div>
+
+      {/* Mobile bottom nav */}
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-background/95 backdrop-blur md:hidden">
+        {mobileNav.map((item) => {
+          const Icon = item.icon;
+          const active = item.exact
+            ? pathname === item.to
+            : pathname === item.to || pathname.startsWith(item.to + "/");
+          return (
+            <Link
+              key={item.to}
+              to={item.to as "/"}
+              className={`relative flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition ${
+                active ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+              {item.label}
+              {item.badge ? (
+                <span className="absolute right-[28%] top-1 h-1.5 w-1.5 rounded-full bg-primary" />
+              ) : null}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
