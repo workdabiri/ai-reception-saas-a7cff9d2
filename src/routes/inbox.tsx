@@ -225,11 +225,23 @@ function InboxPage() {
                             <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
                           )}
                         </div>
-                        <div className="mt-1.5 flex items-center justify-between text-[11px] text-muted-foreground">
-                          <span className="truncate">
-                            {a ? `Assigned · ${a.name}` : "Unassigned"}
+                        <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                          <span className="inline-flex items-center gap-1 truncate">
+                            {a ? (
+                              <>
+                                <span className="grid h-4 w-4 place-items-center rounded-full bg-secondary text-[8px] font-bold text-secondary-foreground">
+                                  {a.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                                </span>
+                                <span className="truncate">{a.name}</span>
+                              </>
+                            ) : (
+                              <span className="italic">Unassigned</span>
+                            )}
                           </span>
-                          <PriorityFlag priority={c.priority} />
+                          <span className="inline-flex items-center gap-2">
+                            <span className="tabular-nums">⏱ {c.updated}</span>
+                            <PriorityFlag priority={c.priority} />
+                          </span>
                         </div>
                       </div>
                     </div>
