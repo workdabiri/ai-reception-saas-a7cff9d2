@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { AppShell } from "@/components/app-shell";
 import { Avatar, PageHeader } from "@/components/ui-bits";
 import { members, currentWorkspace, type WorkspaceRole } from "@/lib/mock-data";
 import {
@@ -156,7 +155,7 @@ function MembersPage() {
   const [accessDenied, setAccessDenied] = useState(false);
 
   return (
-    <AppShell>
+    <>
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
         <PageHeader
           title="Members & access"
@@ -537,6 +536,6 @@ function MembersPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </AppShell>
+    </>
   );
 }

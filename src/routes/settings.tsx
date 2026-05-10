@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell } from "@/components/app-shell";
 import { PageHeader, MockBanner } from "@/components/ui-bits";
 import { currentWorkspace } from "@/lib/mock-data";
 import {
@@ -29,15 +28,6 @@ export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
-const sectionNav = [
-  { id: "business", label: "Business profile", icon: Building2 },
-  { id: "workspace", label: "Workspace", icon: Users2 },
-  { id: "reception", label: "Reception", icon: Inbox },
-  { id: "ai", label: "AI assistance", icon: Sparkles },
-  { id: "audit", label: "Audit", icon: ShieldCheck },
-  { id: "integrations", label: "Future integrations", icon: Plug },
-];
-
 const futureIntegrations = [
   { name: "WhatsApp", icon: MessageSquare, label: "Planned", desc: "Receive customer messages from WhatsApp into the inbox." },
   { name: "Twilio", icon: Phone, label: "Planned", desc: "Provider for SMS and voice reception capabilities." },
@@ -48,7 +38,7 @@ const futureIntegrations = [
 
 function SettingsPage() {
   return (
-    <AppShell>
+    <>
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
         <PageHeader
           title="Settings"
@@ -56,27 +46,7 @@ function SettingsPage() {
         />
         <MockBanner />
 
-        <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
-          {/* Side nav */}
-          <aside className="lg:sticky lg:top-6 lg:self-start">
-            <nav className="rounded-xl border border-border bg-card p-2 shadow-soft">
-              {sectionNav.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <a
-                    key={s.id}
-                    href={`#${s.id}`}
-                    className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  >
-                    <Icon className="h-4 w-4" />
-                    {s.label}
-                  </a>
-                );
-              })}
-            </nav>
-          </aside>
-
-          <div className="space-y-6 min-w-0">
+        <div className="space-y-6 min-w-0">
             {/* Business profile */}
             <Section
               id="business"
@@ -244,10 +214,9 @@ function SettingsPage() {
                 })}
               </div>
             </Section>
-          </div>
         </div>
       </div>
-    </AppShell>
+    </>
   );
 }
 
