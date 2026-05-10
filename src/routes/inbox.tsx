@@ -511,7 +511,7 @@ function InboxPage() {
               {linked.map((c) => (
                 <li key={c.id}>
                   <button
-                    onClick={() => setActiveId(c.id)}
+                    onClick={() => openConversation(c.id)}
                     className="flex w-full items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-left hover:bg-surface-muted"
                   >
                     <div className="min-w-0 flex-1">
