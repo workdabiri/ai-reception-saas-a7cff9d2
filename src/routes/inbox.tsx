@@ -480,10 +480,6 @@ function CustomerContext({
   linked: (typeof conversations)[number][];
   onOpenConversation: (id: string) => void;
 }) {
-  active: (typeof conversations)[number];
-  linked: (typeof conversations)[number][];
-  onOpenConversation: (id: string) => void;
-}) {
   return (
     <>
       {/* Profile */}
