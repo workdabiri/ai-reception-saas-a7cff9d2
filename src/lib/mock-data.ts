@@ -336,11 +336,175 @@ export const draftQueue: DraftReview[] = [
   { id: "d3", customer: "Carlos Mendes", initials: "CM", subject: "Whitening consultation", draft: "Hi Carlos, professional whitening starts at $290. We also offer 3-month payment plans…", confidence: "Medium", prepared: "22 min ago" },
 ];
 
-export const auditEvents = [
-  { id: "a1", actor: "Amelia Hart", action: "Invited member", target: "sofia@tehrandental.co", time: "Today, 09:14", tone: "open" as ChipStatus },
-  { id: "a2", actor: "Daniel Cho", action: "Closed conversation", target: "Thank you · Hannah Berg", time: "Today, 08:51", tone: "closed" as ChipStatus },
-  { id: "a3", actor: "Priya Raman", action: "Sent reply", target: "Invoice question · Naomi Tanaka", time: "Yesterday, 17:22", tone: "open" as ChipStatus },
-  { id: "a4", actor: "System", action: "Blocked export attempt", target: "Viewer tried to export customer list", time: "Yesterday, 15:40", tone: "access-denied" as ChipStatus },
-  { id: "a5", actor: "Marcus Lee", action: "Assigned conversation", target: "New patient questions → Marcus Lee", time: "Yesterday, 11:40", tone: "waiting" as ChipStatus },
-  { id: "a6", actor: "Priya Raman", action: "Edited AI draft", target: "Reschedule Thursday cleaning", time: "Yesterday, 10:55", tone: "needs-review" as ChipStatus },
+export type AuditActorType = "User" | "System" | "AI Receptionist";
+export type AuditResult = "Success" | "Denied" | "Failed";
+export type AuditAction =
+  | "member.invited"
+  | "member.role_changed"
+  | "member.removed"
+  | "conversation.assigned"
+  | "conversation.closed"
+  | "settings.updated"
+  | "access.denied"
+  | "workspace.switched"
+  | "ai.draft_approved"
+  | "ai.draft_rejected"
+  | "export.blocked";
+
+export type AuditEvent = {
+  id: string;
+  time: string;
+  iso: string;
+  actor: string;
+  actorType: AuditActorType;
+  workspace: string;
+  action: AuditAction;
+  actionLabel: string;
+  target: string;
+  result: AuditResult;
+  details: string;
+  metadata: Record<string, string>;
+};
+
+export const auditEvents: AuditEvent[] = [
+  {
+    id: "a1",
+    time: "Today · 09:14",
+    iso: "2026-05-10T09:14:00Z",
+    actor: "Amelia Hart",
+    actorType: "User",
+    workspace: "Tehran Dental Clinic",
+    action: "member.invited",
+    actionLabel: "Member invited",
+    target: "sofia@tehrandental.co",
+    result: "Success",
+    details: "Invited as Viewer. Invitation pending acceptance.",
+    metadata: { role: "Viewer", "invite.id": "inv_8f21", "ip": "73.14.22.10" },
+  },
+  {
+    id: "a2",
+    time: "Today · 08:51",
+    iso: "2026-05-10T08:51:00Z",
+    actor: "Daniel Cho",
+    actorType: "User",
+    workspace: "Tehran Dental Clinic",
+    action: "conversation.closed",
+    actionLabel: "Conversation closed",
+    target: "Thank you · Hannah Berg",
+    result: "Success",
+    details: "Marked as resolved after one-touch reply.",
+    metadata: { "conversation.id": "cv5", priority: "low" },
+  },
+  {
+    id: "a3",
+    time: "Today · 08:30",
+    iso: "2026-05-10T08:30:00Z",
+    actor: "AI Receptionist",
+    actorType: "AI Receptionist",
+    workspace: "Tehran Dental Clinic",
+    action: "ai.draft_approved",
+    actionLabel: "AI draft approved",
+    target: "Reschedule Thursday cleaning · Eleanor Whitfield",
+    result: "Success",
+    details: "Operator Priya Raman accepted AI draft and sent the final reply.",
+    metadata: { "conversation.id": "cv1", confidence: "High", "reviewer": "Priya Raman" },
+  },
+  {
+    id: "a4",
+    time: "Yesterday · 17:22",
+    iso: "2026-05-09T17:22:00Z",
+    actor: "Amelia Hart",
+    actorType: "User",
+    workspace: "Tehran Dental Clinic",
+    action: "member.role_changed",
+    actionLabel: "Role changed",
+    target: "Marcus Lee · Operator → Admin",
+    result: "Success",
+    details: "Role updated. Member retains access to all assigned conversations.",
+    metadata: { from: "Operator", to: "Admin", "member.id": "u4" },
+  },
+  {
+    id: "a5",
+    time: "Yesterday · 15:40",
+    iso: "2026-05-09T15:40:00Z",
+    actor: "System",
+    actorType: "System",
+    workspace: "Tehran Dental Clinic",
+    action: "access.denied",
+    actionLabel: "Access denied",
+    target: "Viewer attempted to export customer list",
+    result: "Denied",
+    details: "Server-side membership check rejected the request. Client-side hint was a UX safeguard only.",
+    metadata: { "policy": "viewer.cannot_export", "member.id": "u5" },
+  },
+  {
+    id: "a6",
+    time: "Yesterday · 11:40",
+    iso: "2026-05-09T11:40:00Z",
+    actor: "System",
+    actorType: "System",
+    workspace: "Tehran Dental Clinic",
+    action: "conversation.assigned",
+    actionLabel: "Conversation assigned",
+    target: "New patient — insurance question → Marcus Lee",
+    result: "Success",
+    details: "Round-robin routing assigned the conversation to next available operator.",
+    metadata: { "conversation.id": "cv2", routing: "round-robin" },
+  },
+  {
+    id: "a7",
+    time: "Yesterday · 10:55",
+    iso: "2026-05-09T10:55:00Z",
+    actor: "Amelia Hart",
+    actorType: "User",
+    workspace: "Tehran Dental Clinic",
+    action: "settings.updated",
+    actionLabel: "Settings updated",
+    target: "Reception · Manual review mode",
+    result: "Success",
+    details: "Manual review mode confirmed enabled. Auto-reply remains disabled.",
+    metadata: { setting: "reception.manual_review", value: "enabled" },
+  },
+  {
+    id: "a8",
+    time: "Yesterday · 09:02",
+    iso: "2026-05-09T09:02:00Z",
+    actor: "Priya Raman",
+    actorType: "User",
+    workspace: "Pars Repair Services",
+    action: "workspace.switched",
+    actionLabel: "Workspace switched",
+    target: "Tehran Dental Clinic → Pars Repair Services",
+    result: "Success",
+    details: "Operator switched active workspace. Cross-workspace data was not exposed.",
+    metadata: { from: "ws_1", to: "ws_2" },
+  },
+  {
+    id: "a9",
+    time: "2 days ago · 14:18",
+    iso: "2026-05-08T14:18:00Z",
+    actor: "System",
+    actorType: "System",
+    workspace: "Tehran Dental Clinic",
+    action: "export.blocked",
+    actionLabel: "Export blocked",
+    target: "Cross-workspace export attempt",
+    result: "Failed",
+    details: "Export request referenced a workspace the actor is not a member of. Request rejected before any data was read.",
+    metadata: { "requested.workspace": "ws_4", "actor.workspace": "ws_1" },
+  },
+  {
+    id: "a10",
+    time: "2 days ago · 10:11",
+    iso: "2026-05-08T10:11:00Z",
+    actor: "Amelia Hart",
+    actorType: "User",
+    workspace: "Tehran Dental Clinic",
+    action: "member.removed",
+    actionLabel: "Member removed",
+    target: "alex@tehrandental.co",
+    result: "Success",
+    details: "Member access revoked. Server invalidates active sessions on next request.",
+    metadata: { "member.id": "u_old_07" },
+  },
 ];
