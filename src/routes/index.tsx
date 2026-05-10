@@ -3,13 +3,19 @@ import {
   Inbox,
   Timer,
   Sparkles,
-  AlertTriangle,
   ShieldAlert,
   ArrowUpRight,
   ArrowRight,
   Repeat2,
-  Mail,
-  FileText,
+  Calendar,
+  ChevronDown,
+  Search,
+  Filter,
+  CircleDot,
+  CheckCircle2,
+  Clock3,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
 import {
   Avatar,
@@ -32,7 +38,7 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Operations dashboard — AI Reception" },
+      { title: "Operations Command Center — AI Reception" },
       {
         name: "description",
         content:
@@ -48,398 +54,419 @@ type Stat = {
   value: string;
   hint: string;
   icon: typeof Inbox;
-  tone: "neutral" | "primary" | "warning" | "danger";
+  tone: "neutral" | "primary" | "warning" | "danger" | "success";
+  delta?: { value: string; dir: "up" | "down" | "flat" };
 };
 
 const stats: Stat[] = [
-  { label: "Open conversations", value: "12", hint: "Across email & web form", icon: Inbox, tone: "neutral" },
-  { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning" },
-  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "neutral" },
-  { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "primary" },
-  { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger" },
+  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "neutral", delta: { value: "+3", dir: "up" } },
+  { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
+  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "neutral", delta: { value: "+2", dir: "up" } },
+  { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "primary", delta: { value: "+4", dir: "up" } },
+  { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
 ];
 
 const toneStyles: Record<Stat["tone"], string> = {
-  neutral: "bg-secondary text-secondary-foreground",
-  primary: "bg-primary-soft text-primary",
-  warning: "bg-warning/15 text-warning-foreground",
-  danger: "bg-destructive/10 text-destructive",
+  neutral: "bg-secondary text-secondary-foreground ring-border",
+  primary: "bg-primary-soft text-primary ring-primary/20",
+  warning: "bg-warning/15 text-warning-foreground ring-warning/30",
+  danger: "bg-destructive/10 text-destructive ring-destructive/20",
+  success: "bg-success/10 text-success ring-success/20",
+};
+
+const deltaStyles = {
+  up: "text-success bg-success/10",
+  down: "text-warning-foreground bg-warning/15",
+  flat: "text-muted-foreground bg-secondary",
 };
 
 function DashboardPage() {
   return (
-    <>
-      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
-        {/* Premium hero header */}
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-card">
-          <div className="absolute inset-0 grid-noise pointer-events-none" />
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
-          <div className="absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-info/10 blur-3xl pointer-events-none" />
-          <div className="relative flex flex-wrap items-end justify-between gap-6 p-6 lg:p-8">
-            <div className="max-w-2xl">
-              <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                {currentWorkspace.name} · {currentWorkspace.role} · Async MVP
-              </p>
-              <h1 className="mt-3 text-display text-4xl font-semibold leading-[1.05] tracking-tight lg:text-5xl">
-                Operations <span className="gradient-text-primary">Command Center</span>
-              </h1>
-              <p className="mt-3 text-[14px] leading-relaxed text-muted-foreground">
-                See what needs attention, where customers are messaging from, and what
-                operators should handle next.
-              </p>
+    <div className="mx-auto max-w-[1440px] px-4 py-6 lg:px-8 lg:py-7 space-y-5">
+      {/* Compact command bar header */}
+      <header className="rounded-2xl border border-border bg-card shadow-soft">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 lg:px-6">
+          <div className="min-w-0 flex items-center gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground shadow-ring-primary">
+              <CircleDot className="h-5 w-5" />
             </div>
-            <div className="flex items-center gap-2">
-              <Link
-                to="/channels"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 py-2 text-[13px] font-medium text-foreground/90 transition hover:bg-secondary"
-              >
-                Channels
-              </Link>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+                  Live
+                </span>
+                <span aria-hidden>·</span>
+                <span className="truncate">{currentWorkspace.name}</span>
+                <span aria-hidden>·</span>
+                <span>{currentWorkspace.role}</span>
+              </div>
+              <h1 className="mt-0.5 truncate text-[20px] lg:text-[22px] font-semibold tracking-tight leading-tight">
+                Operations Command Center
+              </h1>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-[12px] font-medium text-foreground/80 hover:bg-secondary">
+              <Calendar className="h-3.5 w-3.5" />
+              Today
+              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            </button>
+            <button className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-[12px] font-medium text-foreground/80 hover:bg-secondary">
+              <Search className="h-3.5 w-3.5" />
+              <span className="text-muted-foreground">Search…</span>
+              <kbd className="ml-2 rounded border border-border bg-background px-1 py-0.5 text-[10px] text-muted-foreground">⌘K</kbd>
+            </button>
+            <Link
+              to="/channels"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-[12px] font-medium text-foreground/80 hover:bg-secondary"
+            >
+              Channels
+            </Link>
+            <Link
+              to="/inbox"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-[12px] font-semibold text-primary-foreground shadow-soft hover:opacity-95 active:translate-y-px"
+            >
+              Open inbox <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <MockBanner />
+
+      {/* KPI row */}
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {stats.map((s) => {
+          const Icon = s.icon;
+          const Trend = s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
+          return (
+            <div
+              key={s.label}
+              className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 shadow-soft transition hover:shadow-card hover:-translate-y-px"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                  {s.label}
+                </span>
+                <div className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneStyles[s.tone]}`}>
+                  <Icon className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <div className="mt-2 flex items-end justify-between gap-2">
+                <div className="text-[28px] font-semibold leading-none tracking-tight tabular-nums">
+                  {s.value}
+                </div>
+                {s.delta && (
+                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${deltaStyles[s.delta.dir]}`}>
+                    {Trend && <Trend className="h-3 w-3" />}
+                    {s.delta.value}
+                  </span>
+                )}
+              </div>
+              <div className="mt-1.5 text-[11.5px] leading-snug text-muted-foreground">{s.hint}</div>
+            </div>
+          );
+        })}
+      </section>
+
+      {/* Today's queue + recent messages */}
+      <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <div className="lg:col-span-8 rounded-xl border border-border bg-card shadow-card overflow-hidden">
+          <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-3.5">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h2 className="text-[13px] font-semibold tracking-tight">Today's attention queue</h2>
+                <span className="rounded-full bg-warning/15 px-1.5 py-0.5 text-[10px] font-semibold text-warning-foreground">
+                  {todaysQueue.length} items
+                </span>
+              </div>
+              <p className="text-[11.5px] text-muted-foreground">Triage in order — oldest waiting first.</p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-[11.5px] font-medium text-foreground/80 hover:bg-secondary">
+                <Filter className="h-3 w-3" /> Filter
+              </button>
               <Link
                 to="/inbox"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px"
+                className="inline-flex items-center gap-1 text-[11.5px] font-medium text-primary hover:underline"
               >
-                Open inbox <ArrowRight className="h-3.5 w-3.5" />
+                View inbox <ArrowUpRight className="h-3 w-3" />
               </Link>
             </div>
           </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px]">
+              <thead className="bg-surface-muted/60 text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                <tr>
+                  <th className="px-5 py-2.5 text-left font-medium">Customer</th>
+                  <th className="px-3 py-2.5 text-left font-medium">Subject</th>
+                  <th className="px-3 py-2.5 text-left font-medium">Channel</th>
+                  <th className="px-3 py-2.5 text-left font-medium">Status</th>
+                  <th className="px-3 py-2.5 text-left font-medium">Waiting</th>
+                  <th className="px-5 py-2.5 text-left font-medium">Assignee</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {todaysQueue.map((q) => (
+                  <tr key={q.id} className="group transition hover:bg-surface-muted/40">
+                    <td className="px-5 py-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <Avatar initials={q.initials} size="sm" />
+                        <span className="font-medium">{q.customer}</span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-2.5 text-foreground/80 max-w-[220px] truncate">{q.subject}</td>
+                    <td className="px-3 py-2.5"><ChannelChip channel={q.channel} label={channelLabel[q.channel]} /></td>
+                    <td className="px-3 py-2.5"><StatusChip status={q.status} /></td>
+                    <td className="px-3 py-2.5 text-muted-foreground tabular-nums">{q.waiting}</td>
+                    <td className="px-5 py-2.5 text-muted-foreground">
+                      {q.assignee ?? <span className="italic text-warning-foreground/80">Unassigned</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <MockBanner />
-
-        {/* Summary stats */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {stats.map((s) => {
-            const Icon = s.icon;
-            return (
-              <div
-                key={s.label}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-soft transition hover:shadow-card"
-              >
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border-strong to-transparent" />
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                      {s.label}
-                    </span>
-                    <div className="mt-2 text-display text-[34px] font-semibold leading-none tracking-tight tabular-nums">
-                      {s.value}
-                    </div>
+        <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card flex flex-col">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+            <div>
+              <h2 className="text-[13px] font-semibold tracking-tight">Recent messages</h2>
+              <p className="text-[11.5px] text-muted-foreground">Latest inbound activity.</p>
+            </div>
+            <Link to="/inbox" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
+              All <ArrowUpRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <ul className="divide-y divide-border flex-1">
+            {recentMessages.map((m) => (
+              <li key={m.id} className="flex gap-3 px-5 py-3 transition hover:bg-surface-muted/40">
+                <Avatar initials={m.initials} size="sm" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="truncate text-[13px] font-medium">{m.customer}</span>
+                    <span className="shrink-0 text-[10.5px] text-muted-foreground tabular-nums">{m.time}</span>
                   </div>
-                  <div
-                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ring-4 ring-background ${toneStyles[s.tone]}`}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </div>
+                  <p className="mt-0.5 line-clamp-2 text-[12px] text-muted-foreground leading-snug">{m.snippet}</p>
+                  <div className="mt-1.5"><ChannelChip channel={m.channel} label={channelLabel[m.channel]} /></div>
                 </div>
-                <div className="mt-3 text-[12px] leading-snug text-muted-foreground">{s.hint}</div>
-              </div>
-            );
-          })}
+              </li>
+            ))}
+          </ul>
         </div>
+      </section>
 
-        {/* Channel command center */}
-        <div className="rounded-xl border border-border bg-card shadow-card">
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+      {/* Channel command center + AI drafts */}
+      <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <div className="lg:col-span-7 rounded-xl border border-border bg-card shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">Channel command center</p>
-              <h2 className="mt-0.5 text-sm font-semibold">Where customers are reaching you</h2>
-              <p className="text-xs text-muted-foreground">
-                Unread, customers, waiting and health per source. Mock data — only Web Chat & Email are active in MVP.
-              </p>
+              <h2 className="mt-0.5 text-[13px] font-semibold tracking-tight">Where customers reach you</h2>
             </div>
-            <Link
-              to="/channels"
-              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-            >
+            <Link to="/channels" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
               All sources <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 divide-x divide-y sm:divide-y-0 divide-border">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-border">
             {channelOverview.map((c) => {
               const active = c.status === "Mock Active";
-              const healthDot = c.health === "healthy" ? "bg-success" : c.health === "degraded" ? "bg-warning" : c.health === "offline" ? "bg-destructive" : "bg-muted-foreground/40";
+              const planned = c.status === "Planned";
+              const healthDot =
+                c.health === "healthy" ? "bg-success" :
+                c.health === "degraded" ? "bg-warning" :
+                c.health === "offline" ? "bg-destructive" : "bg-muted-foreground/40";
               return (
                 <Link
                   key={c.key}
                   to={active ? "/inbox" : "/channels"}
-                  className="group flex flex-col gap-2 px-4 py-4 transition hover:bg-surface-muted/60"
+                  className="group flex flex-col gap-2 bg-card px-3.5 py-3 transition hover:bg-surface-muted/60"
                 >
                   <div className="flex items-center justify-between">
-                    <ChannelIcon channel={c.key} size={28} />
-                    {c.unread > 0 ? (
-                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">{c.unread}</span>
+                    <ChannelIcon channel={c.key} size={26} />
+                    {active ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-success ring-1 ring-success/20">
+                        <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} /> Active
+                      </span>
                     ) : (
-                      <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} title={c.health} />
+                      <span className={`rounded-full px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider ring-1 ring-inset ${planned ? "bg-secondary text-muted-foreground ring-border" : "bg-surface-muted text-muted-foreground/70 ring-border"}`}>
+                        {c.status === "Future" ? "Future" : "Planned"}
+                      </span>
                     )}
                   </div>
-                  <div className="text-xs font-semibold">{c.name}</div>
-                  <div className="space-y-0.5 text-[10px] text-muted-foreground">
-                    <div className="flex items-center justify-between">
-                      <span>{active ? `${c.customers} customers` : c.status}</span>
-                      {active && c.waiting > 0 && (
-                        <span className="text-warning-foreground font-medium">{c.waiting} waiting</span>
-                      )}
-                    </div>
-                    <div className="truncate opacity-80">Last: {c.lastMessage}</div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-[12.5px] font-semibold">{c.name}</div>
+                    {c.unread > 0 && (
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary tabular-nums">{c.unread}</span>
+                    )}
                   </div>
+                  {active ? (
+                    <div className="space-y-0.5 text-[10.5px] text-muted-foreground">
+                      <div className="flex items-center justify-between">
+                        <span className="tabular-nums">{c.customers} customers</span>
+                        {c.waiting > 0 && (
+                          <span className="font-medium text-warning-foreground tabular-nums">{c.waiting} waiting</span>
+                        )}
+                      </div>
+                      <div className="truncate opacity-80">Last · {c.lastMessage}</div>
+                    </div>
+                  ) : (
+                    <div className="text-[10.5px] text-muted-foreground/80">Not enabled in MVP</div>
+                  )}
                 </Link>
               );
             })}
           </div>
         </div>
 
-        {/* Today's queue + Recent messages */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 rounded-xl border border-border bg-card shadow-card overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <div>
-                <h2 className="text-sm font-semibold">Today's conversation queue</h2>
-                <p className="text-xs text-muted-foreground">
-                  Triage in order — oldest waiting first.
-                </p>
+        <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+            <div className="flex items-center gap-2">
+              <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary-soft text-primary ring-1 ring-primary/20">
+                <Sparkles className="h-3.5 w-3.5" />
               </div>
-              <Link
-                to="/inbox"
-                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-              >
-                View inbox <ArrowUpRight className="h-3 w-3" />
-              </Link>
+              <div>
+                <h2 className="text-[13px] font-semibold tracking-tight">AI draft review</h2>
+                <p className="text-[11px] text-muted-foreground">Operator sends every reply.</p>
+              </div>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-surface-muted/60 text-[11px] uppercase tracking-wider text-muted-foreground">
-                  <tr>
-                    <th className="px-5 py-2.5 text-left font-medium">Customer</th>
-                    <th className="px-3 py-2.5 text-left font-medium">Subject</th>
-                    <th className="px-3 py-2.5 text-left font-medium">Channel</th>
-                    <th className="px-3 py-2.5 text-left font-medium">Status</th>
-                    <th className="px-3 py-2.5 text-left font-medium">Waiting</th>
-                    <th className="px-5 py-2.5 text-left font-medium">Assignee</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {todaysQueue.map((q) => (
-                    <tr key={q.id} className="hover:bg-surface-muted/40">
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-2.5">
-                          <Avatar initials={q.initials} />
-                          <span className="font-medium">{q.customer}</span>
-                        </div>
-                      </td>
-                      <td className="px-3 py-3 text-foreground/80">{q.subject}</td>
-                      <td className="px-3 py-3">
-                        <ChannelChip channel={q.channel} label={channelLabel[q.channel]} />
-                      </td>
-                      <td className="px-3 py-3">
-                        <StatusChip status={q.status} />
-                      </td>
-                      <td className="px-3 py-3 text-muted-foreground tabular-nums">
-                        {q.waiting}
-                      </td>
-                      <td className="px-5 py-3 text-muted-foreground">
-                        {q.assignee ?? <span className="italic">Unassigned</span>}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <span className="rounded-md border border-primary/20 bg-primary-soft px-1.5 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider">
+              Human review
+            </span>
           </div>
-
-          <div className="rounded-xl border border-border bg-card shadow-card">
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <div>
-                <h2 className="text-sm font-semibold">Recent customer messages</h2>
-                <p className="text-xs text-muted-foreground">Latest inbound activity.</p>
-              </div>
-              <Mail className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <ul className="divide-y divide-border">
-              {recentMessages.map((m) => (
-                <li key={m.id} className="flex gap-3 px-5 py-3.5">
-                  <Avatar initials={m.initials} />
+          <ul className="divide-y divide-border">
+            {draftQueue.map((d) => (
+              <li key={d.id} className="px-5 py-3.5">
+                <div className="flex items-start gap-3">
+                  <Avatar initials={d.initials} size="sm" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="truncate text-sm font-medium">{m.customer}</span>
-                      <span className="shrink-0 text-[11px] text-muted-foreground">
-                        {m.time}
+                      <span className="text-[13px] font-medium truncate">{d.customer}</span>
+                      <span className="text-[10.5px] text-muted-foreground tabular-nums shrink-0">{d.prepared}</span>
+                    </div>
+                    <div className="text-[11.5px] text-muted-foreground truncate">{d.subject}</div>
+                    <div className="mt-1.5 rounded-lg border border-dashed border-primary/25 bg-primary-soft/40 p-2.5 text-[12px] leading-snug text-foreground/90 line-clamp-2">
+                      {d.draft}
+                    </div>
+                    <div className="mt-1.5 flex items-center justify-between text-[10.5px]">
+                      <span className="text-muted-foreground">
+                        Confidence: <span className="font-semibold text-foreground/80">{d.confidence}</span>
                       </span>
-                    </div>
-                    <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-                      {m.snippet}
-                    </p>
-                    <div className="mt-1.5">
-                      <ChannelChip channel={m.channel} label={channelLabel[m.channel]} />
+                      <Link to="/inbox" className="font-semibold text-primary hover:underline inline-flex items-center gap-1">
+                        Review & send <ArrowUpRight className="h-3 w-3" />
+                      </Link>
                     </div>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
+      </section>
 
-        {/* AI draft queue + Operator workload */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 rounded-xl border border-border bg-card shadow-card">
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <div className="flex items-center gap-2">
-                <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary-soft text-primary">
-                  <Sparkles className="h-3.5 w-3.5" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-semibold">AI draft review queue</h2>
-                  <p className="text-xs text-muted-foreground">
-                    Operator edits and sends every reply — nothing goes out automatically.
-                  </p>
-                </div>
-              </div>
-              <span className="rounded-md border border-primary/20 bg-primary-soft px-1.5 py-0.5 text-[11px] font-semibold text-primary">
-                Human review required
-              </span>
-            </div>
-            <ul className="divide-y divide-border">
-              {draftQueue.map((d) => (
-                <li key={d.id} className="px-5 py-4">
-                  <div className="flex items-start gap-3">
-                    <Avatar initials={d.initials} />
+      {/* Operator workload + Audit + Planned */}
+      <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
+          <div className="border-b border-border px-5 py-3.5">
+            <h2 className="text-[13px] font-semibold tracking-tight">Operator workload</h2>
+            <p className="text-[11.5px] text-muted-foreground">Today's distribution.</p>
+          </div>
+          <ul className="divide-y divide-border">
+            {operatorLoad.map((op) => {
+              const total = op.open + op.drafts + op.resolvedToday;
+              const openPct = (op.open / total) * 100;
+              const draftPct = (op.drafts / total) * 100;
+              const resPct = (op.resolvedToday / total) * 100;
+              return (
+                <li key={op.id} className="px-5 py-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar initials={op.initials} size="sm" />
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-sm font-medium">{d.customer}</span>
-                        <span className="text-xs text-muted-foreground">·</span>
-                        <span className="text-xs text-muted-foreground">{d.subject}</span>
-                        <StatusChip status="needs-review" />
-                      </div>
-                      <div className="mt-2 rounded-lg border border-dashed border-primary/30 bg-primary-soft/40 p-3 text-[13px] leading-snug text-foreground/90">
-                        <span className="mr-1 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                          <FileText className="h-3 w-3" /> AI draft
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="truncate text-[13px] font-medium">{op.name}</span>
+                        <span className="rounded-md border border-border bg-surface px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          {op.role}
                         </span>
-                        {d.draft}
                       </div>
-                      <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-                        <span>
-                          Confidence: <span className="font-medium text-foreground/80">{d.confidence}</span> · Prepared {d.prepared}
-                        </span>
-                        <Link
-                          to="/inbox"
-                          className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-                        >
-                          Review & send <ArrowUpRight className="h-3 w-3" />
-                        </Link>
+                      <div className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
+                        <div className="bg-warning" style={{ width: `${openPct}%` }} />
+                        <div className="bg-primary" style={{ width: `${draftPct}%` }} />
+                        <div className="bg-success" style={{ width: `${resPct}%` }} />
+                      </div>
+                      <div className="mt-1.5 flex items-center gap-3 text-[10.5px] text-muted-foreground tabular-nums">
+                        <span className="inline-flex items-center gap-1"><Clock3 className="h-2.5 w-2.5" /><span className="font-semibold text-foreground">{op.open}</span> open</span>
+                        <span className="inline-flex items-center gap-1"><Sparkles className="h-2.5 w-2.5" /><span className="font-semibold text-foreground">{op.drafts}</span> drafts</span>
+                        <span className="inline-flex items-center gap-1"><CheckCircle2 className="h-2.5 w-2.5" /><span className="font-semibold text-foreground">{op.resolvedToday}</span> done</span>
                       </div>
                     </div>
                   </div>
                 </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="rounded-xl border border-border bg-card shadow-card">
-            <div className="border-b border-border px-5 py-4">
-              <h2 className="text-sm font-semibold">Operator workload</h2>
-              <p className="text-xs text-muted-foreground">Today's distribution.</p>
-            </div>
-            <ul className="divide-y divide-border">
-              {operatorLoad.map((op) => {
-                const total = op.open + op.drafts + op.resolvedToday;
-                const openPct = (op.open / total) * 100;
-                const draftPct = (op.drafts / total) * 100;
-                return (
-                  <li key={op.id} className="px-5 py-3.5">
-                    <div className="flex items-center gap-3">
-                      <Avatar initials={op.initials} />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="truncate text-sm font-medium">{op.name}</span>
-                          <span className="rounded-md border border-border bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                            {op.role}
-                          </span>
-                        </div>
-                        <div className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
-                          <div className="bg-success" style={{ width: `${openPct}%` }} />
-                          <div className="bg-primary" style={{ width: `${draftPct}%` }} />
-                        </div>
-                        <div className="mt-1.5 flex items-center gap-3 text-[11px] text-muted-foreground">
-                          <span><span className="font-medium text-foreground">{op.open}</span> open</span>
-                          <span><span className="font-medium text-foreground">{op.drafts}</span> drafts</span>
-                          <span><span className="font-medium text-foreground">{op.resolvedToday}</span> done</span>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+              );
+            })}
+          </ul>
         </div>
 
-        {/* Audit + Planned */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 rounded-xl border border-border bg-card shadow-card">
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <div>
-                <h2 className="text-sm font-semibold">Recent audit events</h2>
-                <p className="text-xs text-muted-foreground">
-                  Workspace-scoped activity for transparency.
-                </p>
-              </div>
-              <Link
-                to="/audit"
-                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+        <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+            <div>
+              <h2 className="text-[13px] font-semibold tracking-tight">Trust & access</h2>
+              <p className="text-[11.5px] text-muted-foreground">Recent audit activity.</p>
+            </div>
+            <Link to="/audit" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
+              Full log <ArrowUpRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <ul className="divide-y divide-border">
+            {auditEvents.slice(0, 5).map((e) => (
+              <li key={e.id} className="flex items-center gap-3 px-5 py-2.5">
+                <div className="grid h-7 w-7 place-items-center rounded-full bg-secondary text-[10px] font-semibold text-secondary-foreground ring-1 ring-border">
+                  {e.actor.split(" ").map((p) => p[0]).slice(0, 2).join("")}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[12px] truncate">
+                    <span className="font-medium">{e.actor}</span>{" "}
+                    <span className="text-muted-foreground">{e.actionLabel.toLowerCase()}</span>{" "}
+                    <span className="text-foreground/80">{e.target}</span>
+                  </div>
+                  <div className="text-[10.5px] text-muted-foreground tabular-nums">{e.time}</div>
+                </div>
+                <StatusChip status={e.result === "Denied" || e.result === "Failed" ? "access-denied" : "open"} />
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="lg:col-span-3 rounded-xl border border-border bg-card shadow-card p-5">
+          <div className="flex items-center gap-2">
+            <div className="grid h-7 w-7 place-items-center rounded-lg bg-secondary text-secondary-foreground ring-1 ring-border">
+              <Sparkles className="h-3.5 w-3.5" />
+            </div>
+            <div>
+              <h3 className="text-[13px] font-semibold tracking-tight">Planned capabilities</h3>
+              <p className="text-[11px] text-muted-foreground">Roadmap.</p>
+            </div>
+          </div>
+          <ul className="mt-3 space-y-1.5 text-[12px]">
+            {[
+              "WhatsApp channel",
+              "SMS channel",
+              "Voice reception",
+              "Realtime live chat",
+              "Billing & subscriptions",
+            ].map((p) => (
+              <li
+                key={p}
+                className="flex items-center justify-between rounded-lg border border-dashed border-border px-2.5 py-1.5"
               >
-                Full log <ArrowUpRight className="h-3 w-3" />
-              </Link>
-            </div>
-            <ul className="divide-y divide-border">
-              {auditEvents.slice(0, 5).map((e) => (
-                <li key={e.id} className="flex items-center gap-3 px-5 py-3">
-                  <div className="grid h-7 w-7 place-items-center rounded-full bg-secondary text-[10px] font-semibold text-secondary-foreground">
-                    {e.actor.split(" ").map((p) => p[0]).slice(0, 2).join("")}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm">
-                      <span className="font-medium">{e.actor}</span>{" "}
-                      <span className="text-muted-foreground">{e.actionLabel.toLowerCase()}</span>{" "}
-                      <span className="text-foreground/80">{e.target}</span>
-                    </div>
-                    <div className="text-[11px] text-muted-foreground">{e.time}</div>
-                  </div>
-                  <StatusChip status={e.result === "Denied" || e.result === "Failed" ? "access-denied" : "open"} />
-
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="rounded-xl border border-border bg-card shadow-card p-5">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-warning-foreground" />
-              <h3 className="text-sm font-semibold">Planned capabilities</h3>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Roadmap — not enabled in this workspace.
-            </p>
-            <ul className="mt-3 space-y-2 text-sm">
-              {[
-                "WhatsApp channel",
-                "SMS channel",
-                "Voice reception",
-                "Realtime live chat",
-                "Billing & subscriptions",
-              ].map((p) => (
-                <li
-                  key={p}
-                  className="flex items-center justify-between rounded-lg border border-dashed border-border px-3 py-2"
-                >
-                  <span>{p}</span>
-                  <StatusChip status="future" />
-                </li>
-              ))}
-            </ul>
-          </div>
+                <span className="truncate">{p}</span>
+                <StatusChip status="future" />
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-    </>
+      </section>
+    </div>
   );
 }
