@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { AppShell } from "@/components/app-shell";
 import { PageHeader, MockBanner } from "@/components/ui-bits";
 import {
   auditEvents,
@@ -75,7 +76,7 @@ function AuditPage() {
   const selected = filtered.find((e) => e.id === selectedId) ?? filtered[0] ?? null;
 
   return (
-    <>
+    <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
         <PageHeader
           title="Audit log"
@@ -232,7 +233,7 @@ function AuditPage() {
           </aside>
         </div>
       </div>
-    </>
+    </AppShell>
   );
 }
 

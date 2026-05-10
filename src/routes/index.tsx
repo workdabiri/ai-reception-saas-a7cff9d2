@@ -11,6 +11,7 @@ import {
   Mail,
   FileText,
 } from "lucide-react";
+import { AppShell } from "@/components/app-shell";
 import {
   Avatar,
   ChannelChip,
@@ -68,7 +69,7 @@ const toneStyles: Record<Stat["tone"], string> = {
 
 function DashboardPage() {
   return (
-    <>
+    <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-4">
@@ -422,6 +423,6 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-    </>
+    </AppShell>
   );
 }
