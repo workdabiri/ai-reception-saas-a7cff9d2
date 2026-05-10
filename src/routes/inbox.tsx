@@ -7,7 +7,9 @@ import {
   conversations,
   customers,
   channelLabel,
+  channels as channelInfos,
   members,
+  type Channel,
   type InboxStatus,
   type Priority,
   type Message,
@@ -30,6 +32,9 @@ import {
   Mail,
   ExternalLink,
   ChevronRight,
+  ArrowLeft,
+  PanelRight,
+  X,
 } from "lucide-react";
 
 export const Route = createFileRoute("/inbox")({
@@ -42,12 +47,14 @@ export const Route = createFileRoute("/inbox")({
   component: InboxPage,
 });
 
-const statusFilters: { id: "all" | InboxStatus; label: string }[] = [
+type FilterId = "all" | "unread" | "unassigned" | "mine" | InboxStatus;
+const statusFilters: { id: FilterId; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "new", label: "New" },
-  { id: "open", label: "Open" },
-  { id: "waiting", label: "Waiting" },
+  { id: "unread", label: "Unread" },
+  { id: "mine", label: "Assigned to me" },
+  { id: "unassigned", label: "Unassigned" },
   { id: "needs-followup", label: "Needs follow-up" },
+  { id: "waiting", label: "Waiting" },
   { id: "closed", label: "Closed" },
 ];
 
