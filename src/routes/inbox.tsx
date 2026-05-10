@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Avatar, ChannelChip, StatusChip } from "@/components/ui-bits";
+import { Avatar, ChannelChip } from "@/components/ui-bits";
 import { AIDraftPanel } from "@/components/ai-draft-panel";
 import {
   conversations,
@@ -10,11 +10,11 @@ import {
   type InboxStatus,
   type Priority,
   type Message,
+  type Channel,
 } from "@/lib/mock-data";
 import {
   Search,
   SlidersHorizontal,
-  Sparkles,
   Send,
   MoreHorizontal,
   Tag,
@@ -31,6 +31,24 @@ import {
   ExternalLink,
   ChevronRight,
   PanelRight,
+  Inbox as InboxIcon,
+  Sparkles,
+  Users,
+  Radio,
+  MessageSquare,
+  Instagram,
+  MessageCircle,
+  Send as SendIcon,
+  Smartphone,
+  PhoneCall,
+  Mail as MailIcon,
+  AlertTriangle,
+  Clock,
+  CheckCheck,
+  XCircle,
+  FileSearch,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
@@ -97,32 +115,71 @@ function PriorityFlag({ priority }: { priority: Priority }) {
   );
 }
 
+type SectionFilter =
+  | { kind: "inbox"; value: "all" | "new" | "unassigned" | "assigned-me" | "waiting" | "needs-followup" | "needs-review" | "overdue" | "closed"; label: string }
+  | { kind: "channel"; value: Channel | "planned" | "future"; label: string }
+  | { kind: "ai"; value: "pending" | "accepted" | "rejected" | "needs-source"; label: string }
+  | { kind: "operator"; value: string | "unassigned"; label: string }
+  | { kind: "priority"; value: Priority; label: string };
+
+const ME_ID = "u1";
+
 function InboxPage() {
   const [activeId, setActiveId] = useState(conversations[0].id);
-  const [filter, setFilter] = useState<"all" | InboxStatus>("all");
+  const [section, setSection] = useState<SectionFilter>({
+    kind: "inbox",
+    value: "all",
+    label: "All conversations",
+  });
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
   const [noteMode, setNoteMode] = useState(false);
-  // Mobile screen flow: list | thread. Tablet/desktop ignore this.
   const [mobileView, setMobileView] = useState<"list" | "thread">("list");
-  // Context drawer (mobile + tablet)
   const [contextOpen, setContextOpen] = useState(false);
+  const [sectionsOpen, setSectionsOpen] = useState(false);
+  const [sectionsCollapsed, setSectionsCollapsed] = useState(false);
 
   const filtered = useMemo(() => {
     return conversations.filter((c) => {
-      const matchStatus = filter === "all" || c.inboxStatus === filter;
+      let matchSection = true;
+      if (section.kind === "inbox") {
+        switch (section.value) {
+          case "all": matchSection = true; break;
+          case "new": matchSection = c.inboxStatus === "new"; break;
+          case "unassigned": matchSection = !c.assignee; break;
+          case "assigned-me": matchSection = c.assignee === ME_ID; break;
+          case "waiting": matchSection = c.inboxStatus === "waiting"; break;
+          case "needs-followup": matchSection = c.inboxStatus === "needs-followup"; break;
+          case "needs-review": matchSection = c.messages.some((m) => m.author === "ai-draft"); break;
+          case "overdue": matchSection = c.priority === "urgent" || /hr|d/i.test(c.updated); break;
+          case "closed": matchSection = c.inboxStatus === "closed"; break;
+        }
+      } else if (section.kind === "channel") {
+        if (section.value === "planned" || section.value === "future") matchSection = false;
+        else matchSection = c.channel === section.value;
+      } else if (section.kind === "ai") {
+        matchSection = section.value === "pending"
+          ? c.messages.some((m) => m.author === "ai-draft")
+          : false;
+      } else if (section.kind === "operator") {
+        matchSection = section.value === "unassigned" ? !c.assignee : c.assignee === section.value;
+      } else if (section.kind === "priority") {
+        matchSection = c.priority === section.value;
+      }
+      if (!matchSection) return false;
+
       const cust = customers.find((x) => x.id === c.customerId)!;
       const q = query.trim().toLowerCase();
-      const matchQuery =
+      return (
         !q ||
         cust.name.toLowerCase().includes(q) ||
         c.subject.toLowerCase().includes(q) ||
-        c.preview.toLowerCase().includes(q);
-      return matchStatus && matchQuery;
+        c.preview.toLowerCase().includes(q)
+      );
     });
-  }, [filter, query]);
+  }, [section, query]);
 
-  const active = conversations.find((c) => c.id === activeId)!;
+  const active = conversations.find((c) => c.id === activeId) ?? conversations[0];
   const customer = customers.find((c) => c.id === active.customerId)!;
   const aiDraft = active.messages.find((m) => m.author === "ai-draft");
   const assignee = active.assignee ? members.find((m) => m.id === active.assignee) : undefined;
@@ -135,9 +192,32 @@ function InboxPage() {
     setMobileView("thread");
   };
 
+  const sectionsPanel = (
+    <InboxSectionsPanel
+      selected={section}
+      onSelect={(s) => {
+        setSection(s);
+        setSectionsOpen(false);
+      }}
+      collapsed={sectionsCollapsed}
+      onToggleCollapsed={() => setSectionsCollapsed((v) => !v)}
+    />
+  );
+
   return (
     <>
-      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_340px]">
+      <div
+        className={`grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] ${
+          sectionsCollapsed
+            ? "lg:grid-cols-[56px_320px_minmax(0,1fr)] xl:grid-cols-[56px_320px_minmax(0,1fr)_340px]"
+            : "lg:grid-cols-[220px_320px_minmax(0,1fr)] xl:grid-cols-[220px_320px_minmax(0,1fr)_340px]"
+        }`}
+      >
+        {/* Column 0: Inbox sections panel (lg+) */}
+        <aside className="hidden min-h-0 flex-col border-r border-border bg-surface lg:flex">
+          {sectionsPanel}
+        </aside>
+
         {/* Column 1: Conversation list */}
         <div
           className={`min-h-0 flex-col border-r border-border bg-surface ${
@@ -145,14 +225,22 @@ function InboxPage() {
           } md:flex`}
         >
           <div className="space-y-3 border-b border-border p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-semibold">Inbox</h2>
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <InboxIcon className="h-3 w-3" />
+                  {sectionGroupLabel(section.kind)}
+                </div>
+                <h2 className="mt-0.5 truncate text-sm font-semibold">{section.label}</h2>
                 <p className="text-[11px] text-muted-foreground">
                   {filtered.length} of {conversations.length} conversations
                 </p>
               </div>
-              <button className="grid h-7 w-7 place-items-center rounded-md border border-border text-muted-foreground hover:text-foreground">
+              <button
+                onClick={() => setSectionsOpen(true)}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-border text-muted-foreground hover:text-foreground lg:hidden"
+                aria-label="Open inbox filters"
+              >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -164,21 +252,6 @@ function InboxPage() {
                 placeholder="Search by name, subject…"
                 className="h-8 w-full rounded-md border border-border bg-background pl-8 pr-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30"
               />
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {statusFilters.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => setFilter(f.id)}
-                  className={`rounded-md px-2 py-1 text-[11px] font-medium transition ${
-                    filter === f.id
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
             </div>
           </div>
           <ul className="flex-1 overflow-y-auto">
@@ -475,6 +548,17 @@ function InboxPage() {
           />
         </SheetContent>
       </Sheet>
+
+      {/* Inbox sections drawer for mobile + tablet */}
+      <Sheet open={sectionsOpen} onOpenChange={setSectionsOpen}>
+        <SheetContent
+          side="left"
+          className="w-[280px] overflow-y-auto p-0 lg:hidden"
+        >
+          <SheetTitle className="sr-only">Inbox sections</SheetTitle>
+          {sectionsPanel}
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
@@ -765,6 +849,211 @@ function ThreadItem({
         >
           {message.body}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ───────── Inbox sections panel ───────── */
+
+function sectionGroupLabel(kind: SectionFilter["kind"]) {
+  switch (kind) {
+    case "inbox": return "Inbox";
+    case "channel": return "Channels";
+    case "ai": return "AI Review";
+    case "operator": return "Operators";
+    case "priority": return "Priority";
+  }
+}
+
+type SectionRow = {
+  label: string;
+  filter: SectionFilter;
+  icon?: typeof InboxIcon;
+  badge?: string | number;
+  badgeTone?: "primary" | "muted" | "warning" | "success" | "info";
+  disabled?: boolean;
+};
+
+type SectionGroup = { id: SectionFilter["kind"]; title: string; rows: SectionRow[] };
+
+const inboxSectionGroups: SectionGroup[] = [
+  {
+    id: "inbox",
+    title: "Inbox",
+    rows: [
+      { label: "All conversations", filter: { kind: "inbox", value: "all", label: "All conversations" }, icon: InboxIcon, badge: 6 },
+      { label: "New", filter: { kind: "inbox", value: "new", label: "New" }, icon: Sparkles, badge: 1, badgeTone: "info" },
+      { label: "Unassigned", filter: { kind: "inbox", value: "unassigned", label: "Unassigned" }, icon: AlertTriangle, badge: 2, badgeTone: "warning" },
+      { label: "Assigned to me", filter: { kind: "inbox", value: "assigned-me", label: "Assigned to me" }, icon: UserPlus, badge: 0 },
+      { label: "Waiting for operator", filter: { kind: "inbox", value: "waiting", label: "Waiting for operator" }, icon: Clock, badge: 2, badgeTone: "warning" },
+      { label: "Needs follow-up", filter: { kind: "inbox", value: "needs-followup", label: "Needs follow-up" }, icon: Flag, badge: 1, badgeTone: "primary" },
+      { label: "Needs review", filter: { kind: "inbox", value: "needs-review", label: "Needs review" }, icon: FileSearch, badge: 1, badgeTone: "primary" },
+      { label: "Overdue", filter: { kind: "inbox", value: "overdue", label: "Overdue" }, icon: AlertTriangle, badge: 2, badgeTone: "warning" },
+      { label: "Closed", filter: { kind: "inbox", value: "closed", label: "Closed" }, icon: CheckCheck, badge: 1, badgeTone: "muted" },
+    ],
+  },
+  {
+    id: "channel",
+    title: "Channels",
+    rows: [
+      { label: "Web Chat", filter: { kind: "channel", value: "webform", label: "Web Chat" }, icon: MessageSquare, badge: 3, badgeTone: "info" },
+      { label: "Email", filter: { kind: "channel", value: "email", label: "Email" }, icon: MailIcon, badge: 5, badgeTone: "info" },
+      { label: "Instagram DM", filter: { kind: "channel", value: "planned", label: "Instagram DM" }, icon: Instagram, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "WhatsApp", filter: { kind: "channel", value: "planned", label: "WhatsApp" }, icon: MessageCircle, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "Telegram", filter: { kind: "channel", value: "planned", label: "Telegram" }, icon: SendIcon, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "SMS", filter: { kind: "channel", value: "planned", label: "SMS" }, icon: Smartphone, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "Voice", filter: { kind: "channel", value: "future", label: "Voice" }, icon: PhoneCall, badge: "Future", badgeTone: "muted", disabled: true },
+    ],
+  },
+  {
+    id: "ai",
+    title: "AI Review",
+    rows: [
+      { label: "Drafts pending review", filter: { kind: "ai", value: "pending", label: "Drafts pending review" }, icon: Sparkles, badge: 1, badgeTone: "primary" },
+      { label: "Accepted drafts", filter: { kind: "ai", value: "accepted", label: "Accepted drafts" }, icon: CheckCircle2, badge: 0 },
+      { label: "Rejected drafts", filter: { kind: "ai", value: "rejected", label: "Rejected drafts" }, icon: XCircle, badge: 0 },
+      { label: "Needs source check", filter: { kind: "ai", value: "needs-source", label: "Needs source check" }, icon: FileSearch, badge: 0 },
+    ],
+  },
+  {
+    id: "operator",
+    title: "Operators",
+    rows: [
+      { label: "Unassigned", filter: { kind: "operator", value: "unassigned", label: "Unassigned" }, badge: 2, badgeTone: "warning" },
+      { label: "Priya Raman", filter: { kind: "operator", value: "u3", label: "Priya Raman" }, badge: 2 },
+      { label: "Marcus Lee", filter: { kind: "operator", value: "u4", label: "Marcus Lee" }, badge: 1 },
+      { label: "Daniel Cho", filter: { kind: "operator", value: "u2", label: "Daniel Cho" }, badge: 1 },
+      { label: "Amelia Hart", filter: { kind: "operator", value: "u1", label: "Amelia Hart" }, badge: 0 },
+    ],
+  },
+  {
+    id: "priority",
+    title: "Priority",
+    rows: [
+      { label: "Urgent", filter: { kind: "priority", value: "urgent", label: "Urgent" }, badge: 1, badgeTone: "warning" },
+      { label: "High", filter: { kind: "priority", value: "high", label: "High" }, badge: 1, badgeTone: "primary" },
+      { label: "Normal", filter: { kind: "priority", value: "normal", label: "Normal" }, badge: 2, badgeTone: "info" },
+      { label: "Low", filter: { kind: "priority", value: "low", label: "Low" }, badge: 2, badgeTone: "muted" },
+    ],
+  },
+];
+
+const badgeToneClass: Record<NonNullable<SectionRow["badgeTone"]>, string> = {
+  primary: "bg-primary-soft text-primary",
+  muted: "bg-secondary text-muted-foreground",
+  warning: "bg-warning/20 text-warning-foreground",
+  success: "bg-success/10 text-success",
+  info: "bg-info/10 text-info",
+};
+
+function isSameFilter(a: SectionFilter, b: SectionFilter) {
+  return a.kind === b.kind && a.value === b.value && a.label === b.label;
+}
+
+function InboxSectionsPanel({
+  selected,
+  onSelect,
+  collapsed,
+  onToggleCollapsed,
+}: {
+  selected: SectionFilter;
+  onSelect: (s: SectionFilter) => void;
+  collapsed: boolean;
+  onToggleCollapsed: () => void;
+}) {
+  if (collapsed) {
+    return (
+      <div className="flex h-full flex-col items-center gap-2 py-3">
+        <button
+          onClick={onToggleCollapsed}
+          className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:bg-secondary"
+          aria-label="Expand inbox sections"
+        >
+          <PanelLeftOpen className="h-4 w-4" />
+        </button>
+        <div className="my-1 h-px w-6 bg-border" />
+        {inboxSectionGroups.map((g) => (
+          <button
+            key={g.id}
+            onClick={() => onSelect(g.rows[0].filter)}
+            title={g.title}
+            className={`grid h-9 w-9 place-items-center rounded-lg text-muted-foreground transition hover:bg-secondary ${
+              selected.kind === g.id ? "bg-primary-soft text-primary" : ""
+            }`}
+          >
+            {g.id === "inbox" && <InboxIcon className="h-4 w-4" />}
+            {g.id === "channel" && <Radio className="h-4 w-4" />}
+            {g.id === "ai" && <Sparkles className="h-4 w-4" />}
+            {g.id === "operator" && <Users className="h-4 w-4" />}
+            {g.id === "priority" && <Flag className="h-4 w-4" />}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex items-center justify-between border-b border-border px-3 py-3">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Work queues
+        </div>
+        <button
+          onClick={onToggleCollapsed}
+          className="hidden lg:grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-secondary"
+          aria-label="Collapse sections"
+        >
+          <PanelLeftClose className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2">
+        {inboxSectionGroups.map((g) => (
+          <div key={g.id} className="mt-3 first:mt-0">
+            <div className="px-2 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">
+              {g.title}
+            </div>
+            <ul className="space-y-px">
+              {g.rows.map((row) => {
+                const Icon = row.icon;
+                const active = isSameFilter(selected, row.filter);
+                return (
+                  <li key={row.label}>
+                    <button
+                      disabled={row.disabled}
+                      onClick={() => !row.disabled && onSelect(row.filter)}
+                      className={`group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[12.5px] transition ${
+                        active
+                          ? "bg-primary-soft text-primary font-semibold"
+                          : row.disabled
+                          ? "text-muted-foreground/60 cursor-not-allowed"
+                          : "text-foreground/85 hover:bg-secondary"
+                      }`}
+                    >
+                      {Icon ? (
+                        <Icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                      ) : (
+                        <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-secondary text-[8px] font-bold text-muted-foreground">
+                          {row.label.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                        </span>
+                      )}
+                      <span className="min-w-0 flex-1 truncate">{row.label}</span>
+                      {row.badge !== undefined && row.badge !== 0 && (
+                        <span
+                          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${
+                            badgeToneClass[row.badgeTone ?? "muted"]
+                          }`}
+                        >
+                          {row.badge}
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
   );
