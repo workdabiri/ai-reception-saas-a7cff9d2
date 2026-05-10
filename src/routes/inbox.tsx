@@ -26,11 +26,15 @@ import {
   Flag,
   Shield,
   ArrowRight,
+  ArrowLeft,
   Phone,
   Mail,
   ExternalLink,
   ChevronRight,
+  PanelRight,
+  X as XIcon,
 } from "lucide-react";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 export const Route = createFileRoute("/inbox")({
   head: () => ({
@@ -101,6 +105,10 @@ function InboxPage() {
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
   const [noteMode, setNoteMode] = useState(false);
+  // Mobile screen flow: list | thread. Tablet/desktop ignore this.
+  const [mobileView, setMobileView] = useState<"list" | "thread">("list");
+  // Context drawer (mobile + tablet)
+  const [contextOpen, setContextOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return conversations.filter((c) => {
@@ -124,11 +132,20 @@ function InboxPage() {
     (c) => c.customerId === active.customerId && c.id !== active.id,
   );
 
+  const openConversation = (id: string) => {
+    setActiveId(id);
+    setMobileView("thread");
+  };
+
   return (
     <AppShell>
-      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[360px_1fr] xl:grid-cols-[360px_1fr_340px]">
+      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr_340px]">
         {/* Column 1: Conversation list */}
-        <div className="flex min-h-0 flex-col border-r border-border bg-surface">
+        <div
+          className={`min-h-0 flex-col border-r border-border bg-surface ${
+            mobileView === "list" ? "flex" : "hidden"
+          } md:flex`}
+        >
           <div className="space-y-3 border-b border-border p-4">
             <div className="flex items-center justify-between">
               <div>
