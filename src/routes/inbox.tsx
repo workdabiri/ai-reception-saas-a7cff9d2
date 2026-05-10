@@ -137,7 +137,7 @@ function InboxPage() {
   const [mobileView, setMobileView] = useState<"list" | "thread">("list");
   const [contextOpen, setContextOpen] = useState(false);
   const [sectionsOpen, setSectionsOpen] = useState(false);
-  const [sectionsCollapsed, setSectionsCollapsed] = useState(false);
+  const [queueMenuOpen, setQueueMenuOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return conversations.filter((c) => {
@@ -192,58 +192,106 @@ function InboxPage() {
     setMobileView("thread");
   };
 
-  const sectionsPanel = (
+  const allFiltersPanel = (
     <InboxSectionsPanel
       selected={section}
       onSelect={(s) => {
         setSection(s);
         setSectionsOpen(false);
       }}
-      collapsed={sectionsCollapsed}
-      onToggleCollapsed={() => setSectionsCollapsed((v) => !v)}
     />
   );
 
+  const channelChips: { value: Channel | "planned" | "future" | "all"; label: string; planned?: boolean }[] = [
+    { value: "all", label: "All" },
+    { value: "webform", label: "Web" },
+    { value: "email", label: "Email" },
+    { value: "planned", label: "Instagram", planned: true },
+    { value: "planned", label: "WhatsApp", planned: true },
+    { value: "planned", label: "Telegram", planned: true },
+    { value: "planned", label: "SMS", planned: true },
+    { value: "future", label: "Voice", planned: true },
+  ];
+
+  const queueRows = inboxSectionGroups[0].rows;
+  const activeQueueLabel =
+    section.kind === "inbox" ? section.label : "All conversations";
+
   return (
     <>
-      <div
-        className={`grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] ${
-          sectionsCollapsed
-            ? "lg:grid-cols-[56px_320px_minmax(0,1fr)] xl:grid-cols-[56px_320px_minmax(0,1fr)_340px]"
-            : "lg:grid-cols-[220px_320px_minmax(0,1fr)] xl:grid-cols-[220px_320px_minmax(0,1fr)_340px]"
-        }`}
-      >
-        {/* Column 0: Inbox sections panel (lg+) */}
-        <aside className="hidden min-h-0 flex-col border-r border-border bg-surface lg:flex">
-          {sectionsPanel}
-        </aside>
-
-        {/* Column 1: Conversation list */}
+      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)_340px]">
+        {/* Column 1: Conversation list (with integrated queue + channel filters) */}
         <div
           className={`min-h-0 flex-col border-r border-border bg-surface ${
             mobileView === "list" ? "flex" : "hidden"
           } md:flex`}
         >
-          <div className="space-y-3 border-b border-border p-4">
+          <div className="space-y-2.5 border-b border-border p-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  <InboxIcon className="h-3 w-3" />
-                  {sectionGroupLabel(section.kind)}
-                </div>
-                <h2 className="mt-0.5 truncate text-sm font-semibold">{section.label}</h2>
-                <p className="text-[11px] text-muted-foreground">
-                  {filtered.length} of {conversations.length} conversations
-                </p>
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <InboxIcon className="h-3 w-3" />
+                Inbox
               </div>
               <button
                 onClick={() => setSectionsOpen(true)}
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-border text-muted-foreground hover:text-foreground lg:hidden"
-                aria-label="Open inbox filters"
+                className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-secondary"
+                aria-label="Open all filters"
+                title="All filters · operators, priority, AI review"
               >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <SlidersHorizontal className="h-3 w-3" />
+                Filters
               </button>
             </div>
+
+            {/* Queue selector */}
+            <div className="relative">
+              <button
+                onClick={() => setQueueMenuOpen((v) => !v)}
+                className="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-2.5 py-2 text-left transition hover:bg-surface-muted"
+              >
+                <span className="min-w-0 truncate text-[13px] font-semibold">
+                  {activeQueueLabel}
+                </span>
+                <span className="flex items-center gap-1.5 shrink-0 text-[11px] text-muted-foreground">
+                  <span className="tabular-nums">{filtered.length}</span>
+                  <ChevronRight className={`h-3.5 w-3.5 transition ${queueMenuOpen ? "rotate-90" : ""}`} />
+                </span>
+              </button>
+              {queueMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setQueueMenuOpen(false)} />
+                  <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-pop">
+                    {queueRows.map((row) => {
+                      const Icon = row.icon;
+                      const isActive =
+                        section.kind === "inbox" && section.value === (row.filter as { value: string }).value;
+                      return (
+                        <button
+                          key={row.label}
+                          onClick={() => {
+                            setSection(row.filter);
+                            setQueueMenuOpen(false);
+                          }}
+                          className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[12.5px] transition ${
+                            isActive ? "bg-primary-soft text-primary font-semibold" : "hover:bg-secondary"
+                          }`}
+                        >
+                          {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`} />}
+                          <span className="min-w-0 flex-1 truncate">{row.label}</span>
+                          {row.badge !== undefined && row.badge !== 0 && (
+                            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
+                              {row.badge}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Search */}
             <div className="relative">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <input
@@ -252,6 +300,38 @@ function InboxPage() {
                 placeholder="Search by name, subject…"
                 className="h-8 w-full rounded-md border border-border bg-background pl-8 pr-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30"
               />
+            </div>
+
+            {/* Channel chips */}
+            <div className="-mx-1 flex items-center gap-1 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {channelChips.map((chip, i) => {
+                const isActive =
+                  (chip.value === "all" && section.kind === "inbox" && section.value === "all") ||
+                  (section.kind === "channel" && section.label === chip.label);
+                return (
+                  <button
+                    key={`${chip.label}-${i}`}
+                    disabled={chip.planned}
+                    onClick={() => {
+                      if (chip.value === "all") {
+                        setSection({ kind: "inbox", value: "all", label: "All conversations" });
+                      } else if (!chip.planned) {
+                        setSection({ kind: "channel", value: chip.value as Channel, label: chip.label });
+                      }
+                    }}
+                    className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium transition ${
+                      isActive
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : chip.planned
+                        ? "border-dashed border-border text-muted-foreground/60 cursor-not-allowed"
+                        : "border-border bg-surface text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
+                  >
+                    {chip.label}
+                    {chip.planned && <span className="ml-1 text-[9px] uppercase opacity-70">soon</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <ul className="flex-1 overflow-y-auto">
@@ -549,14 +629,14 @@ function InboxPage() {
         </SheetContent>
       </Sheet>
 
-      {/* Inbox sections drawer for mobile + tablet */}
+      {/* All filters drawer (operators, priority, AI review, channels) */}
       <Sheet open={sectionsOpen} onOpenChange={setSectionsOpen}>
         <SheetContent
           side="left"
-          className="w-[280px] overflow-y-auto p-0 lg:hidden"
+          className="w-[300px] overflow-y-auto p-0"
         >
-          <SheetTitle className="sr-only">Inbox sections</SheetTitle>
-          {sectionsPanel}
+          <SheetTitle className="sr-only">All filters</SheetTitle>
+          {allFiltersPanel}
         </SheetContent>
       </Sheet>
     </>
@@ -954,58 +1034,16 @@ function isSameFilter(a: SectionFilter, b: SectionFilter) {
 function InboxSectionsPanel({
   selected,
   onSelect,
-  collapsed,
-  onToggleCollapsed,
 }: {
   selected: SectionFilter;
   onSelect: (s: SectionFilter) => void;
-  collapsed: boolean;
-  onToggleCollapsed: () => void;
 }) {
-  if (collapsed) {
-    return (
-      <div className="flex h-full flex-col items-center gap-2 py-3">
-        <button
-          onClick={onToggleCollapsed}
-          className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:bg-secondary"
-          aria-label="Expand inbox sections"
-        >
-          <PanelLeftOpen className="h-4 w-4" />
-        </button>
-        <div className="my-1 h-px w-6 bg-border" />
-        {inboxSectionGroups.map((g) => (
-          <button
-            key={g.id}
-            onClick={() => onSelect(g.rows[0].filter)}
-            title={g.title}
-            className={`grid h-9 w-9 place-items-center rounded-lg text-muted-foreground transition hover:bg-secondary ${
-              selected.kind === g.id ? "bg-primary-soft text-primary" : ""
-            }`}
-          >
-            {g.id === "inbox" && <InboxIcon className="h-4 w-4" />}
-            {g.id === "channel" && <Radio className="h-4 w-4" />}
-            {g.id === "ai" && <Sparkles className="h-4 w-4" />}
-            {g.id === "operator" && <Users className="h-4 w-4" />}
-            {g.id === "priority" && <Flag className="h-4 w-4" />}
-          </button>
-        ))}
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-border px-3 py-3">
         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Work queues
+          All filters
         </div>
-        <button
-          onClick={onToggleCollapsed}
-          className="hidden lg:grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-secondary"
-          aria-label="Collapse sections"
-        >
-          <PanelLeftClose className="h-3.5 w-3.5" />
-        </button>
       </div>
       <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2">
         {inboxSectionGroups.map((g) => (

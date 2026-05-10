@@ -113,13 +113,29 @@ export function AppShell({
   const mobilePrimary = mobilePrimaryItems();
   const mobileMore = mobileMoreItems();
 
+  const isInbox = (path: string) => path === "/inbox" || path.startsWith("/inbox/");
+
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === "1") return true;
     if (stored === "0") return false;
+    if (isInbox(window.location.pathname)) return true;
     return window.matchMedia("(max-width: 1279px)").matches;
   });
+
+  // Route-aware default: collapse on Inbox, follow viewport elsewhere.
+  // User's manual toggle (stored in localStorage) always wins.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored !== null) return;
+    if (isInbox(pathname)) {
+      setCollapsed(true);
+    } else {
+      setCollapsed(window.matchMedia("(max-width: 1279px)").matches);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const stored =
@@ -128,7 +144,10 @@ export function AppShell({
         : null;
     if (stored !== null) return;
     const mql = window.matchMedia("(max-width: 1279px)");
-    const apply = () => setCollapsed(mql.matches);
+    const apply = () => {
+      if (isInbox(window.location.pathname)) return;
+      setCollapsed(mql.matches);
+    };
     mql.addEventListener("change", apply);
     return () => mql.removeEventListener("change", apply);
   }, []);
