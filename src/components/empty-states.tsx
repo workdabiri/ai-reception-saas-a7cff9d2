@@ -61,30 +61,31 @@ export function EmptyState({
   const t = toneStyles[tone];
   return (
     <div
-      className={`flex flex-col items-center text-center rounded-2xl border border-dashed border-border bg-surface ${
-        compact ? "px-6 py-8" : "px-8 py-14"
+      className={`relative flex flex-col items-center text-center overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-surface to-surface-muted/40 ${
+        compact ? "px-6 py-10" : "px-8 py-16"
       }`}
     >
+      <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-border-strong to-transparent" />
       <div
-        className={`grid h-12 w-12 place-items-center rounded-xl ring-4 ${t.icon} ${t.ring}`}
+        className={`grid h-14 w-14 place-items-center rounded-2xl ring-8 ring-background shadow-soft ${t.icon} ${t.ring}`}
       >
-        <Icon className="h-5 w-5" />
+        <Icon className="h-6 w-6" />
       </div>
       {badge && (
         <span
-          className={`mt-4 inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium ${t.chip}`}
+          className={`mt-5 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${t.chip}`}
         >
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           {badge}
         </span>
       )}
-      <h3 className="mt-3 text-base font-semibold tracking-tight">{title}</h3>
-      <p className="mt-1.5 max-w-md text-sm leading-relaxed text-muted-foreground">
+      <h3 className="mt-4 text-[17px] font-semibold tracking-tight">{title}</h3>
+      <p className="mt-2 max-w-md text-[13.5px] leading-relaxed text-muted-foreground">
         {description}
       </p>
-      {action && <div className="mt-5">{action}</div>}
+      {action && <div className="mt-6">{action}</div>}
       {helper && (
-        <div className="mt-5 text-[11px] text-muted-foreground">{helper}</div>
+        <div className="mt-5 max-w-md text-[11.5px] leading-relaxed text-muted-foreground/80">{helper}</div>
       )}
     </div>
   );
