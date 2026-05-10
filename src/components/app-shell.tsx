@@ -109,11 +109,8 @@ const roleTone: Record<WorkspaceRole, string> = {
 
 export function AppShell({
   children,
-  // Accepted for backwards-compat with existing routes; behavior is unified.
-  variant: _variant,
 }: {
   children?: React.ReactNode;
-  variant?: "default" | "rail";
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -157,12 +154,11 @@ export function AppShell({
       <div className="min-h-screen flex w-full bg-app text-foreground">
         <UnifiedSidebar
           collapsed={collapsed}
-          onToggle={toggle}
           isActive={isActive}
         />
 
         {/* Main */}
-        <div className="flex-1 flex min-w-0 flex-col">
+        <div data-sidebar-collapsed={collapsed} className="flex-1 flex min-w-0 flex-col transition-[width] duration-300 ease-in-out">
           <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-background/75 px-4 backdrop-blur-md lg:px-6">
             <button
               onClick={toggle}
