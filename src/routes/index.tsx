@@ -18,6 +18,7 @@ import {
   MockBanner,
   StatusChip,
 } from "@/components/ui-bits";
+import { ChannelIcon } from "@/components/channel-icon";
 import {
   channelLabel,
   todaysQueue,
@@ -26,6 +27,7 @@ import {
   draftQueue,
   auditEvents,
   currentWorkspace,
+  channelOverview,
 } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/")({
