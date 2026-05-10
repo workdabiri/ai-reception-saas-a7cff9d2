@@ -54,19 +54,23 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --shadow-soft: 0 1px 2px 0 oklch(0.2 0.03 265 / 0.05);
+  --shadow-soft:
+    0 1px 0 0 oklch(0.2 0.03 265 / 0.04),
+    0 1px 2px -1px oklch(0.2 0.03 265 / 0.06);
   --shadow-card:
     0 1px 0 0 oklch(0.2 0.03 265 / 0.04),
-    0 1px 2px 0 oklch(0.2 0.03 265 / 0.05),
-    0 10px 30px -12px oklch(0.2 0.03 265 / 0.10);
+    0 2px 4px -2px oklch(0.2 0.03 265 / 0.06),
+    0 12px 32px -16px oklch(0.2 0.03 265 / 0.12);
   --shadow-elev:
-    0 1px 0 0 oklch(0.2 0.03 265 / 0.04),
-    0 2px 6px -2px oklch(0.2 0.03 265 / 0.06),
-    0 18px 40px -16px oklch(0.2 0.03 265 / 0.14);
+    0 1px 0 0 oklch(0.2 0.03 265 / 0.05),
+    0 4px 10px -4px oklch(0.2 0.03 265 / 0.08),
+    0 24px 48px -20px oklch(0.2 0.03 265 / 0.18);
   --shadow-pop:
     0 1px 2px 0 oklch(0.2 0.03 265 / 0.06),
-    0 14px 44px -10px oklch(0.2 0.03 265 / 0.20);
-  --shadow-ring-primary: 0 0 0 1px oklch(0.52 0.16 268 / 0.18), 0 6px 20px -8px oklch(0.52 0.16 268 / 0.35);
+    0 16px 48px -12px oklch(0.2 0.03 265 / 0.22);
+  --shadow-ring-primary:
+    0 0 0 1px oklch(0.52 0.16 268 / 0.22),
+    0 8px 24px -8px oklch(0.52 0.16 268 / 0.40);
 }
 
 :root {
