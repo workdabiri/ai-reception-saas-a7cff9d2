@@ -31,19 +31,19 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus }) {
   const key = (map[status as string] ?? (status as ChipStatus)) as ChipStatus;
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${chipStyles[key]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset ${chipStyles[key]}`}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
+      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-90 shadow-[0_0_0_2px_currentColor]/0" />
       {chipLabel[key]}
     </span>
   );
 }
 
 const channelTone: Record<Channel, string> = {
-  email: "bg-primary-soft text-primary ring-primary/15",
-  webform: "bg-info/10 text-info ring-info/20",
-  sms: "bg-warning/15 text-warning-foreground ring-warning/30",
-  whatsapp: "bg-success/10 text-success ring-success/20",
+  email: "bg-primary-soft text-primary ring-primary/20",
+  webform: "bg-info/12 text-info ring-info/25",
+  sms: "bg-warning/20 text-warning-foreground ring-warning/35",
+  whatsapp: "bg-success/12 text-success ring-success/25",
   voice: "bg-secondary text-secondary-foreground ring-border",
 };
 
