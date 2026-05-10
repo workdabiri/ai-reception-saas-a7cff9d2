@@ -177,7 +177,7 @@ function CustomerProfilePage() {
                   {customer.tags.length === 0 && (
                     <span className="text-xs text-muted-foreground">No tags yet.</span>
                   )}
-                  {customer.tags.map((t) => (
+                  {customer.tags.map((t: string) => (
                     <span
                       key={t}
                       className="rounded-md border border-border bg-surface-muted px-1.5 py-0.5 text-[11px] font-medium"
