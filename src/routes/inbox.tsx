@@ -548,6 +548,17 @@ function InboxPage() {
           />
         </SheetContent>
       </Sheet>
+
+      {/* Inbox sections drawer for mobile + tablet */}
+      <Sheet open={sectionsOpen} onOpenChange={setSectionsOpen}>
+        <SheetContent
+          side="left"
+          className="w-[280px] overflow-y-auto p-0 lg:hidden"
+        >
+          <SheetTitle className="sr-only">Inbox sections</SheetTitle>
+          {sectionsPanel}
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
