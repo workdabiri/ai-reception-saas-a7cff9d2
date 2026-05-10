@@ -217,9 +217,9 @@
   }
   .bg-app {
     background-image:
-      radial-gradient(1100px 480px at 100% -10%, oklch(0.52 0.16 268 / 0.06), transparent 60%),
-      radial-gradient(900px 420px at -10% 100%, oklch(0.6 0.13 240 / 0.045), transparent 60%),
-      radial-gradient(700px 320px at 50% 110%, oklch(0.78 0.14 75 / 0.025), transparent 60%);
+      radial-gradient(1200px 520px at 100% -8%, oklch(0.485 0.18 271 / 0.07), transparent 60%),
+      radial-gradient(900px 420px at -10% 100%, oklch(0.6 0.13 240 / 0.05), transparent 60%),
+      radial-gradient(700px 320px at 50% 110%, oklch(0.78 0.14 75 / 0.022), transparent 60%);
     background-color: var(--color-background);
     background-attachment: fixed;
   }
@@ -227,7 +227,13 @@
     box-shadow: var(--shadow-ring-primary);
   }
   .surface-elev {
-    background-image: linear-gradient(180deg, var(--color-card) 0%, color-mix(in oklab, var(--color-card) 96%, var(--color-primary) 4%) 100%);
+    background-image: linear-gradient(180deg, var(--color-card) 0%, color-mix(in oklab, var(--color-card) 95%, var(--color-primary) 5%) 100%);
+  }
+  .card-premium {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.875rem;
+    box-shadow: var(--shadow-card);
   }
   .gradient-text-primary {
     background-image: linear-gradient(135deg, var(--color-primary), oklch(0.62 0.18 240));
@@ -242,5 +248,17 @@
     background-size: 32px 32px;
     background-position: -1px -1px;
     opacity: 0.35;
+  }
+  .kpi-accent {
+    position: relative;
+  }
+  .kpi-accent::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    border-radius: 0.875rem 0.875rem 0 0;
+    background: linear-gradient(90deg, transparent, var(--kpi-accent, var(--color-primary)) 25%, var(--kpi-accent, var(--color-primary)) 75%, transparent);
+    opacity: 0.9;
   }
 }
