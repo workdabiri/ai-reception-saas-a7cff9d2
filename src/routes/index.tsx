@@ -68,16 +68,24 @@ const stats: Stat[] = [
 
 const toneStyles: Record<Stat["tone"], string> = {
   neutral: "bg-secondary text-secondary-foreground ring-border",
-  primary: "bg-primary-soft text-primary ring-primary/20",
+  primary: "bg-primary-soft text-primary ring-primary/25",
   warning: "bg-warning/15 text-warning-foreground ring-warning/30",
-  danger: "bg-destructive/10 text-destructive ring-destructive/20",
-  success: "bg-success/10 text-success ring-success/20",
+  danger: "bg-destructive/10 text-destructive ring-destructive/25",
+  success: "bg-success/10 text-success ring-success/25",
+};
+
+const toneAccent: Record<Stat["tone"], string> = {
+  neutral: "var(--color-border-strong)",
+  primary: "var(--color-primary)",
+  warning: "var(--color-warning)",
+  danger: "var(--color-destructive)",
+  success: "var(--color-success)",
 };
 
 const deltaStyles = {
-  up: "text-success bg-success/10",
-  down: "text-warning-foreground bg-warning/15",
-  flat: "text-muted-foreground bg-secondary",
+  up: "text-success bg-success/10 ring-1 ring-inset ring-success/20",
+  down: "text-warning-foreground bg-warning/15 ring-1 ring-inset ring-warning/25",
+  flat: "text-muted-foreground bg-secondary ring-1 ring-inset ring-border",
 };
 
 function DashboardPage() {
