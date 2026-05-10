@@ -195,8 +195,8 @@ function MembersPage() {
           </div>
         </div>
 
-        {/* Members table */}
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-card shadow-card">
+        {/* Members — desktop table */}
+        <div className="mt-6 hidden md:block overflow-hidden rounded-xl border border-border bg-card shadow-card">
           <div className="grid grid-cols-[1.6fr_1fr_0.8fr_0.7fr_0.8fr_0.6fr] items-center gap-3 border-b border-border bg-surface px-4 py-2.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
             <div>Member</div>
             <div>Email</div>
@@ -263,6 +263,66 @@ function MembersPage() {
             ))}
           </div>
         </div>
+
+        {/* Members — mobile cards */}
+        <ul className="mt-6 space-y-3 md:hidden">
+          {rows.map((m) => (
+            <li
+              key={m.id}
+              className="rounded-xl border border-border bg-card p-4 shadow-soft"
+            >
+              <div className="flex items-start gap-3">
+                <Avatar initials={m.initials} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold">{m.name}</div>
+                      <div className="truncate text-[11px] text-muted-foreground">{m.email}</div>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-secondary">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem onClick={() => setChangeRole(m)}>
+                          <UserCog className="mr-2 h-4 w-4" /> Change role
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Mail className="mr-2 h-4 w-4" /> Resend invite
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => setRemoveRow(m)}
+                        >
+                          <UserMinus className="mr-2 h-4 w-4" /> Remove
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                    <span
+                      className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium ${roleTone[m.role]}`}
+                    >
+                      {m.role}
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${statusTone[m.status]}`}
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                      {m.status}
+                    </span>
+                    <span className="ml-auto text-[11px] text-muted-foreground">
+                      {m.lastActive}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
 
         {/* Permission matrix */}
         <div className="mt-8 overflow-hidden rounded-xl border border-border bg-card shadow-card">

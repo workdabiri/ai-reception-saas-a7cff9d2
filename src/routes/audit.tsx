@@ -119,9 +119,10 @@ function AuditPage() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-          {/* Table */}
+          {/* Table (desktop/tablet) + cards (mobile) */}
           <div className="rounded-xl border border-border bg-card shadow-card overflow-hidden min-w-0">
-            <div className="overflow-x-auto">
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                   <tr>
@@ -178,6 +179,43 @@ function AuditPage() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile cards */}
+            <ul className="sm:hidden divide-y divide-border">
+              {filtered.map((e) => (
+                <li key={e.id}>
+                  <button
+                    onClick={() => setSelectedId(e.id)}
+                    className={`flex w-full items-start gap-3 px-4 py-3.5 text-left transition ${
+                      selected?.id === e.id ? "bg-primary-soft/30" : "hover:bg-surface-muted/60"
+                    }`}
+                  >
+                    <ActorIcon type={e.actorType} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="truncate text-sm font-semibold">{e.actor}</span>
+                        <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">{e.time}</span>
+                      </div>
+                      <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
+                        {e.actionLabel} · {e.target}
+                      </div>
+                      <div className="mt-2 flex items-center gap-1.5">
+                        <ResultBadge result={e.result} />
+                        <span className="rounded-md border border-border bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                          {e.workspace}
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                </li>
+              ))}
+              {filtered.length === 0 && (
+                <li className="p-6">
+                  <EmptyAuditState />
+                </li>
+              )}
+            </ul>
+
             <div className="border-t border-border bg-surface-muted/40 px-4 py-2 text-[11px] text-muted-foreground">
               Showing {filtered.length} of {auditEvents.length} mock events · Retention is a planned capability.
             </div>
