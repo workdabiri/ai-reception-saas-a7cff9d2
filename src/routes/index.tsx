@@ -140,31 +140,40 @@ function DashboardPage() {
         {stats.map((s) => {
           const Icon = s.icon;
           const Trend = s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
+          const accent =
+            s.tone === "primary" ? "from-primary/70 via-primary/30 to-transparent" :
+            s.tone === "warning" ? "from-warning/70 via-warning/30 to-transparent" :
+            s.tone === "danger"  ? "from-destructive/70 via-destructive/30 to-transparent" :
+            s.tone === "success" ? "from-success/70 via-success/30 to-transparent" :
+                                   "from-border-strong/80 via-border to-transparent";
           return (
             <div
               key={s.label}
-              className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 shadow-soft transition hover:shadow-card hover:-translate-y-px"
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card hairline-top transition hover:-translate-y-px hover:shadow-elev"
             >
-              <div className="flex items-start justify-between gap-2">
-                <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                  {s.label}
-                </span>
-                <div className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneStyles[s.tone]}`}>
-                  <Icon className="h-3.5 w-3.5" />
-                </div>
-              </div>
-              <div className="mt-2 flex items-end justify-between gap-2">
-                <div className="text-[28px] font-semibold leading-none tracking-tight tabular-nums">
-                  {s.value}
-                </div>
-                {s.delta && (
-                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${deltaStyles[s.delta.dir]}`}>
-                    {Trend && <Trend className="h-3 w-3" />}
-                    {s.delta.value}
+              <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${accent}`} />
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
+                    {s.label}
                   </span>
-                )}
+                  <div className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneStyles[s.tone]}`}>
+                    <Icon className="h-3.5 w-3.5" />
+                  </div>
+                </div>
+                <div className="mt-2.5 flex items-end justify-between gap-2">
+                  <div className="text-[34px] font-semibold leading-none tracking-tight tabular-nums text-foreground">
+                    {s.value}
+                  </div>
+                  {s.delta && (
+                    <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${deltaStyles[s.delta.dir]}`}>
+                      {Trend && <Trend className="h-3 w-3" />}
+                      {s.delta.value}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2 text-[11.5px] leading-snug text-muted-foreground">{s.hint}</div>
               </div>
-              <div className="mt-1.5 text-[11.5px] leading-snug text-muted-foreground">{s.hint}</div>
             </div>
           );
         })}
