@@ -458,8 +458,34 @@ function InboxPage() {
           </div>
         </div>
 
-        {/* Column 3: Customer context */}
-        <aside className="hidden min-h-0 flex-col overflow-y-auto border-l border-border bg-surface xl:flex">
+        {/* Column 3: Customer context — drawer below xl, sidebar at xl+ */}
+        {contextOpen && (
+          <button
+            aria-label="Close context"
+            onClick={() => setContextOpen(false)}
+            className="fixed inset-0 z-40 bg-foreground/30 backdrop-blur-sm xl:hidden"
+          />
+        )}
+        <aside
+          className={`${
+            contextOpen
+              ? "fixed inset-y-0 right-0 z-50 flex w-[88vw] max-w-sm shadow-pop"
+              : "hidden xl:flex"
+          } min-h-0 flex-col overflow-y-auto border-l border-border bg-surface xl:static xl:z-auto xl:w-auto xl:max-w-none xl:shadow-none`}
+        >
+          {contextOpen && (
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface/95 px-4 py-2 backdrop-blur xl:hidden">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Customer context
+              </span>
+              <button
+                onClick={() => setContextOpen(false)}
+                className="grid h-7 w-7 place-items-center rounded-md hover:bg-secondary"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
           {/* Profile */}
           <div className="border-b border-border p-5">
             <div className="flex items-start justify-between gap-3">
