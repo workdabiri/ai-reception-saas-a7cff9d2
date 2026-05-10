@@ -1,13 +1,14 @@
 import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
+import { Info } from "lucide-react";
 
 const chipStyles: Record<ChipStatus, string> = {
-  new: "bg-info/10 text-info border-info/20",
-  open: "bg-success/10 text-success border-success/20",
-  waiting: "bg-warning/15 text-warning-foreground border-warning/30",
-  closed: "bg-muted text-muted-foreground border-border",
-  "needs-review": "bg-primary-soft text-primary border-primary/20",
-  "access-denied": "bg-destructive/10 text-destructive border-destructive/20",
-  future: "bg-surface-muted text-muted-foreground border-dashed border-border",
+  new: "bg-info/10 text-info ring-info/20",
+  open: "bg-success/10 text-success ring-success/20",
+  waiting: "bg-warning/15 text-warning-foreground ring-warning/30",
+  closed: "bg-secondary text-muted-foreground ring-border",
+  "needs-review": "bg-primary-soft text-primary ring-primary/20",
+  "access-denied": "bg-destructive/10 text-destructive ring-destructive/20",
+  future: "bg-surface-muted text-muted-foreground ring-border",
 };
 
 const chipLabel: Record<ChipStatus, string> = {
@@ -21,7 +22,6 @@ const chipLabel: Record<ChipStatus, string> = {
 };
 
 export function StatusChip({ status }: { status: ChipStatus | ConvStatus }) {
-  // Map legacy ConvStatus values onto the chip status set
   const map: Record<string, ChipStatus> = {
     open: "open",
     pending: "waiting",
@@ -31,39 +31,54 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus }) {
   const key = (map[status as string] ?? (status as ChipStatus)) as ChipStatus;
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${chipStyles[key]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${chipStyles[key]}`}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
       {chipLabel[key]}
     </span>
   );
 }
 
 const channelTone: Record<Channel, string> = {
-  email: "bg-secondary text-secondary-foreground",
-  webform: "bg-secondary text-secondary-foreground",
-  sms: "bg-muted text-muted-foreground",
-  whatsapp: "bg-muted text-muted-foreground",
-  voice: "bg-muted text-muted-foreground",
+  email: "bg-primary-soft text-primary ring-primary/15",
+  webform: "bg-info/10 text-info ring-info/20",
+  sms: "bg-warning/15 text-warning-foreground ring-warning/30",
+  whatsapp: "bg-success/10 text-success ring-success/20",
+  voice: "bg-secondary text-secondary-foreground ring-border",
 };
 
 export function ChannelChip({ channel, label }: { channel: Channel; label: string }) {
   const planned = channel === "sms" || channel === "whatsapp" || channel === "voice";
   return (
-    <span className={`inline-flex items-center gap-1 rounded-md border border-border px-1.5 py-0.5 text-[11px] font-medium ${channelTone[channel]}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${channelTone[channel]}`}
+    >
+      <span className="h-1 w-1 rounded-full bg-current opacity-70" />
       {label}
-      {planned && <span className="text-[10px] opacity-70">·  planned</span>}
+      {planned && <span className="ml-0.5 text-[9px] uppercase tracking-wider opacity-70">planned</span>}
     </span>
   );
 }
 
-export function Avatar({ initials, tone = "neutral" }: { initials: string; tone?: "neutral" | "primary" }) {
+export function Avatar({
+  initials,
+  tone = "neutral",
+  size = "md",
+}: {
+  initials: string;
+  tone?: "neutral" | "primary";
+  size?: "sm" | "md" | "lg";
+}) {
   const cls =
     tone === "primary"
-      ? "bg-primary text-primary-foreground"
-      : "bg-secondary text-secondary-foreground";
+      ? "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
+      : "bg-gradient-to-br from-secondary to-surface-muted text-secondary-foreground";
+  const sz =
+    size === "sm" ? "h-7 w-7 text-[10px]" : size === "lg" ? "h-10 w-10 text-sm" : "h-8 w-8 text-[11px]";
   return (
-    <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-[11px] font-semibold ${cls}`}>
+    <div
+      className={`grid shrink-0 place-items-center rounded-full font-semibold ring-1 ring-border/60 shadow-soft ${cls} ${sz}`}
+    >
       {initials}
     </div>
   );
@@ -73,17 +88,26 @@ export function PageHeader({
   title,
   description,
   action,
+  eyebrow,
 }: {
   title: string;
   description?: string;
   action?: React.ReactNode;
+  eyebrow?: string;
 }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+      <div className="min-w-0">
+        {eyebrow && (
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            {eyebrow}
+          </p>
+        )}
+        <h1 className="text-[26px] font-semibold tracking-tight leading-tight">{title}</h1>
         {description && (
-          <p className="mt-1 text-sm text-muted-foreground max-w-xl">{description}</p>
+          <p className="mt-1.5 text-[13px] text-muted-foreground max-w-xl leading-relaxed">
+            {description}
+          </p>
         )}
       </div>
       {action}
@@ -93,14 +117,13 @@ export function PageHeader({
 
 export function MockBanner() {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3">
-      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-warning/30 text-[10px] font-bold text-warning-foreground">
-        i
+    <div className="flex items-start gap-3 rounded-xl border border-warning/25 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent px-4 py-3 shadow-soft">
+      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-warning/25 text-warning-foreground">
+        <Info className="h-3 w-3" />
       </span>
-      <div className="text-[13px] leading-snug text-warning-foreground">
-        <span className="font-semibold">Prototype with mock data only.</span>{" "}
-        Async MVP, human-review-first. No backend, auth, or providers connected.
-        AI prepares drafts; an operator sends every reply.
+      <div className="text-[12.5px] leading-snug text-warning-foreground/90">
+        <span className="font-semibold text-warning-foreground">Prototype with mock data only.</span>{" "}
+        Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts; an operator sends every reply.
       </div>
     </div>
   );
