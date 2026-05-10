@@ -115,32 +115,71 @@ function PriorityFlag({ priority }: { priority: Priority }) {
   );
 }
 
+type SectionFilter =
+  | { kind: "inbox"; value: "all" | "new" | "unassigned" | "assigned-me" | "waiting" | "needs-followup" | "needs-review" | "overdue" | "closed"; label: string }
+  | { kind: "channel"; value: Channel | "planned" | "future"; label: string }
+  | { kind: "ai"; value: "pending" | "accepted" | "rejected" | "needs-source"; label: string }
+  | { kind: "operator"; value: string | "unassigned"; label: string }
+  | { kind: "priority"; value: Priority; label: string };
+
+const ME_ID = "u1";
+
 function InboxPage() {
   const [activeId, setActiveId] = useState(conversations[0].id);
-  const [filter, setFilter] = useState<"all" | InboxStatus>("all");
+  const [section, setSection] = useState<SectionFilter>({
+    kind: "inbox",
+    value: "all",
+    label: "All conversations",
+  });
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
   const [noteMode, setNoteMode] = useState(false);
-  // Mobile screen flow: list | thread. Tablet/desktop ignore this.
   const [mobileView, setMobileView] = useState<"list" | "thread">("list");
-  // Context drawer (mobile + tablet)
   const [contextOpen, setContextOpen] = useState(false);
+  const [sectionsOpen, setSectionsOpen] = useState(false);
+  const [sectionsCollapsed, setSectionsCollapsed] = useState(false);
 
   const filtered = useMemo(() => {
     return conversations.filter((c) => {
-      const matchStatus = filter === "all" || c.inboxStatus === filter;
+      let matchSection = true;
+      if (section.kind === "inbox") {
+        switch (section.value) {
+          case "all": matchSection = true; break;
+          case "new": matchSection = c.inboxStatus === "new"; break;
+          case "unassigned": matchSection = !c.assignee; break;
+          case "assigned-me": matchSection = c.assignee === ME_ID; break;
+          case "waiting": matchSection = c.inboxStatus === "waiting"; break;
+          case "needs-followup": matchSection = c.inboxStatus === "needs-followup"; break;
+          case "needs-review": matchSection = c.messages.some((m) => m.author === "ai-draft"); break;
+          case "overdue": matchSection = c.priority === "urgent" || /hr|d/i.test(c.updated); break;
+          case "closed": matchSection = c.inboxStatus === "closed"; break;
+        }
+      } else if (section.kind === "channel") {
+        if (section.value === "planned" || section.value === "future") matchSection = false;
+        else matchSection = c.channel === section.value;
+      } else if (section.kind === "ai") {
+        matchSection = section.value === "pending"
+          ? c.messages.some((m) => m.author === "ai-draft")
+          : false;
+      } else if (section.kind === "operator") {
+        matchSection = section.value === "unassigned" ? !c.assignee : c.assignee === section.value;
+      } else if (section.kind === "priority") {
+        matchSection = c.priority === section.value;
+      }
+      if (!matchSection) return false;
+
       const cust = customers.find((x) => x.id === c.customerId)!;
       const q = query.trim().toLowerCase();
-      const matchQuery =
+      return (
         !q ||
         cust.name.toLowerCase().includes(q) ||
         c.subject.toLowerCase().includes(q) ||
-        c.preview.toLowerCase().includes(q);
-      return matchStatus && matchQuery;
+        c.preview.toLowerCase().includes(q)
+      );
     });
-  }, [filter, query]);
+  }, [section, query]);
 
-  const active = conversations.find((c) => c.id === activeId)!;
+  const active = conversations.find((c) => c.id === activeId) ?? conversations[0];
   const customer = customers.find((c) => c.id === active.customerId)!;
   const aiDraft = active.messages.find((m) => m.author === "ai-draft");
   const assignee = active.assignee ? members.find((m) => m.id === active.assignee) : undefined;
@@ -153,9 +192,32 @@ function InboxPage() {
     setMobileView("thread");
   };
 
+  const sectionsPanel = (
+    <InboxSectionsPanel
+      selected={section}
+      onSelect={(s) => {
+        setSection(s);
+        setSectionsOpen(false);
+      }}
+      collapsed={sectionsCollapsed}
+      onToggleCollapsed={() => setSectionsCollapsed((v) => !v)}
+    />
+  );
+
   return (
     <>
-      <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_340px]">
+      <div
+        className={`grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[320px_minmax(0,1fr)] ${
+          sectionsCollapsed
+            ? "lg:grid-cols-[56px_320px_minmax(0,1fr)] xl:grid-cols-[56px_320px_minmax(0,1fr)_340px]"
+            : "lg:grid-cols-[220px_320px_minmax(0,1fr)] xl:grid-cols-[220px_320px_minmax(0,1fr)_340px]"
+        }`}
+      >
+        {/* Column 0: Inbox sections panel (lg+) */}
+        <aside className="hidden min-h-0 flex-col border-r border-border bg-surface lg:flex">
+          {sectionsPanel}
+        </aside>
+
         {/* Column 1: Conversation list */}
         <div
           className={`min-h-0 flex-col border-r border-border bg-surface ${
