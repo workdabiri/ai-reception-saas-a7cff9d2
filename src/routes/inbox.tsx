@@ -102,26 +102,38 @@ function PriorityFlag({ priority }: { priority: Priority }) {
   );
 }
 
+const ME_ID = "u3"; // Priya Raman — current operator (mock)
+
 function InboxPage() {
   const [activeId, setActiveId] = useState(conversations[0].id);
-  const [filter, setFilter] = useState<"all" | InboxStatus>("all");
+  const [filter, setFilter] = useState<FilterId>("all");
+  const [channelFilter, setChannelFilter] = useState<Channel | "all">("all");
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useState("");
   const [noteMode, setNoteMode] = useState(false);
+  const [mobileView, setMobileView] = useState<"list" | "thread">("list");
+  const [contextOpen, setContextOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return conversations.filter((c) => {
-      const matchStatus = filter === "all" || c.inboxStatus === filter;
       const cust = customers.find((x) => x.id === c.customerId)!;
+      let ok = true;
+      if (filter === "unread") ok = c.unread;
+      else if (filter === "mine") ok = c.assignee === ME_ID;
+      else if (filter === "unassigned") ok = !c.assignee;
+      else if (filter !== "all") ok = c.inboxStatus === filter;
+      if (channelFilter !== "all" && c.channel !== channelFilter) ok = false;
       const q = query.trim().toLowerCase();
-      const matchQuery =
-        !q ||
-        cust.name.toLowerCase().includes(q) ||
-        c.subject.toLowerCase().includes(q) ||
-        c.preview.toLowerCase().includes(q);
-      return matchStatus && matchQuery;
+      if (q) {
+        ok =
+          ok &&
+          (cust.name.toLowerCase().includes(q) ||
+            c.subject.toLowerCase().includes(q) ||
+            c.preview.toLowerCase().includes(q));
+      }
+      return ok;
     });
-  }, [filter, query]);
+  }, [filter, channelFilter, query]);
 
   const active = conversations.find((c) => c.id === activeId)!;
   const customer = customers.find((c) => c.id === active.customerId)!;
@@ -130,6 +142,8 @@ function InboxPage() {
   const linked = conversations.filter(
     (c) => c.customerId === active.customerId && c.id !== active.id,
   );
+
+  const activeChannels: Channel[] = Array.from(new Set(conversations.map((c) => c.channel)));
 
   return (
     <AppShell>
