@@ -19,6 +19,117 @@ export const channelLabel: Record<Channel, string> = {
   voice: "Voice (planned)",
 };
 
+// --- Channel overview (Social Sources) ---
+// Independent from per-conversation Channel so we can show the full roadmap.
+export type ChannelKey =
+  | "webchat"
+  | "email"
+  | "instagram"
+  | "whatsapp"
+  | "telegram"
+  | "sms"
+  | "voice";
+
+export type ChannelStatus =
+  | "Mock Active"
+  | "Planned"
+  | "Future"
+  | "Not enabled in MVP";
+
+export type ChannelHealth = "healthy" | "degraded" | "offline" | "n/a";
+
+export type ChannelOverview = {
+  key: ChannelKey;
+  name: string;
+  status: ChannelStatus;
+  unread: number;
+  customers: number;
+  waiting: number;
+  lastMessage: string;
+  health: ChannelHealth;
+  description: string;
+};
+
+export const channelOverview: ChannelOverview[] = [
+  {
+    key: "webchat",
+    name: "Web Chat",
+    status: "Mock Active",
+    unread: 3,
+    customers: 14,
+    waiting: 2,
+    lastMessage: "12 min ago",
+    health: "healthy",
+    description: "Embedded reception form on your website.",
+  },
+  {
+    key: "email",
+    name: "Email",
+    status: "Mock Active",
+    unread: 5,
+    customers: 22,
+    waiting: 3,
+    lastMessage: "38 min ago",
+    health: "healthy",
+    description: "Inbound customer email — manual reply.",
+  },
+  {
+    key: "instagram",
+    name: "Instagram DM",
+    status: "Planned",
+    unread: 0,
+    customers: 0,
+    waiting: 0,
+    lastMessage: "—",
+    health: "n/a",
+    description: "Direct messages from Instagram. Not enabled in MVP.",
+  },
+  {
+    key: "whatsapp",
+    name: "WhatsApp",
+    status: "Planned",
+    unread: 0,
+    customers: 0,
+    waiting: 0,
+    lastMessage: "—",
+    health: "n/a",
+    description: "WhatsApp Business inbound messages. Planned.",
+  },
+  {
+    key: "telegram",
+    name: "Telegram",
+    status: "Planned",
+    unread: 0,
+    customers: 0,
+    waiting: 0,
+    lastMessage: "—",
+    health: "n/a",
+    description: "Telegram bot inbound messages. Planned.",
+  },
+  {
+    key: "sms",
+    name: "SMS",
+    status: "Planned",
+    unread: 0,
+    customers: 0,
+    waiting: 0,
+    lastMessage: "—",
+    health: "n/a",
+    description: "Inbound SMS via provider. Planned.",
+  },
+  {
+    key: "voice",
+    name: "Voice",
+    status: "Future",
+    unread: 0,
+    customers: 0,
+    waiting: 0,
+    lastMessage: "—",
+    health: "n/a",
+    description: "Voice reception with transcripts. Future.",
+  },
+];
+
 export type WorkspaceRole = "Owner" | "Admin" | "Operator" | "Viewer";
 
 export type Workspace = {
