@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { Avatar, ChannelChip, StatusChip } from "@/components/ui-bits";
+import { AIDraftPanel } from "@/components/ai-draft-panel";
 import {
   conversations,
   customers,
@@ -289,31 +290,14 @@ function InboxPage() {
           {/* Composer */}
           <div className="border-t border-border bg-surface px-6 py-4">
             {aiDraft && !noteMode && (
-              <div className="mb-3 rounded-xl border border-primary/30 bg-primary-soft/60 p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-primary">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    AI draft · human review required
-                  </div>
-                  <span className="text-[11px] text-muted-foreground">
-                    Operator sends final reply
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-foreground/90">{aiDraft.body}</p>
-                <div className="mt-3 flex items-center gap-2">
-                  <button
-                    onClick={() => setDraft(aiDraft.body)}
-                    className="rounded-md bg-primary px-2.5 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
-                  >
-                    Use draft
-                  </button>
-                  <button className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium hover:bg-secondary">
-                    Regenerate (mock)
-                  </button>
-                  <button className="rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary">
-                    Dismiss
-                  </button>
-                </div>
+              <div className="mb-3">
+                <AIDraftPanel
+                  draft={aiDraft.body}
+                  confidence={active.priority === "urgent" ? "Low" : active.priority === "high" ? "High" : "Medium"}
+                  onAccept={(t) => setDraft(t)}
+                  onEdit={(t) => setDraft(t)}
+                  onReject={() => setDraft("")}
+                />
               </div>
             )}
 
