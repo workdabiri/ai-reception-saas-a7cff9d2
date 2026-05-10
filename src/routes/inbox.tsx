@@ -339,8 +339,8 @@ function InboxPage() {
             </div>
           </div>
 
-          {/* Composer */}
-          <div className="border-t border-border bg-surface px-6 py-4">
+          {/* Composer (sticky on mobile, padded above floating bottom nav) */}
+          <div className="border-t border-border bg-surface px-4 py-3 sm:px-6 sm:py-4 pb-[88px] md:pb-4">
             {aiDraft && !noteMode && (
               <div className="mb-3">
                 <AIDraftPanel
