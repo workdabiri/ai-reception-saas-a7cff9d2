@@ -278,7 +278,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
 
 /* ───────────────────────── Unified sidebar ───────────────────────── */
 
-function UnifiedSidebar({
+function AppSidebar({
   collapsed,
   onToggle,
   isActive,
