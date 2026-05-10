@@ -80,20 +80,18 @@ const BOTTOM_ITEMS: NavItem[] = [
   { to: "/settings", label: "Profile", icon: User },
 ];
 
-const MOBILE_PRIMARY: NavItem[] = [
-  { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
-  { to: "/channels", label: "Channels", icon: Radio },
-  { to: "/customers", label: "People", icon: Users },
-  { to: "/", label: "Home", icon: LayoutDashboard, exact: true },
+const allNavigationItems = NAV_SECTIONS.flatMap((section) => section.items);
+const getNavigationItem = (to: string) =>
+  allNavigationItems.find((item) => item.to === to)!;
+const mobilePrimaryItems = [
+  getNavigationItem("/inbox"),
+  getNavigationItem("/channels"),
+  getNavigationItem("/customers"),
+  getNavigationItem("/"),
 ];
-
-const MOBILE_MORE: NavItem[] = [
-  { to: "/members", label: "Members", icon: UserCog },
-  { to: "/settings", label: "Settings", icon: Settings },
-  { to: "/audit", label: "Audit log", icon: FileCheck2, badge: 2 },
-  { to: "/states", label: "States", icon: AlertCircle },
-  { to: "/settings", label: "Help", icon: HelpCircle },
-  { to: "/settings", label: "Profile", icon: User },
+const mobileMoreItems = [
+  ...allNavigationItems.filter((item) => !mobilePrimaryItems.includes(item)),
+  ...BOTTOM_ITEMS,
 ];
 
 const STORAGE_KEY = "app.sidebar.collapsed";
@@ -107,14 +105,7 @@ const roleTone: Record<WorkspaceRole, string> = {
 
 /* ───────────────────────── AppShell ───────────────────────── */
 
-export function AppShell({
-  children,
-  // Accepted for backwards-compat with existing routes; behavior is unified.
-  variant: _variant,
-}: {
-  children?: React.ReactNode;
-  variant?: "default" | "rail";
-}) {
+export function AppShell({ children }: { children?: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const [collapsed, setCollapsed] = useState<boolean>(() => {
@@ -155,26 +146,18 @@ export function AppShell({
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen flex w-full bg-app text-foreground">
-        <UnifiedSidebar
+        <AppSidebar
           collapsed={collapsed}
           onToggle={toggle}
           isActive={isActive}
         />
 
         {/* Main */}
-        <div className="flex-1 flex min-w-0 flex-col">
+        <div
+          data-sidebar-collapsed={collapsed}
+          className="flex-1 flex min-w-0 flex-col transition-[max-width] duration-300 ease-in-out"
+        >
           <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-background/75 px-4 backdrop-blur-md lg:px-6">
-            <button
-              onClick={toggle}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="hidden md:inline-grid h-9 w-9 place-items-center rounded-lg border border-border bg-surface text-muted-foreground transition hover:text-foreground hover:bg-secondary"
-            >
-              {collapsed ? (
-                <PanelLeftOpen className="h-4 w-4" />
-              ) : (
-                <PanelLeftClose className="h-4 w-4" />
-              )}
-            </button>
             <div className="relative w-full max-w-md">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
@@ -214,7 +197,7 @@ export function AppShell({
 
         {/* Mobile bottom nav */}
         <nav className="fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-1 rounded-2xl border border-border bg-surface/95 p-1.5 shadow-pop backdrop-blur md:hidden">
-          {MOBILE_PRIMARY.map((item) => {
+          {mobilePrimaryItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.to, item.exact);
             return (
@@ -228,7 +211,7 @@ export function AppShell({
                 }`}
               >
                 <Icon className="h-[18px] w-[18px]" />
-                {item.label}
+                {item.to === "/" ? "Home" : item.label}
                 {item.badge ? (
                   <span className="absolute right-2 top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground ring-2 ring-surface">
                     {item.badge}
@@ -265,7 +248,7 @@ export function AppShell({
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-2 pb-6">
-                {MOBILE_MORE.map((it) => {
+                {mobileMoreItems.map((it) => {
                   const Icon = it.icon;
                   return (
                     <Link
