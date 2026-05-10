@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, MockBanner } from "@/components/ui-bits";
+import { MockBanner } from "@/components/ui-bits";
 import {
   NoConversationsState,
   NoActiveWorkspaceState,
