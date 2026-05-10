@@ -70,25 +70,35 @@ function DashboardPage() {
   return (
     <>
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
-        {/* Header */}
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {currentWorkspace.name} · {currentWorkspace.role} · Async MVP
-            </p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight">
-              Operations dashboard
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Understand what's waiting, who's working on it, and what needs review.
-            </p>
+        {/* Premium hero header */}
+        <div className="relative overflow-hidden rounded-2xl border border-border hero-glow shadow-card">
+          <div className="relative flex flex-wrap items-end justify-between gap-4 px-6 py-7 lg:px-8">
+            <div className="min-w-0">
+              <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-primary">
+                {currentWorkspace.name} · {currentWorkspace.role} · Async MVP
+              </p>
+              <h1 className="mt-2 text-[32px] font-semibold leading-[1.1] tracking-tight">
+                Operations <span className="text-gradient-primary">Command Center</span>
+              </h1>
+              <p className="mt-2 max-w-xl text-[13.5px] leading-relaxed text-muted-foreground">
+                See what needs attention, where customers are messaging from, and what operators should handle next.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                to="/channels"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-foreground shadow-soft transition hover:bg-secondary"
+              >
+                Channels
+              </Link>
+              <Link
+                to="/inbox"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition hover:opacity-95"
+              >
+                Open inbox <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </div>
-          <Link
-            to="/inbox"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground shadow-soft hover:opacity-95"
-          >
-            Open inbox <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
         </div>
 
         <MockBanner />
@@ -100,8 +110,9 @@ function DashboardPage() {
             return (
               <div
                 key={s.label}
-                className="rounded-xl border border-border bg-card p-4 shadow-soft"
+                className="premium-card relative p-4"
               >
+                <span className="accent-bar" />
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-muted-foreground">
                     {s.label}
