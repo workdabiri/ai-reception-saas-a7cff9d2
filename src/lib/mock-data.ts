@@ -114,13 +114,25 @@ export const customers: Customer[] = [
   { id: "c6", name: "Owen Fitzgerald", email: "owen.f@gmail.com", phone: "+353 87 555 0099", tags: [], lastSeen: "4 days ago", conversations: 1, initials: "OF" },
 ];
 
+export type ThreadKind =
+  | "customer"
+  | "operator"
+  | "ai-draft"
+  | "internal-note"
+  | "system-assignment"
+  | "system-status"
+  | "system-classification";
+
 export type Message = {
   id: string;
-  author: "customer" | "operator" | "ai-draft";
+  author: ThreadKind;
   authorName: string;
   body: string;
   time: string;
 };
+
+export type Priority = "low" | "normal" | "high" | "urgent";
+export type InboxStatus = "new" | "open" | "waiting" | "needs-followup" | "closed";
 
 export type Conversation = {
   id: string;
@@ -129,6 +141,9 @@ export type Conversation = {
   preview: string;
   channel: Channel;
   status: ConvStatus;
+  inboxStatus: InboxStatus;
+  priority: Priority;
+  classification?: string;
   assignee?: string;
   unread: boolean;
   updated: string;
@@ -143,41 +158,58 @@ export const conversations: Conversation[] = [
     preview: "Hi — could we move my Thursday 3pm cleaning to next week if possible?",
     channel: "email",
     status: "open",
+    inboxStatus: "needs-followup",
+    priority: "high",
+    classification: "Scheduling",
     assignee: "u3",
     unread: true,
     updated: "12 min",
     messages: [
-      { id: "m1", author: "customer", authorName: "Eleanor Whitfield", time: "10:42", body: "Hi — could we move my Thursday 3pm cleaning to next week if possible? Something came up at work." },
-      { id: "m2", author: "ai-draft", authorName: "AI draft", time: "10:43", body: "Hi Eleanor, of course — we have openings next Tuesday at 2:00pm or Wednesday at 10:30am. Which works best? — Tehran Dental Clinic" },
+      { id: "m1", author: "customer", authorName: "Eleanor Whitfield", time: "Today · 10:42", body: "Hi — could we move my Thursday 3pm cleaning to next week if possible? Something came up at work." },
+      { id: "m2", author: "system-classification", authorName: "System", time: "Today · 10:42", body: "Classified as Scheduling · priority High" },
+      { id: "m3", author: "system-assignment", authorName: "System", time: "Today · 10:43", body: "Assigned to Priya Raman" },
+      { id: "m4", author: "ai-draft", authorName: "AI draft", time: "Today · 10:43", body: "Hi Eleanor, of course — we have openings next Tuesday at 2:00pm or Wednesday at 10:30am. Which works best? — Tehran Dental Clinic" },
+      { id: "m5", author: "internal-note", authorName: "Priya Raman", time: "Today · 10:46", body: "She prefers mornings. I'll suggest Wed 10:30am first and hold Tue 2pm as backup." },
     ],
   },
   {
     id: "cv2",
     customerId: "c2",
-    subject: "New patient questions",
+    subject: "New patient — insurance question",
     preview: "Hello, I'm new to the area and wondering if you accept Aetna…",
     channel: "webform",
     status: "open",
+    inboxStatus: "new",
+    priority: "normal",
+    classification: "Billing",
     assignee: "u4",
     unread: true,
     updated: "38 min",
     messages: [
-      { id: "m1", author: "customer", authorName: "Jonas Reuter", time: "10:12", body: "Hello, I'm new to the area and wondering if you accept Aetna and what a first cleaning would cost." },
+      { id: "m1", author: "customer", authorName: "Jonas Reuter", time: "Today · 10:12", body: "Hello, I'm new to the area and wondering if you accept Aetna and what a first cleaning would cost." },
+      { id: "m2", author: "system-classification", authorName: "System", time: "Today · 10:12", body: "Classified as Billing · priority Normal" },
+      { id: "m3", author: "system-assignment", authorName: "System", time: "Today · 10:13", body: "Assigned to Marcus Lee" },
     ],
   },
   {
     id: "cv3",
     customerId: "c3",
-    subject: "Invoice question",
+    subject: "Invoice double-charge",
     preview: "Got my invoice — I think the fluoride was charged twice.",
     channel: "email",
     status: "pending",
+    inboxStatus: "waiting",
+    priority: "urgent",
+    classification: "Billing dispute",
     assignee: "u3",
     unread: false,
     updated: "2 hr",
     messages: [
-      { id: "m1", author: "customer", authorName: "Naomi Tanaka", time: "08:55", body: "Got my invoice — I think the fluoride was charged twice. Could someone double check?" },
-      { id: "m2", author: "operator", authorName: "Priya R.", time: "09:14", body: "Hi Naomi — checking with billing now and will get back today." },
+      { id: "m1", author: "customer", authorName: "Naomi Tanaka", time: "Today · 08:55", body: "Got my invoice — I think the fluoride was charged twice. Could someone double check?" },
+      { id: "m2", author: "system-classification", authorName: "System", time: "Today · 08:55", body: "Classified as Billing dispute · priority Urgent" },
+      { id: "m3", author: "operator", authorName: "Priya R.", time: "Today · 09:14", body: "Hi Naomi — checking with billing now and will get back today." },
+      { id: "m4", author: "system-status", authorName: "System", time: "Today · 09:14", body: "Status changed to Waiting on internal review" },
+      { id: "m5", author: "internal-note", authorName: "Priya Raman", time: "Today · 09:18", body: "Pinged Daniel to pull the ledger entry. Likely a duplicate from the rebooking last week." },
     ],
   },
   {
@@ -187,10 +219,14 @@ export const conversations: Conversation[] = [
     preview: "What's the price range for whitening?",
     channel: "webform",
     status: "open",
+    inboxStatus: "open",
+    priority: "normal",
+    classification: "Sales",
     unread: false,
     updated: "Yesterday",
     messages: [
-      { id: "m1", author: "customer", authorName: "Carlos Mendes", time: "Yesterday", body: "What's the price range for whitening? Also do you offer payment plans?" },
+      { id: "m1", author: "customer", authorName: "Carlos Mendes", time: "Yesterday · 16:20", body: "What's the price range for whitening? Also do you offer payment plans?" },
+      { id: "m2", author: "system-classification", authorName: "System", time: "Yesterday · 16:20", body: "Classified as Sales · priority Normal" },
     ],
   },
   {
@@ -200,12 +236,16 @@ export const conversations: Conversation[] = [
     preview: "Just wanted to say Dr. Park was wonderful with my son today.",
     channel: "email",
     status: "closed",
+    inboxStatus: "closed",
+    priority: "low",
+    classification: "Feedback",
     assignee: "u2",
     unread: false,
     updated: "2 days",
     messages: [
-      { id: "m1", author: "customer", authorName: "Hannah Berg", time: "Mon", body: "Just wanted to say Dr. Park was wonderful with my son today. Thank you!" },
-      { id: "m2", author: "operator", authorName: "Daniel C.", time: "Mon", body: "Hannah, this made our day — passing along to Dr. Park. ❤️" },
+      { id: "m1", author: "customer", authorName: "Hannah Berg", time: "Mon · 14:02", body: "Just wanted to say Dr. Park was wonderful with my son today. Thank you!" },
+      { id: "m2", author: "operator", authorName: "Daniel C.", time: "Mon · 14:18", body: "Hannah, this made our day — passing along to Dr. Park. ❤️" },
+      { id: "m3", author: "system-status", authorName: "System", time: "Mon · 14:19", body: "Conversation closed by Daniel Cho" },
     ],
   },
   {
@@ -215,10 +255,13 @@ export const conversations: Conversation[] = [
     preview: "Where do I find the new patient forms?",
     channel: "webform",
     status: "snoozed",
+    inboxStatus: "waiting",
+    priority: "low",
+    classification: "Onboarding",
     unread: false,
     updated: "4 days",
     messages: [
-      { id: "m1", author: "customer", authorName: "Owen Fitzgerald", time: "Wed", body: "Where do I find the new patient forms?" },
+      { id: "m1", author: "customer", authorName: "Owen Fitzgerald", time: "Wed · 09:30", body: "Where do I find the new patient forms?" },
     ],
   },
 ];
