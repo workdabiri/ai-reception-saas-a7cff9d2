@@ -225,14 +225,22 @@ function InboxPage() {
           } md:flex`}
         >
           <div className="space-y-3 border-b border-border p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-semibold">Inbox</h2>
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <InboxIcon className="h-3 w-3" />
+                  {sectionGroupLabel(section.kind)}
+                </div>
+                <h2 className="mt-0.5 truncate text-sm font-semibold">{section.label}</h2>
                 <p className="text-[11px] text-muted-foreground">
                   {filtered.length} of {conversations.length} conversations
                 </p>
               </div>
-              <button className="grid h-7 w-7 place-items-center rounded-md border border-border text-muted-foreground hover:text-foreground">
+              <button
+                onClick={() => setSectionsOpen(true)}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-border text-muted-foreground hover:text-foreground lg:hidden"
+                aria-label="Open inbox filters"
+              >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -244,21 +252,6 @@ function InboxPage() {
                 placeholder="Search by name, subject…"
                 className="h-8 w-full rounded-md border border-border bg-background pl-8 pr-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30"
               />
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {statusFilters.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => setFilter(f.id)}
-                  className={`rounded-md px-2 py-1 text-[11px] font-medium transition ${
-                    filter === f.id
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
             </div>
           </div>
           <ul className="flex-1 overflow-y-auto">
