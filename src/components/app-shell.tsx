@@ -11,6 +11,7 @@ import {
   Sparkles,
   Bell,
   Plus,
+  Radio,
 } from "lucide-react";
 import { WorkspaceSwitcher } from "@/components/workspace-switcher";
 
@@ -25,11 +26,20 @@ type NavItem = {
 const navItems: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
+  { to: "/channels", label: "Channels", icon: Radio, badge: 18 },
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/members", label: "Members", icon: UserCog },
   { to: "/settings", label: "Settings", icon: Settings },
   { to: "/audit", label: "Audit log", icon: ScrollText },
   { to: "/states", label: "States", icon: LayoutGrid },
+];
+
+const mobileNav: NavItem[] = [
+  { to: "/", label: "Home", icon: LayoutDashboard, exact: true },
+  { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
+  { to: "/channels", label: "Channels", icon: Radio },
+  { to: "/customers", label: "People", icon: Users },
+  { to: "/settings", label: "More", icon: Settings },
 ];
 
 export function AppShell({ children }: { children?: React.ReactNode }) {
