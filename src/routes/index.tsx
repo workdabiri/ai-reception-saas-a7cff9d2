@@ -122,6 +122,52 @@ function DashboardPage() {
           })}
         </div>
 
+        {/* Channel pulse */}
+        <div className="rounded-xl border border-border bg-card shadow-card">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
+            <div>
+              <h2 className="text-sm font-semibold">Messages by channel</h2>
+              <p className="text-xs text-muted-foreground">
+                Where customers are reaching you. Mock data — not all sources are connected.
+              </p>
+            </div>
+            <Link
+              to="/channels"
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+            >
+              Channel overview <ArrowUpRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <div className="-mx-px grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 divide-x divide-y sm:divide-y-0 divide-border">
+            {channelOverview.map((c) => {
+              const active = c.status === "Mock Active";
+              return (
+                <Link
+                  key={c.key}
+                  to={active ? "/inbox" : "/channels"}
+                  className="group flex flex-col gap-2 px-4 py-4 transition hover:bg-surface-muted/60"
+                >
+                  <div className="flex items-center justify-between">
+                    <ChannelIcon channel={c.key} size={28} />
+                    {c.unread > 0 && (
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">
+                        {c.unread}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs font-semibold">{c.name}</div>
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                    <span>{active ? `${c.customers} customers` : c.status}</span>
+                    {active && c.waiting > 0 && (
+                      <span className="text-warning-foreground">{c.waiting} waiting</span>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Today's queue + Recent messages */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 rounded-xl border border-border bg-card shadow-card overflow-hidden">
