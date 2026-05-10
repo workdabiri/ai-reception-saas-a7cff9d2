@@ -172,7 +172,7 @@ export function AIDraftPanel({
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-2 border-t border-primary/15 bg-card/60 px-4 py-3">
+      <div className="flex flex-wrap items-center gap-2 border-t border-[oklch(0.55_0.20_295)]/15 bg-card/60 px-4 py-3">
         {!editing ? (
           <>
             <button
@@ -180,7 +180,7 @@ export function AIDraftPanel({
                 setState("accepted");
                 onAccept(text);
               }}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
+              className="inline-flex items-center gap-1.5 rounded-lg gradient-ai px-3.5 py-1.5 text-xs font-semibold text-ai-foreground shadow-soft transition hover:opacity-95 active:translate-y-px"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Accept draft
