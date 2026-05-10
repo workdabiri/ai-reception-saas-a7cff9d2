@@ -33,6 +33,7 @@ import {
 /* ───────────────────────── Single shared menu config ───────────────────────── */
 
 type NavItem = {
+  id: string;
   to: string;
   label: string;
   icon: typeof LayoutDashboard;
@@ -46,54 +47,50 @@ type NavSection = {
   items: NavItem[];
 };
 
-const NAV_SECTIONS: NavSection[] = [
-  {
-    id: "workspace",
-    title: "Workspace",
-    items: [
-      { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
-      { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
-      { to: "/channels", label: "Channels", icon: Radio, badge: 8 },
-      { to: "/customers", label: "Customers", icon: Users },
-    ],
-  },
-  {
-    id: "management",
-    title: "Management",
-    items: [
-      { to: "/members", label: "Members", icon: UserCog },
-      { to: "/settings", label: "Settings", icon: Settings },
-    ],
-  },
-  {
-    id: "trust",
-    title: "Trust & System",
-    items: [
-      { to: "/audit", label: "Audit log", icon: FileCheck2, badge: 2 },
-      { to: "/states", label: "States", icon: AlertCircle },
-    ],
-  },
-];
+const MENU_CONFIG: { sections: NavSection[]; bottomItems: NavItem[] } = {
+  sections: [
+    {
+      id: "workspace",
+      title: "Workspace",
+      items: [
+        { id: "dashboard", to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
+        { id: "inbox", to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
+        { id: "channels", to: "/channels", label: "Channels", icon: Radio, badge: 8 },
+        { id: "customers", to: "/customers", label: "Customers", icon: Users },
+      ],
+    },
+    {
+      id: "management",
+      title: "Management",
+      items: [
+        { id: "members", to: "/members", label: "Members", icon: UserCog },
+        { id: "settings", to: "/settings", label: "Settings", icon: Settings },
+      ],
+    },
+    {
+      id: "trust",
+      title: "Trust & System",
+      items: [
+        { id: "audit", to: "/audit", label: "Audit log", icon: FileCheck2, badge: 2 },
+        { id: "states", to: "/states", label: "States", icon: AlertCircle },
+      ],
+    },
+  ],
+  bottomItems: [
+    { id: "help", to: "/settings", label: "Help", icon: HelpCircle },
+    { id: "profile", to: "/settings", label: "Profile", icon: User },
+  ],
+};
 
-const BOTTOM_ITEMS: NavItem[] = [
-  { to: "/settings", label: "Help", icon: HelpCircle },
-  { to: "/settings", label: "Profile", icon: User },
-];
-
-const MOBILE_PRIMARY: NavItem[] = [
-  { to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
-  { to: "/channels", label: "Channels", icon: Radio },
-  { to: "/customers", label: "People", icon: Users },
-  { to: "/", label: "Home", icon: LayoutDashboard, exact: true },
-];
-
-const MOBILE_MORE: NavItem[] = [
-  { to: "/members", label: "Members", icon: UserCog },
-  { to: "/settings", label: "Settings", icon: Settings },
-  { to: "/audit", label: "Audit log", icon: FileCheck2, badge: 2 },
-  { to: "/states", label: "States", icon: AlertCircle },
-  { to: "/settings", label: "Help", icon: HelpCircle },
-  { to: "/settings", label: "Profile", icon: User },
+const allMenuItems = () => MENU_CONFIG.sections.flatMap((section) => section.items);
+const menuItem = (id: string) => allMenuItems().find((item) => item.id === id)!;
+const mobilePrimaryItems = () => ["inbox", "channels", "customers", "dashboard"].map(menuItem);
+const mobileMoreItems = () => [
+  menuItem("members"),
+  menuItem("settings"),
+  menuItem("audit"),
+  menuItem("states"),
+  ...MENU_CONFIG.bottomItems,
 ];
 
 const STORAGE_KEY = "app.sidebar.collapsed";
