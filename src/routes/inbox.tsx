@@ -32,7 +32,6 @@ import {
   ExternalLink,
   ChevronRight,
   PanelRight,
-  X as XIcon,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
