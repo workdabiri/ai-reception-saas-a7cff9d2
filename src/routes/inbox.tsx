@@ -853,3 +853,208 @@ function ThreadItem({
     </div>
   );
 }
+
+/* ───────── Inbox sections panel ───────── */
+
+function sectionGroupLabel(kind: SectionFilter["kind"]) {
+  switch (kind) {
+    case "inbox": return "Inbox";
+    case "channel": return "Channels";
+    case "ai": return "AI Review";
+    case "operator": return "Operators";
+    case "priority": return "Priority";
+  }
+}
+
+type SectionRow = {
+  label: string;
+  filter: SectionFilter;
+  icon?: typeof InboxIcon;
+  badge?: string | number;
+  badgeTone?: "primary" | "muted" | "warning" | "success" | "info";
+  disabled?: boolean;
+};
+
+type SectionGroup = { id: SectionFilter["kind"]; title: string; rows: SectionRow[] };
+
+const inboxSectionGroups: SectionGroup[] = [
+  {
+    id: "inbox",
+    title: "Inbox",
+    rows: [
+      { label: "All conversations", filter: { kind: "inbox", value: "all", label: "All conversations" }, icon: InboxIcon, badge: 6 },
+      { label: "New", filter: { kind: "inbox", value: "new", label: "New" }, icon: Sparkles, badge: 1, badgeTone: "info" },
+      { label: "Unassigned", filter: { kind: "inbox", value: "unassigned", label: "Unassigned" }, icon: AlertTriangle, badge: 2, badgeTone: "warning" },
+      { label: "Assigned to me", filter: { kind: "inbox", value: "assigned-me", label: "Assigned to me" }, icon: UserPlus, badge: 0 },
+      { label: "Waiting for operator", filter: { kind: "inbox", value: "waiting", label: "Waiting for operator" }, icon: Clock, badge: 2, badgeTone: "warning" },
+      { label: "Needs follow-up", filter: { kind: "inbox", value: "needs-followup", label: "Needs follow-up" }, icon: Flag, badge: 1, badgeTone: "primary" },
+      { label: "Needs review", filter: { kind: "inbox", value: "needs-review", label: "Needs review" }, icon: FileSearch, badge: 1, badgeTone: "primary" },
+      { label: "Overdue", filter: { kind: "inbox", value: "overdue", label: "Overdue" }, icon: AlertTriangle, badge: 2, badgeTone: "warning" },
+      { label: "Closed", filter: { kind: "inbox", value: "closed", label: "Closed" }, icon: CheckCheck, badge: 1, badgeTone: "muted" },
+    ],
+  },
+  {
+    id: "channel",
+    title: "Channels",
+    rows: [
+      { label: "Web Chat", filter: { kind: "channel", value: "webform", label: "Web Chat" }, icon: MessageSquare, badge: 3, badgeTone: "info" },
+      { label: "Email", filter: { kind: "channel", value: "email", label: "Email" }, icon: MailIcon, badge: 5, badgeTone: "info" },
+      { label: "Instagram DM", filter: { kind: "channel", value: "planned", label: "Instagram DM" }, icon: Instagram, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "WhatsApp", filter: { kind: "channel", value: "planned", label: "WhatsApp" }, icon: MessageCircle, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "Telegram", filter: { kind: "channel", value: "planned", label: "Telegram" }, icon: SendIcon, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "SMS", filter: { kind: "channel", value: "planned", label: "SMS" }, icon: Smartphone, badge: "Planned", badgeTone: "muted", disabled: true },
+      { label: "Voice", filter: { kind: "channel", value: "future", label: "Voice" }, icon: PhoneCall, badge: "Future", badgeTone: "muted", disabled: true },
+    ],
+  },
+  {
+    id: "ai",
+    title: "AI Review",
+    rows: [
+      { label: "Drafts pending review", filter: { kind: "ai", value: "pending", label: "Drafts pending review" }, icon: Sparkles, badge: 1, badgeTone: "primary" },
+      { label: "Accepted drafts", filter: { kind: "ai", value: "accepted", label: "Accepted drafts" }, icon: CheckCircle2, badge: 0 },
+      { label: "Rejected drafts", filter: { kind: "ai", value: "rejected", label: "Rejected drafts" }, icon: XCircle, badge: 0 },
+      { label: "Needs source check", filter: { kind: "ai", value: "needs-source", label: "Needs source check" }, icon: FileSearch, badge: 0 },
+    ],
+  },
+  {
+    id: "operator",
+    title: "Operators",
+    rows: [
+      { label: "Unassigned", filter: { kind: "operator", value: "unassigned", label: "Unassigned" }, badge: 2, badgeTone: "warning" },
+      { label: "Priya Raman", filter: { kind: "operator", value: "u3", label: "Priya Raman" }, badge: 2 },
+      { label: "Marcus Lee", filter: { kind: "operator", value: "u4", label: "Marcus Lee" }, badge: 1 },
+      { label: "Daniel Cho", filter: { kind: "operator", value: "u2", label: "Daniel Cho" }, badge: 1 },
+      { label: "Amelia Hart", filter: { kind: "operator", value: "u1", label: "Amelia Hart" }, badge: 0 },
+    ],
+  },
+  {
+    id: "priority",
+    title: "Priority",
+    rows: [
+      { label: "Urgent", filter: { kind: "priority", value: "urgent", label: "Urgent" }, badge: 1, badgeTone: "warning" },
+      { label: "High", filter: { kind: "priority", value: "high", label: "High" }, badge: 1, badgeTone: "primary" },
+      { label: "Normal", filter: { kind: "priority", value: "normal", label: "Normal" }, badge: 2, badgeTone: "info" },
+      { label: "Low", filter: { kind: "priority", value: "low", label: "Low" }, badge: 2, badgeTone: "muted" },
+    ],
+  },
+];
+
+const badgeToneClass: Record<NonNullable<SectionRow["badgeTone"]>, string> = {
+  primary: "bg-primary-soft text-primary",
+  muted: "bg-secondary text-muted-foreground",
+  warning: "bg-warning/20 text-warning-foreground",
+  success: "bg-success/10 text-success",
+  info: "bg-info/10 text-info",
+};
+
+function isSameFilter(a: SectionFilter, b: SectionFilter) {
+  return a.kind === b.kind && a.value === b.value && a.label === b.label;
+}
+
+function InboxSectionsPanel({
+  selected,
+  onSelect,
+  collapsed,
+  onToggleCollapsed,
+}: {
+  selected: SectionFilter;
+  onSelect: (s: SectionFilter) => void;
+  collapsed: boolean;
+  onToggleCollapsed: () => void;
+}) {
+  if (collapsed) {
+    return (
+      <div className="flex h-full flex-col items-center gap-2 py-3">
+        <button
+          onClick={onToggleCollapsed}
+          className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:bg-secondary"
+          aria-label="Expand inbox sections"
+        >
+          <PanelLeftOpen className="h-4 w-4" />
+        </button>
+        <div className="my-1 h-px w-6 bg-border" />
+        {inboxSectionGroups.map((g) => (
+          <button
+            key={g.id}
+            onClick={() => onSelect(g.rows[0].filter)}
+            title={g.title}
+            className={`grid h-9 w-9 place-items-center rounded-lg text-muted-foreground transition hover:bg-secondary ${
+              selected.kind === g.id ? "bg-primary-soft text-primary" : ""
+            }`}
+          >
+            {g.id === "inbox" && <InboxIcon className="h-4 w-4" />}
+            {g.id === "channel" && <Radio className="h-4 w-4" />}
+            {g.id === "ai" && <Sparkles className="h-4 w-4" />}
+            {g.id === "operator" && <Users className="h-4 w-4" />}
+            {g.id === "priority" && <Flag className="h-4 w-4" />}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex items-center justify-between border-b border-border px-3 py-3">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Work queues
+        </div>
+        <button
+          onClick={onToggleCollapsed}
+          className="hidden lg:grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-secondary"
+          aria-label="Collapse sections"
+        >
+          <PanelLeftClose className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2">
+        {inboxSectionGroups.map((g) => (
+          <div key={g.id} className="mt-3 first:mt-0">
+            <div className="px-2 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">
+              {g.title}
+            </div>
+            <ul className="space-y-px">
+              {g.rows.map((row) => {
+                const Icon = row.icon;
+                const active = isSameFilter(selected, row.filter);
+                return (
+                  <li key={row.label}>
+                    <button
+                      disabled={row.disabled}
+                      onClick={() => !row.disabled && onSelect(row.filter)}
+                      className={`group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[12.5px] transition ${
+                        active
+                          ? "bg-primary-soft text-primary font-semibold"
+                          : row.disabled
+                          ? "text-muted-foreground/60 cursor-not-allowed"
+                          : "text-foreground/85 hover:bg-secondary"
+                      }`}
+                    >
+                      {Icon ? (
+                        <Icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                      ) : (
+                        <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-secondary text-[8px] font-bold text-muted-foreground">
+                          {row.label.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                        </span>
+                      )}
+                      <span className="min-w-0 flex-1 truncate">{row.label}</span>
+                      {row.badge !== undefined && row.badge !== 0 && (
+                        <span
+                          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${
+                            badgeToneClass[row.badgeTone ?? "muted"]
+                          }`}
+                        >
+                          {row.badge}
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
