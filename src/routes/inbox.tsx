@@ -206,7 +206,7 @@ function InboxPage() {
     { value: "all", label: "All" },
     { value: "webform", label: "Web" },
     { value: "email", label: "Email" },
-    { value: "instagram", label: "Instagram" },
+    { value: "planned", label: "Instagram", planned: true },
     { value: "planned", label: "WhatsApp", planned: true },
     { value: "planned", label: "Telegram", planned: true },
     { value: "planned", label: "SMS", planned: true },
