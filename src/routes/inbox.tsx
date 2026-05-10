@@ -289,30 +289,48 @@ function InboxPage() {
         </div>
 
         {/* Column 2: Conversation thread */}
-        <div className="flex min-h-0 flex-col bg-background">
+        <div
+          className={`${
+            mobileView === "thread" ? "flex" : "hidden"
+          } md:flex min-h-0 flex-col bg-background`}
+        >
           {/* Thread header */}
-          <div className="border-b border-border bg-surface px-6 py-3.5">
+          <div className="border-b border-border bg-surface px-3 py-3 md:px-6 md:py-3.5">
             <div className="flex items-center justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-3">
+              <div className="flex min-w-0 items-center gap-2 md:gap-3">
+                <button
+                  onClick={() => setMobileView("list")}
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-secondary md:hidden"
+                  aria-label="Back to inbox"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </button>
                 <Avatar initials={customer.initials} tone="primary" />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <h2 className="truncate text-sm font-semibold">{active.subject}</h2>
                     <InboxStatusChip status={active.inboxStatus} />
-                    <PriorityFlag priority={active.priority} />
+                    <span className="hidden md:inline-flex"><PriorityFlag priority={active.priority} /></span>
                   </div>
                   <p className="truncate text-xs text-muted-foreground">
-                    {customer.name} · {customer.email} · via {channelLabel[active.channel]}
+                    {customer.name} · via {channelLabel[active.channel]}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <ActionBtn icon={UserPlus} label="Assign" />
-                <ActionBtn icon={Tag} label="Classify" />
-                <ActionBtn icon={Flag} label="Priority" />
-                <button className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-2.5 py-1.5 text-xs font-medium text-background hover:opacity-90">
+                <span className="hidden md:inline-flex"><ActionBtn icon={UserPlus} label="Assign" /></span>
+                <span className="hidden lg:inline-flex"><ActionBtn icon={Tag} label="Classify" /></span>
+                <span className="hidden lg:inline-flex"><ActionBtn icon={Flag} label="Priority" /></span>
+                <button className="hidden md:inline-flex items-center gap-1.5 rounded-md bg-foreground px-2.5 py-1.5 text-xs font-medium text-background hover:opacity-90">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Close
+                </button>
+                <button
+                  onClick={() => setContextOpen(true)}
+                  className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary xl:hidden"
+                  aria-label="Open customer context"
+                >
+                  <PanelRight className="h-4 w-4" />
                 </button>
                 <button className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-secondary">
                   <MoreHorizontal className="h-4 w-4" />
