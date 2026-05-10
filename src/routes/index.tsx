@@ -114,7 +114,7 @@ function DashboardPage() {
               >
                 <span className="accent-bar" />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted-foreground">
+                  <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                     {s.label}
                   </span>
                   <div
@@ -123,10 +123,10 @@ function DashboardPage() {
                     <Icon className="h-3.5 w-3.5" />
                   </div>
                 </div>
-                <div className="mt-3 text-2xl font-semibold tracking-tight">
+                <div className="mt-3 text-[34px] font-semibold leading-none tracking-tight tabular-nums">
                   {s.value}
                 </div>
-                <div className="mt-1 text-[11px] text-muted-foreground">{s.hint}</div>
+                <div className="mt-2 text-[11.5px] text-muted-foreground">{s.hint}</div>
               </div>
             );
           })}
