@@ -253,7 +253,7 @@ function DashboardPage() {
                     <td className="px-3 py-2.5 text-foreground/80 max-w-[220px] truncate">{q.subject}</td>
                     <td className="px-3 py-2.5"><ChannelChip channel={q.channel} label={channelLabel[q.channel]} /></td>
                     <td className="px-3 py-2.5"><StatusChip status={q.status} /></td>
-                    <td className="px-3 py-2.5 text-muted-foreground tabular-nums">{q.waiting}</td>
+                    <td className="px-3 py-2.5 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
                     <td className="px-5 py-2.5 text-muted-foreground">
                       {q.assignee ?? <span className="italic text-warning-foreground/80">Unassigned</span>}
                     </td>
