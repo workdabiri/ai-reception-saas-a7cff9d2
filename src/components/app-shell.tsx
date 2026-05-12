@@ -22,6 +22,7 @@ import {
   MoreHorizontal,
   X,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { workspaces, type WorkspaceRole } from "@/lib/mock-data";
 import {
   Tooltip,
@@ -211,6 +212,7 @@ export function AppShell({
                 <Plus className="h-3.5 w-3.5" />
                 New conversation
               </button>
+              <ThemeToggle />
               <button className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-surface text-muted-foreground transition hover:text-foreground hover:bg-secondary">
                 <Bell className="h-4 w-4" />
                 <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-destructive ring-2 ring-surface" />
@@ -278,7 +280,7 @@ export function AppShell({
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-2 pb-6">
+              <div className="grid grid-cols-3 gap-2">
                 {mobileMore.map((it) => {
                   const Icon = it.icon;
                   return (
@@ -298,6 +300,12 @@ export function AppShell({
                     </Link>
                   );
                 })}
+              </div>
+              <div className="mt-4 pb-6">
+                <div className="mb-1.5 px-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                  Theme
+                </div>
+                <ThemeToggle variant="full" />
               </div>
             </div>
           </div>
