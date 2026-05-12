@@ -22,6 +22,7 @@ import {
   MoreHorizontal,
   X,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { workspaces, type WorkspaceRole } from "@/lib/mock-data";
 import {
   Tooltip,
