@@ -399,12 +399,17 @@ function SharedSidebar({
       {/* Bottom area */}
       <div className={`mt-auto border-t border-sidebar-border ${collapsed ? "flex flex-col items-center gap-1.5 py-3" : "p-3 space-y-2"}`}>
         {!collapsed && (
-          <div className="overflow-hidden rounded-xl border border-sidebar-border bg-gradient-to-br from-primary-soft via-surface to-surface p-3 shadow-soft">
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-              Human-in-the-loop AI
+          <div className="sidebar-ai-card rounded-xl p-3.5">
+            <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.10em] text-white/85">
+              <span className="grid h-4 w-4 place-items-center rounded-md bg-white/15 ring-1 ring-white/25">
+                <Sparkles className="h-2.5 w-2.5" />
+              </span>
+              AI Active
             </div>
-            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+            <div className="relative z-10 mt-1.5 text-[12.5px] font-semibold leading-tight text-white">
+              Human-in-the-loop
+            </div>
+            <p className="relative z-10 mt-1 text-[11px] leading-snug text-white/75">
               AI prepares drafts. Operators review and send every reply.
             </p>
           </div>
