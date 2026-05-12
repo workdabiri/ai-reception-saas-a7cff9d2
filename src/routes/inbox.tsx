@@ -577,7 +577,7 @@ function InboxPage() {
                     Save draft
                   </button>
                   {noteMode ? (
-                    <button className="inline-flex items-center gap-1.5 rounded-md bg-warning px-3 py-1.5 text-xs font-semibold text-warning-foreground hover:opacity-95">
+                    <button className="inline-flex items-center gap-1.5 rounded-md bg-warning px-3 py-1.5 text-xs font-semibold text-[oklch(0.20_0.04_75)] hover:opacity-95">
                       <StickyNote className="h-3.5 w-3.5" />
                       Add note
                     </button>
