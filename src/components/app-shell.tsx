@@ -280,7 +280,7 @@ export function AppShell({
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-2 pb-6">
+              <div className="grid grid-cols-3 gap-2">
                 {mobileMore.map((it) => {
                   const Icon = it.icon;
                   return (
@@ -300,6 +300,12 @@ export function AppShell({
                     </Link>
                   );
                 })}
+              </div>
+              <div className="mt-4 pb-6">
+                <div className="mb-1.5 px-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                  Theme
+                </div>
+                <ThemeToggle variant="full" />
               </div>
             </div>
           </div>
