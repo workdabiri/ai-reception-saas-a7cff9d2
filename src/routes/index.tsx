@@ -281,7 +281,7 @@ function DashboardPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate text-[13px] font-medium">{m.customer}</span>
-                    <span className="shrink-0 text-[10.5px] text-muted-foreground tabular-nums">{m.time}</span>
+                    <span className="shrink-0 text-[10.5px] text-muted-foreground font-mono-tab">{m.time}</span>
                   </div>
                   <p className="mt-0.5 line-clamp-2 text-[12px] text-muted-foreground leading-snug">{m.snippet}</p>
                   <div className="mt-1.5"><ChannelChip channel={m.channel} label={channelLabel[m.channel]} /></div>
