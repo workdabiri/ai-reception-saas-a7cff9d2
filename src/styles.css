@@ -234,14 +234,15 @@
   }
   .bg-app {
     background-image:
-      radial-gradient(1200px 560px at 100% -10%, oklch(0.475 0.195 268 / 0.10), transparent 60%),
-      radial-gradient(900px 440px at -10% 100%, oklch(0.555 0.195 295 / 0.08), transparent 60%),
-      radial-gradient(700px 320px at 50% 110%, oklch(0.755 0.145 75 / 0.04), transparent 60%);
+      radial-gradient(1100px 520px at 100% -8%, oklch(0.475 0.205 268 / 0.16), transparent 60%),
+      radial-gradient(900px 460px at -10% 100%, oklch(0.555 0.195 295 / 0.13), transparent 60%),
+      radial-gradient(800px 380px at 50% 110%, oklch(0.755 0.145 75 / 0.06), transparent 60%),
+      linear-gradient(180deg, oklch(0.965 0.012 256) 0%, oklch(0.955 0.014 256) 100%);
     background-color: var(--color-background);
     background-attachment: fixed;
   }
   .bg-ai-soft {
-    background-image: linear-gradient(135deg, oklch(0.555 0.195 295 / 0.10), oklch(0.475 0.195 268 / 0.08));
+    background-image: linear-gradient(135deg, oklch(0.555 0.195 295 / 0.12), oklch(0.475 0.195 268 / 0.10));
   }
   .ring-primary-soft {
     box-shadow: var(--shadow-ring-primary);
@@ -250,13 +251,31 @@
     box-shadow: var(--shadow-ring-ai);
   }
   .surface-elev {
-    background-image: linear-gradient(180deg, var(--color-card) 0%, color-mix(in oklab, var(--color-card) 94%, var(--color-primary) 6%) 100%);
+    background-image: linear-gradient(180deg, var(--color-card) 0%, color-mix(in oklab, var(--color-card) 92%, var(--color-primary) 8%) 100%);
+  }
+  .surface-tinted {
+    background-image: linear-gradient(180deg,
+      color-mix(in oklab, var(--color-card) 96%, var(--color-primary) 4%) 0%,
+      color-mix(in oklab, var(--color-card) 92%, var(--color-primary) 8%) 100%);
+    border: 1px solid color-mix(in oklab, var(--color-border) 70%, var(--color-primary) 30%);
   }
   .card-premium {
     background-color: var(--color-card);
     border: 1px solid var(--color-border);
     border-radius: 0.875rem;
     box-shadow: var(--shadow-card);
+  }
+  .card-tinted-warning {
+    background-image: linear-gradient(180deg, oklch(0.755 0.145 75 / 0.06), transparent 55%), linear-gradient(0deg, var(--color-card), var(--color-card));
+  }
+  .card-tinted-danger {
+    background-image: linear-gradient(180deg, oklch(0.585 0.195 22 / 0.07), transparent 55%), linear-gradient(0deg, var(--color-card), var(--color-card));
+  }
+  .card-tinted-primary {
+    background-image: linear-gradient(180deg, oklch(0.475 0.205 268 / 0.07), transparent 55%), linear-gradient(0deg, var(--color-card), var(--color-card));
+  }
+  .card-tinted-ai {
+    background-image: linear-gradient(180deg, oklch(0.555 0.195 295 / 0.08), transparent 55%), linear-gradient(0deg, var(--color-card), var(--color-card));
   }
   .gradient-text-primary {
     background-image: linear-gradient(135deg, var(--color-primary), oklch(0.555 0.195 295));
