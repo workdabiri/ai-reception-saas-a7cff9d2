@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
+import { themeBootScript } from "@/components/theme-toggle";
 
 import appCss from "../styles.css?url";
 
