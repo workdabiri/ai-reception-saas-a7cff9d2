@@ -98,4 +98,4 @@ export function ThemeToggle({ variant = "icon" }: { variant?: "icon" | "full" })
 }
 
 /** Inline script string injected before paint to avoid theme flash. */
-export const themeBootScript = `(function(){try{var s=localStorage.getItem('${STORAGE_KEY}')||'system';var d=s==='dark'||(s==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var r=document.documentElement;if(d)r.classList.add('dark');r.style.colorScheme=d?'dark':'light';}catch(e){}})();`;
+export const themeBootScript = `(function(){try{var s=localStorage.getItem('${STORAGE_KEY}')||'dark';var d=s==='dark'||(s==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var r=document.documentElement;if(d)r.classList.add('dark');r.style.colorScheme=d?'dark':'light';}catch(e){var r=document.documentElement;r.classList.add('dark');r.style.colorScheme='dark';}})();`;
