@@ -212,6 +212,7 @@ export function AppShell({
                 <Plus className="h-3.5 w-3.5" />
                 New conversation
               </button>
+              <ThemeToggle />
               <button className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-surface text-muted-foreground transition hover:text-foreground hover:bg-secondary">
                 <Bell className="h-4 w-4" />
                 <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-destructive ring-2 ring-surface" />
