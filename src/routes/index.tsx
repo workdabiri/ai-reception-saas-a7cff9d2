@@ -156,37 +156,49 @@ function DashboardPage() {
         {stats.map((s) => {
           const Icon = s.icon;
           const Trend = s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
-          const tintClass =
-            s.tone === "warning" ? "card-tinted-warning" :
-            s.tone === "danger" ? "card-tinted-danger" :
-            s.tone === "primary" ? "card-tinted-primary" :
-            s.tone === "success" ? "card-tinted-primary" : "";
+          const isFeatured = s.tone === "primary";
+          const tintClass = isFeatured
+            ? "ai-feature-bg ring-ai-feature"
+            : s.tone === "warning" ? "card-tinted-warning"
+            : s.tone === "danger" ? "card-tinted-danger"
+            : s.tone === "success" ? "card-tinted-primary" : "";
+          const iconClass = isFeatured
+            ? "bg-ai/10 text-ai ring-ai/30"
+            : toneStyles[s.tone];
           return (
             <div
               key={s.label}
-              style={{ ["--kpi-accent" as never]: toneAccent[s.tone] }}
+              style={{ ["--kpi-accent" as never]: isFeatured ? "var(--color-ai)" : toneAccent[s.tone] }}
               className={`kpi-accent group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-5 shadow-card transition hover:shadow-elev hover:-translate-y-0.5 ${tintClass}`}
             >
               <div className="relative flex items-start justify-between gap-2">
-                <span className="text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
+                <span className={`text-[10.5px] font-bold uppercase tracking-[0.10em] ${isFeatured ? "text-ai" : "text-muted-foreground"}`}>
                   {s.label}
                 </span>
-                <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ring-1 ring-inset shadow-soft ${toneStyles[s.tone]}`}>
+                <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ring-1 ring-inset shadow-soft ${iconClass}`}>
                   <Icon className="h-[18px] w-[18px]" />
                 </div>
               </div>
               <div className="relative mt-5 flex items-end justify-between gap-2">
-                <div className="text-[38px] font-semibold leading-none tracking-tight tabular-nums">
+                <div className={`text-[38px] font-semibold leading-none tracking-tight font-mono-tab ${isFeatured ? "text-ai" : ""}`}>
                   {s.value}
                 </div>
                 {s.delta && (
-                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-bold ${deltaStyles[s.delta.dir]}`}>
+                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-bold font-mono-tab ${deltaStyles[s.delta.dir]}`}>
                     {Trend && <Trend className="h-3 w-3" />}
                     {s.delta.value}
                   </span>
                 )}
               </div>
-              <div className="relative mt-2 text-[12px] leading-snug text-muted-foreground">{s.hint}</div>
+              <div className="relative mt-2 flex items-center justify-between gap-2 text-[12px] leading-snug text-muted-foreground">
+                <span className="truncate">{s.hint}</span>
+                {isFeatured && (
+                  <span className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-wider text-ai">
+                    <span className="h-1.5 w-1.5 rounded-full bg-ai dot-glow" />
+                    AI Ready
+                  </span>
+                )}
+              </div>
             </div>
           );
         })}
@@ -241,7 +253,7 @@ function DashboardPage() {
                     <td className="px-3 py-2.5 text-foreground/80 max-w-[220px] truncate">{q.subject}</td>
                     <td className="px-3 py-2.5"><ChannelChip channel={q.channel} label={channelLabel[q.channel]} /></td>
                     <td className="px-3 py-2.5"><StatusChip status={q.status} /></td>
-                    <td className="px-3 py-2.5 text-muted-foreground tabular-nums">{q.waiting}</td>
+                    <td className="px-3 py-2.5 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
                     <td className="px-5 py-2.5 text-muted-foreground">
                       {q.assignee ?? <span className="italic text-warning-foreground/80">Unassigned</span>}
                     </td>
@@ -269,7 +281,7 @@ function DashboardPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate text-[13px] font-medium">{m.customer}</span>
-                    <span className="shrink-0 text-[10.5px] text-muted-foreground tabular-nums">{m.time}</span>
+                    <span className="shrink-0 text-[10.5px] text-muted-foreground font-mono-tab">{m.time}</span>
                   </div>
                   <p className="mt-0.5 line-clamp-2 text-[12px] text-muted-foreground leading-snug">{m.snippet}</p>
                   <div className="mt-1.5"><ChannelChip channel={m.channel} label={channelLabel[m.channel]} /></div>
