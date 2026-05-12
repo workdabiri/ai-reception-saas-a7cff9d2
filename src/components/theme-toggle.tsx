@@ -21,9 +21,9 @@ function applyTheme(theme: Theme) {
 }
 
 export function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "light";
+  if (typeof window === "undefined") return "dark";
   const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
-  return stored ?? "system";
+  return stored ?? "dark";
 }
 
 export function useTheme() {
