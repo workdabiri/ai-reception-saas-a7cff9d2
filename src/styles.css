@@ -170,7 +170,7 @@
   --success: oklch(0.7 0.14 155);
   --success-foreground: oklch(0.15 0.02 265);
   --warning: oklch(0.8 0.14 75);
-  --warning-foreground: oklch(0.2 0.04 75);
+  --warning-foreground: oklch(0.94 0.08 80);
   --info: oklch(0.7 0.13 245);
   --info-foreground: oklch(0.15 0.02 265);
   --border: oklch(1 0 0 / 10%);
