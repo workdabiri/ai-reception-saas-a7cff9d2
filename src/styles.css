@@ -272,16 +272,11 @@
     letter-spacing: -0.012em;
   }
   .bg-app {
-    background-image:
-      radial-gradient(1200px 560px at 100% -10%, oklch(0.475 0.205 268 / 0.05), transparent 65%),
-      linear-gradient(180deg, oklch(0.968 0.010 256) 0%, oklch(0.958 0.012 256) 100%);
     background-color: var(--color-background);
     background-attachment: fixed;
   }
   .dark .bg-app {
-    background-image:
-      radial-gradient(1200px 600px at 100% -10%, oklch(0.55 0.20 268 / 0.10), transparent 65%),
-      linear-gradient(180deg, oklch(0.125 0.022 265) 0%, oklch(0.110 0.020 265) 100%);
+    background-color: var(--color-background);
   }
   .bg-ai-soft {
     background-image: linear-gradient(135deg, oklch(0.555 0.195 295 / 0.12), oklch(0.475 0.195 268 / 0.10));
