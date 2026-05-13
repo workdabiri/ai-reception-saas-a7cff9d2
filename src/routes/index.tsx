@@ -366,7 +366,7 @@ function DashboardPage() {
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
             <div className="flex items-center gap-2">
-              <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary-soft text-primary ring-1 ring-primary/20">
+              <div className="grid h-7 w-7 place-items-center rounded-lg bg-ai/12 text-ai ring-1 ring-ai/25">
                 <Sparkles className="h-3.5 w-3.5" />
               </div>
               <div>
@@ -374,7 +374,7 @@ function DashboardPage() {
                 <p className="text-[11px] text-muted-foreground">Operator sends every reply.</p>
               </div>
             </div>
-            <span className="rounded-md border border-primary/20 bg-primary-soft px-1.5 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider">
+            <span className="rounded-md border border-ai/25 bg-ai/10 px-1.5 py-0.5 text-[10px] font-semibold text-ai uppercase tracking-wider">
               Human review
             </span>
           </div>
@@ -389,14 +389,14 @@ function DashboardPage() {
                       <span className="text-[10.5px] text-muted-foreground tabular-nums shrink-0">{d.prepared}</span>
                     </div>
                     <div className="text-[11.5px] text-muted-foreground truncate">{d.subject}</div>
-                    <div className="mt-1.5 rounded-lg border border-dashed border-primary/25 bg-primary-soft/40 p-2.5 text-[12px] leading-snug text-foreground/90 line-clamp-2">
+                    <div className="mt-1.5 rounded-lg border border-dashed border-ai/25 bg-ai/[0.06] p-2.5 text-[12px] leading-snug text-foreground/90 line-clamp-2">
                       {d.draft}
                     </div>
                     <div className="mt-1.5 flex items-center justify-between text-[10.5px]">
                       <span className="text-muted-foreground">
                         Confidence: <span className="font-semibold text-foreground/80">{d.confidence}</span>
                       </span>
-                      <Link to="/inbox" className="font-semibold text-primary hover:underline inline-flex items-center gap-1">
+                      <Link to="/inbox" className="font-semibold text-ai hover:underline inline-flex items-center gap-1">
                         Review & send <ArrowUpRight className="h-3 w-3" />
                       </Link>
                     </div>
@@ -407,8 +407,6 @@ function DashboardPage() {
           </ul>
         </div>
       </section>
-
-      {/* Operator workload + Audit + Planned */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
           <div className="border-b border-border px-5 py-3.5">
