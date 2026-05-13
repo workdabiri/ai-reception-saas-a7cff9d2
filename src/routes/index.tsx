@@ -49,42 +49,48 @@ export const Route = createFileRoute("/")({
   component: DashboardPage,
 });
 
+type Tone = "info" | "warning" | "attention" | "ai" | "danger" | "success" | "neutral";
+
 type Stat = {
   label: string;
   value: string;
   hint: string;
   icon: typeof Inbox;
-  tone: "neutral" | "primary" | "warning" | "danger" | "success";
+  tone: Tone;
   delta?: { value: string; dir: "up" | "down" | "flat" };
 };
 
 const stats: Stat[] = [
-  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "neutral", delta: { value: "+3", dir: "up" } },
+  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "info", delta: { value: "+3", dir: "up" } },
   { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
-  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "neutral", delta: { value: "+2", dir: "up" } },
-  { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "primary", delta: { value: "+4", dir: "up" } },
+  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "attention", delta: { value: "+2", dir: "up" } },
+  { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "ai", delta: { value: "+4", dir: "up" } },
   { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
 ];
 
-const toneStyles: Record<Stat["tone"], string> = {
+const toneStyles: Record<Tone, string> = {
   neutral: "bg-secondary text-secondary-foreground ring-border",
-  primary: "bg-primary-soft text-primary ring-primary/25",
+  info: "bg-info/10 text-info ring-info/25",
   warning: "bg-warning/15 text-warning-foreground ring-warning/30",
+  attention: "bg-attention/12 text-attention ring-attention/25",
+  ai: "bg-ai-soft text-ai ring-ai/25",
   danger: "bg-destructive/10 text-destructive ring-destructive/25",
   success: "bg-success/10 text-success ring-success/25",
 };
 
-const toneAccent: Record<Stat["tone"], string> = {
+const toneAccent: Record<Tone, string> = {
   neutral: "var(--color-border-strong)",
-  primary: "var(--color-primary)",
+  info: "var(--color-info)",
   warning: "var(--color-warning)",
+  attention: "var(--color-attention)",
+  ai: "var(--color-ai)",
   danger: "var(--color-destructive)",
   success: "var(--color-success)",
 };
 
 const deltaStyles = {
   up: "text-success bg-success/10 ring-1 ring-inset ring-success/20",
-  down: "text-warning-foreground bg-warning/15 ring-1 ring-inset ring-warning/25",
+  down: "text-muted-foreground bg-secondary ring-1 ring-inset ring-border",
   flat: "text-muted-foreground bg-secondary ring-1 ring-inset ring-border",
 };
 
