@@ -303,18 +303,10 @@
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
-    height: 4px;
+    height: 2px;
     border-radius: 1rem 1rem 0 0;
-    background: linear-gradient(90deg, transparent, var(--kpi-accent, var(--color-primary)) 18%, var(--kpi-accent, var(--color-primary)) 82%, transparent);
-    opacity: 1;
-  }
-  .kpi-accent::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: radial-gradient(420px 120px at 100% 0%, color-mix(in oklab, var(--kpi-accent, var(--color-primary)) 14%, transparent), transparent 70%);
+    background: var(--kpi-accent, var(--color-primary));
+    opacity: 0.85;
   }
   .nav-active {
     background-image: linear-gradient(180deg, oklch(0.475 0.195 268 / 0.10), oklch(0.475 0.195 268 / 0.06));
