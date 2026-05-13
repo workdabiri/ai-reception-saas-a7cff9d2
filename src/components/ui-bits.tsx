@@ -1,39 +1,45 @@
 import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
 import { Info } from "lucide-react";
 
-const chipStyles: Record<ChipStatus, string> = {
+const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
   new: "bg-info/12 text-info ring-info/30",
-  open: "bg-success/12 text-success ring-success/25",
-  waiting: "bg-warning/20 text-warning-foreground ring-warning/40",
+  open: "bg-info/12 text-info ring-info/25",
+  waiting: "bg-warning/15 text-warning-foreground ring-warning/35",
   closed: "bg-secondary text-muted-foreground ring-border",
-  "needs-review": "bg-ai-soft text-ai ring-[oklch(0.55_0.20_295)]/30",
+  "needs-review": "bg-ai-soft text-ai ring-ai/30",
+  "follow-up": "bg-attention/12 text-attention ring-attention/30",
+  urgent: "bg-destructive/12 text-destructive ring-destructive/30",
+  active: "bg-success/12 text-success ring-success/25",
   "access-denied": "bg-destructive/12 text-destructive ring-destructive/30",
-  future: "bg-surface-muted text-muted-foreground ring-border",
+  future: "bg-secondary text-muted-foreground ring-border",
 };
 
-const chipLabel: Record<ChipStatus, string> = {
+const chipLabel: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
   new: "New",
   open: "Open",
   waiting: "Waiting",
   closed: "Closed",
   "needs-review": "Needs review",
+  "follow-up": "Follow-up",
+  urgent: "Urgent",
+  active: "Active",
   "access-denied": "Access denied",
   future: "Future",
 };
 
-export function StatusChip({ status }: { status: ChipStatus | ConvStatus }) {
-  const map: Record<string, ChipStatus> = {
+export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "follow-up" | "urgent" | "active" }) {
+  const map: Record<string, keyof typeof chipStyles> = {
     open: "open",
     pending: "waiting",
     snoozed: "waiting",
     closed: "closed",
   };
-  const key = (map[status as string] ?? (status as ChipStatus)) as ChipStatus;
+  const key = (map[status as string] ?? (status as keyof typeof chipStyles));
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset ${chipStyles[key]}`}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-current dot-glow" />
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {chipLabel[key]}
     </span>
   );
@@ -42,7 +48,7 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus }) {
 const channelTone: Record<Channel, string> = {
   email: "bg-primary-soft text-primary ring-primary/20",
   webform: "bg-info/12 text-info ring-info/25",
-  sms: "bg-warning/20 text-warning-foreground ring-warning/35",
+  sms: "bg-warning/15 text-warning-foreground ring-warning/30",
   whatsapp: "bg-success/12 text-success ring-success/25",
   voice: "bg-secondary text-secondary-foreground ring-border",
 };
