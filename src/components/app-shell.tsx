@@ -78,6 +78,7 @@ const MENU_CONFIG: { sections: NavSection[]; bottomItems: NavItem[] } = {
     },
   ],
   bottomItems: [
+    { id: "studio", to: "/studio", label: "Design Studio", icon: Sparkles },
     { id: "help", to: "/settings", label: "Help", icon: HelpCircle },
     { id: "profile", to: "/settings", label: "Profile", icon: User },
   ],
