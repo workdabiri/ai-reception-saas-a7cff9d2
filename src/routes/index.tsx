@@ -431,8 +431,8 @@ function DashboardPage() {
                         </span>
                       </div>
                       <div className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
-                        <div className="bg-warning" style={{ width: `${openPct}%` }} />
-                        <div className="bg-primary" style={{ width: `${draftPct}%` }} />
+                        <div className="bg-info" style={{ width: `${openPct}%` }} />
+                        <div className="bg-ai" style={{ width: `${draftPct}%` }} />
                         <div className="bg-success" style={{ width: `${resPct}%` }} />
                       </div>
                       <div className="mt-1.5 flex items-center gap-3 text-[10.5px] text-muted-foreground tabular-nums">
