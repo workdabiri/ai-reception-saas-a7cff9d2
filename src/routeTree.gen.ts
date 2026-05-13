@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StudioRouteImport } from './routes/studio'
 import { Route as StatesRouteImport } from './routes/states'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MembersRouteImport } from './routes/members'
@@ -19,6 +20,11 @@ import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
 
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StatesRoute = StatesRouteImport.update({
   id: '/states',
   path: '/states',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/members': typeof MembersRoute
   '/settings': typeof SettingsRoute
   '/states': typeof StatesRoute
+  '/studio': typeof StudioRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/members': typeof MembersRoute
   '/settings': typeof SettingsRoute
   '/states': typeof StatesRoute
+  '/studio': typeof StudioRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/members': typeof MembersRoute
   '/settings': typeof SettingsRoute
   '/states': typeof StatesRoute
+  '/studio': typeof StudioRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/settings'
     | '/states'
+    | '/studio'
     | '/customers/$customerId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/settings'
     | '/states'
+    | '/studio'
     | '/customers/$customerId'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/settings'
     | '/states'
+    | '/studio'
     | '/customers/$customerId'
   fileRoutesById: FileRoutesById
 }
@@ -144,10 +156,18 @@ export interface RootRouteChildren {
   MembersRoute: typeof MembersRoute
   SettingsRoute: typeof SettingsRoute
   StatesRoute: typeof StatesRoute
+  StudioRoute: typeof StudioRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/states': {
       id: '/states'
       path: '/states'
@@ -235,6 +255,7 @@ const rootRouteChildren: RootRouteChildren = {
   MembersRoute: MembersRoute,
   SettingsRoute: SettingsRoute,
   StatesRoute: StatesRoute,
+  StudioRoute: StudioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
