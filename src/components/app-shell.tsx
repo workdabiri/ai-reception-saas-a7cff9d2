@@ -179,7 +179,7 @@ export function AppShell({
 
         {/* Main */}
         <div data-sidebar-collapsed={collapsed} className="flex-1 flex min-w-0 flex-col transition-[width] duration-300 ease-in-out">
-          <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-background/75 px-4 backdrop-blur-md lg:px-6">
+          <header className="glass-bar sticky top-0 z-20 flex h-14 items-center gap-3 border-b px-4 lg:px-6">
             <button
               onClick={toggle}
               aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -230,7 +230,7 @@ export function AppShell({
         </div>
 
         {/* Mobile bottom nav */}
-        <nav className="fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-1 rounded-2xl border border-border bg-surface/95 p-1.5 shadow-pop backdrop-blur md:hidden">
+        <nav className="glass-surface fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-1 rounded-2xl p-1.5 md:hidden" style={{ paddingBottom: "max(0.375rem, env(safe-area-inset-bottom))" }}>
           {mobilePrimary.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.to, item.exact);
@@ -270,7 +270,7 @@ export function AppShell({
               className="absolute inset-0 bg-foreground/40 animate-fade-in"
               onClick={() => setMoreOpen(false)}
             />
-            <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border bg-surface p-4 shadow-pop animate-slide-in-right">
+            <div className="glass-surface absolute inset-x-0 bottom-0 rounded-t-3xl p-4 animate-slide-in-right">
               <div className="mb-3 flex items-center justify-between">
                 <div className="text-sm font-semibold">More</div>
                 <button
@@ -330,7 +330,7 @@ function SharedSidebar({
   return (
     <aside
       data-collapsed={collapsed}
-      className={`hidden md:flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar/95 backdrop-blur transition-[width] duration-300 ease-in-out overflow-hidden sticky top-0 h-screen [height:100dvh] self-start ${
+      className={`glass-sidebar hidden md:flex shrink-0 flex-col border-r border-sidebar-border transition-[width] duration-300 ease-in-out overflow-hidden sticky top-0 h-screen [height:100dvh] self-start ${
         collapsed ? "w-16" : "w-[240px]"
       }`}
     >
