@@ -61,29 +61,27 @@ type Stat = {
 };
 
 const stats: Stat[] = [
-  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "neutral", delta: { value: "+3", dir: "up" } },
-  { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "attention", delta: { value: "-1", dir: "down" } },
+  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "info", delta: { value: "+3", dir: "up" } },
+  { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
   { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "attention", delta: { value: "+2", dir: "up" } },
   { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "ai", delta: { value: "+4", dir: "up" } },
   { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
 ];
 
-// Neutral-first: icon containers stay subtle. Only attention/ai/danger get a tinted icon background.
 const toneStyles: Record<Tone, string> = {
-  neutral: "bg-secondary text-muted-foreground ring-border",
-  info: "bg-secondary text-muted-foreground ring-border",
-  warning: "bg-attention/10 text-attention ring-attention/20",
-  attention: "bg-attention/10 text-attention ring-attention/20",
-  ai: "bg-ai-soft text-ai ring-ai/20",
-  danger: "bg-destructive/10 text-destructive ring-destructive/20",
-  success: "bg-success/10 text-success ring-success/20",
+  neutral: "bg-secondary text-secondary-foreground ring-border",
+  info: "bg-info/10 text-info ring-info/25",
+  warning: "bg-warning/15 text-warning-foreground ring-warning/30",
+  attention: "bg-attention/12 text-attention ring-attention/25",
+  ai: "bg-ai-soft text-ai ring-ai/25",
+  danger: "bg-destructive/10 text-destructive ring-destructive/25",
+  success: "bg-success/10 text-success ring-success/25",
 };
 
-// Top accent line is the primary semantic signal — neutral cards get no accent.
 const toneAccent: Record<Tone, string> = {
-  neutral: "transparent",
+  neutral: "var(--color-border-strong)",
   info: "var(--color-info)",
-  warning: "var(--color-attention)",
+  warning: "var(--color-warning)",
   attention: "var(--color-attention)",
   ai: "var(--color-ai)",
   danger: "var(--color-destructive)",
@@ -99,60 +97,60 @@ const deltaStyles = {
 function DashboardPage() {
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-8 lg:py-8 space-y-6">
-      {/* Command bar header — neutral, premium, calm */}
+      {/* Command bar header — calm, premium */}
       <header className="relative overflow-hidden rounded-2xl glass-surface shadow-card">
-        <div className="pointer-events-none absolute inset-0 grid-noise opacity-[0.25]" aria-hidden />
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-px"
+          className="absolute inset-0 opacity-95"
           aria-hidden
           style={{
             backgroundImage:
-              "linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-primary) 40%, transparent), transparent)",
+              "linear-gradient(135deg, oklch(0.465 0.205 268) 0%, oklch(0.42 0.18 282) 100%)",
           }}
         />
+        <div className="pointer-events-none absolute inset-0 grid-noise opacity-[0.05]" aria-hidden />
         <div className="relative flex flex-wrap items-center justify-between gap-4 px-6 py-5 lg:px-8 lg:py-6">
           <div className="min-w-0 flex items-center gap-4">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary ring-1 ring-inset ring-primary/15">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/12 text-white ring-1 ring-white/20">
               <CircleDot className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2 py-0.5 text-success ring-1 ring-inset ring-success/20">
-                  <span className="h-1.5 w-1.5 rounded-full bg-success" />
+              <div className="flex items-center gap-2 text-[11px] font-medium text-white/85">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-2 py-0.5 ring-1 ring-white/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
                   Live
                 </span>
-                <span className="truncate text-foreground/80 font-semibold">{currentWorkspace.name}</span>
-                <span aria-hidden className="opacity-50">·</span>
-                <span>{currentWorkspace.role}</span>
+                <span className="truncate">{currentWorkspace.name}</span>
+                <span aria-hidden className="opacity-60">·</span>
+                <span className="opacity-90">{currentWorkspace.role}</span>
               </div>
-              <h1 className="mt-1.5 truncate text-[22px] lg:text-[26px] font-semibold tracking-tight leading-tight text-foreground">
-                Operations <span className="text-muted-foreground">Command Center</span>
+              <h1 className="mt-1.5 truncate text-[22px] lg:text-[26px] font-semibold tracking-tight leading-tight text-white">
+                Operations <span className="text-white/80">Command Center</span>
               </h1>
-              <p className="mt-1 hidden sm:block text-[12.5px] text-muted-foreground max-w-xl">
+              <p className="mt-1 hidden sm:block text-[12.5px] text-white/70 max-w-xl">
                 Triage AI-prepared drafts, monitor channel health, and keep every customer reply human-reviewed.
               </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button className="hidden md:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-foreground/80 hover:bg-secondary">
+            <button className="hidden md:inline-flex items-center gap-2 rounded-lg bg-white/10 ring-1 ring-white/20 px-3 py-2 text-[12px] font-medium text-white hover:bg-white/15">
               <Calendar className="h-3.5 w-3.5" />
               Today
               <ChevronDown className="h-3.5 w-3.5 opacity-70" />
             </button>
-            <button className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-muted-foreground hover:bg-secondary">
+            <button className="hidden lg:inline-flex items-center gap-2 rounded-lg bg-white/10 ring-1 ring-white/20 px-3 py-2 text-[12px] font-medium text-white/90 hover:bg-white/15">
               <Search className="h-3.5 w-3.5" />
-              <span>Search…</span>
-              <kbd className="ml-2 rounded border border-border bg-secondary px-1 py-0.5 text-[10px] text-muted-foreground">⌘K</kbd>
+              <span className="opacity-80">Search…</span>
+              <kbd className="ml-2 rounded border border-white/25 bg-white/10 px-1 py-0.5 text-[10px]">⌘K</kbd>
             </button>
             <Link
               to="/channels"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-foreground/80 hover:bg-secondary"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-white/10 ring-1 ring-white/20 px-3 py-2 text-[12px] font-medium text-white hover:bg-white/15"
             >
               Channels
             </Link>
             <Link
               to="/inbox"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-[12.5px] font-semibold text-primary-foreground shadow-soft hover:bg-primary/90 active:translate-y-px"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3.5 py-2 text-[12.5px] font-semibold text-primary shadow-soft hover:bg-white/95 active:translate-y-px"
             >
               Open inbox <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -207,7 +205,7 @@ function DashboardPage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h2 className="text-[13px] font-semibold tracking-tight">Today's attention queue</h2>
-                <span className="rounded-full border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground tabular-nums">
+                <span className="rounded-full bg-warning/15 px-1.5 py-0.5 text-[10px] font-semibold text-warning-foreground">
                   {todaysQueue.length} items
                 </span>
               </div>
@@ -251,7 +249,7 @@ function DashboardPage() {
                     <td className="px-3 py-2.5"><StatusChip status={q.status} /></td>
                     <td className="px-3 py-2.5 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
                     <td className="px-5 py-2.5 text-muted-foreground">
-                      {q.assignee ?? <span className="italic text-attention">Unassigned</span>}
+                      {q.assignee ?? <span className="italic text-warning-foreground/80">Unassigned</span>}
                     </td>
                   </tr>
                 ))}
@@ -293,7 +291,7 @@ function DashboardPage() {
         <div className="lg:col-span-7 rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Channel command center</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">Channel command center</p>
               <h2 className="mt-0.5 text-[13px] font-semibold tracking-tight">Where customers reach you</h2>
             </div>
             <Link to="/channels" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
@@ -319,7 +317,7 @@ function DashboardPage() {
                     className={`group relative flex flex-col gap-2.5 rounded-xl border bg-card p-3.5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card ${active ? "border-border hover:border-primary/30" : "border-dashed border-border/80 bg-surface-muted/40"}`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className={`grid h-9 w-9 place-items-center rounded-lg ring-1 ring-inset ${active ? "bg-secondary text-foreground/80 ring-border" : "bg-secondary text-muted-foreground/70 ring-border"}`}>
+                      <div className={`grid h-9 w-9 place-items-center rounded-lg ring-1 ring-inset ${active ? "bg-primary-soft ring-primary/15" : "bg-secondary ring-border"}`}>
                         <ChannelIcon channel={c.key} size={20} />
                       </div>
                       {active ? (
@@ -345,7 +343,7 @@ function DashboardPage() {
                           <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">Custs</div>
                         </div>
                         <div>
-                          <div className={`text-[12px] font-semibold tabular-nums ${c.waiting > 0 ? "text-attention" : ""}`}>{c.waiting}</div>
+                          <div className={`text-[12px] font-semibold tabular-nums ${c.waiting > 0 ? "text-warning-foreground" : ""}`}>{c.waiting}</div>
                           <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">Wait</div>
                         </div>
                         <div>
@@ -368,7 +366,7 @@ function DashboardPage() {
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
             <div className="flex items-center gap-2">
-              <div className="grid h-7 w-7 place-items-center rounded-lg bg-ai-soft text-ai ring-1 ring-inset ring-ai/20">
+              <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary-soft text-primary ring-1 ring-primary/20">
                 <Sparkles className="h-3.5 w-3.5" />
               </div>
               <div>
@@ -376,7 +374,7 @@ function DashboardPage() {
                 <p className="text-[11px] text-muted-foreground">Operator sends every reply.</p>
               </div>
             </div>
-            <span className="rounded-md bg-ai-soft px-1.5 py-0.5 text-[10px] font-semibold text-ai uppercase tracking-wider ring-1 ring-inset ring-ai/20">
+            <span className="rounded-md border border-primary/20 bg-primary-soft px-1.5 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider">
               Human review
             </span>
           </div>
@@ -391,14 +389,14 @@ function DashboardPage() {
                       <span className="text-[10.5px] text-muted-foreground tabular-nums shrink-0">{d.prepared}</span>
                     </div>
                     <div className="text-[11.5px] text-muted-foreground truncate">{d.subject}</div>
-                    <div className="mt-1.5 rounded-lg border border-dashed border-ai/25 bg-ai-soft/50 p-2.5 text-[12px] leading-snug text-foreground/90 line-clamp-2">
+                    <div className="mt-1.5 rounded-lg border border-dashed border-primary/25 bg-primary-soft/40 p-2.5 text-[12px] leading-snug text-foreground/90 line-clamp-2">
                       {d.draft}
                     </div>
                     <div className="mt-1.5 flex items-center justify-between text-[10.5px]">
                       <span className="text-muted-foreground">
                         Confidence: <span className="font-semibold text-foreground/80">{d.confidence}</span>
                       </span>
-                      <Link to="/inbox" className="font-semibold text-ai hover:underline inline-flex items-center gap-1">
+                      <Link to="/inbox" className="font-semibold text-primary hover:underline inline-flex items-center gap-1">
                         Review & send <ArrowUpRight className="h-3 w-3" />
                       </Link>
                     </div>
@@ -434,10 +432,10 @@ function DashboardPage() {
                           {op.role}
                         </span>
                       </div>
-                      <div className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-                        <div style={{ width: `${openPct}%`, backgroundColor: "var(--color-attention)" }} />
-                        <div style={{ width: `${draftPct}%`, backgroundColor: "var(--color-ai)" }} />
-                        <div style={{ width: `${resPct}%`, backgroundColor: "var(--color-success)" }} />
+                      <div className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
+                        <div className="bg-warning" style={{ width: `${openPct}%` }} />
+                        <div className="bg-primary" style={{ width: `${draftPct}%` }} />
+                        <div className="bg-success" style={{ width: `${resPct}%` }} />
                       </div>
                       <div className="mt-1.5 flex items-center gap-3 text-[10.5px] text-muted-foreground tabular-nums">
                         <span className="inline-flex items-center gap-1"><Clock3 className="h-2.5 w-2.5" /><span className="font-semibold text-foreground">{op.open}</span> open</span>
