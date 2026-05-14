@@ -364,4 +364,72 @@
     background-image: linear-gradient(135deg, oklch(0.465 0.195 268), oklch(0.50 0.18 285));
     box-shadow: 0 1px 2px -1px oklch(0.20 0.07 268 / 0.20);
   }
+
+  /* ── Controlled glass accents ─────────────────────────────────────────
+     Subtle, premium, B2B-friendly. Used only for accent surfaces:
+     topbar, mobile bottom nav, sidebar, AI Draft Panel, command header,
+     floating drawers / system notices. NOT for tables or data rows. */
+  .glass-surface {
+    background-color: color-mix(in oklab, var(--color-card) 72%, transparent);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    backdrop-filter: saturate(140%) blur(14px);
+    border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 55%, transparent),
+      0 1px 2px -1px oklch(0.20 0.07 268 / 0.06),
+      0 8px 24px -14px oklch(0.20 0.07 268 / 0.18);
+  }
+  .dark .glass-surface {
+    background-color: color-mix(in oklab, var(--color-card) 68%, transparent);
+    border-color: color-mix(in oklab, var(--color-border-strong) 80%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 6%, transparent),
+      0 1px 2px -1px oklch(0 0 0 / 0.30),
+      0 10px 28px -14px oklch(0 0 0 / 0.50);
+  }
+  .glass-bar {
+    background-color: color-mix(in oklab, var(--color-background) 72%, transparent);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+    backdrop-filter: saturate(160%) blur(12px);
+    border-color: color-mix(in oklab, var(--color-border) 75%, transparent);
+  }
+  .dark .glass-bar {
+    background-color: color-mix(in oklab, var(--color-background) 68%, transparent);
+  }
+  .glass-sidebar {
+    background-color: color-mix(in oklab, var(--color-sidebar) 86%, transparent);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    backdrop-filter: saturate(140%) blur(10px);
+  }
+  .dark .glass-sidebar {
+    background-color: color-mix(in oklab, var(--color-sidebar) 82%, transparent);
+  }
+  .glass-ai {
+    background-color: color-mix(in oklab, var(--color-card) 70%, transparent);
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-ai) 8%, transparent),
+      color-mix(in oklab, var(--color-primary) 4%, transparent)
+    );
+    -webkit-backdrop-filter: saturate(150%) blur(16px);
+    backdrop-filter: saturate(150%) blur(16px);
+    border: 1px solid color-mix(in oklab, var(--color-ai) 22%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 50%, transparent),
+      0 1px 2px -1px oklch(0.20 0.07 295 / 0.08),
+      0 12px 28px -16px oklch(0.30 0.18 295 / 0.22);
+  }
+  .dark .glass-ai {
+    background-color: color-mix(in oklab, var(--color-card) 64%, transparent);
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-ai) 12%, transparent),
+      color-mix(in oklab, var(--color-primary) 8%, transparent)
+    );
+    border-color: color-mix(in oklab, var(--color-ai) 28%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 6%, transparent),
+      0 1px 2px -1px oklch(0 0 0 / 0.35),
+      0 14px 32px -16px oklch(0 0 0 / 0.55);
+  }
 }
