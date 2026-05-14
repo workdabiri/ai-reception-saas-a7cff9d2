@@ -251,7 +251,7 @@ function DashboardPage() {
                     <td className="px-3 py-2.5"><StatusChip status={q.status} /></td>
                     <td className="px-3 py-2.5 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
                     <td className="px-5 py-2.5 text-muted-foreground">
-                      {q.assignee ?? <span className="italic text-warning-foreground/80">Unassigned</span>}
+                      {q.assignee ?? <span className="italic text-attention">Unassigned</span>}
                     </td>
                   </tr>
                 ))}
