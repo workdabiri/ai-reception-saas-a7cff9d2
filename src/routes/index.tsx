@@ -319,7 +319,7 @@ function DashboardPage() {
                     className={`group relative flex flex-col gap-2.5 rounded-xl border bg-card p-3.5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card ${active ? "border-border hover:border-primary/30" : "border-dashed border-border/80 bg-surface-muted/40"}`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className={`grid h-9 w-9 place-items-center rounded-lg ring-1 ring-inset ${active ? "bg-primary-soft ring-primary/15" : "bg-secondary ring-border"}`}>
+                      <div className={`grid h-9 w-9 place-items-center rounded-lg ring-1 ring-inset ${active ? "bg-secondary text-foreground/80 ring-border" : "bg-secondary text-muted-foreground/70 ring-border"}`}>
                         <ChannelIcon channel={c.key} size={20} />
                       </div>
                       {active ? (
