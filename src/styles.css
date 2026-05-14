@@ -364,4 +364,69 @@
     background-image: linear-gradient(135deg, oklch(0.465 0.195 268), oklch(0.50 0.18 285));
     box-shadow: 0 1px 2px -1px oklch(0.20 0.07 268 / 0.20);
   }
+
+  /* ─── Controlled Soft Glass Accents ─── */
+  /* Restrained translucent surfaces. Use sparingly: command headers,
+     topbar, AI Draft Panel, mobile bottom nav, drawers. Not for tables. */
+  .glass-surface {
+    background-color: color-mix(in oklab, var(--color-card) 72%, transparent);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    backdrop-filter: saturate(140%) blur(14px);
+    border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 55%, transparent),
+      0 1px 2px -1px oklch(0.20 0.07 268 / 0.06),
+      0 8px 24px -16px oklch(0.20 0.07 268 / 0.18);
+  }
+  .dark .glass-surface {
+    background-color: color-mix(in oklab, var(--color-card) 68%, transparent);
+    border-color: color-mix(in oklab, var(--color-border-strong) 80%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.05),
+      0 1px 2px -1px oklch(0 0 0 / 0.30),
+      0 12px 32px -18px oklch(0 0 0 / 0.45);
+  }
+
+  /* Stronger frosted glass for AI / premium accent panels */
+  .glass-ai {
+    background-image:
+      linear-gradient(135deg,
+        color-mix(in oklab, var(--color-ai) 10%, transparent) 0%,
+        color-mix(in oklab, var(--color-primary) 6%, transparent) 100%),
+      linear-gradient(180deg,
+        color-mix(in oklab, var(--color-card) 70%, transparent),
+        color-mix(in oklab, var(--color-card) 78%, transparent));
+    -webkit-backdrop-filter: saturate(150%) blur(16px);
+    backdrop-filter: saturate(150%) blur(16px);
+    border: 1px solid color-mix(in oklab, var(--color-ai) 22%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 50%, transparent),
+      0 1px 2px -1px oklch(0.20 0.07 268 / 0.08),
+      0 10px 28px -18px color-mix(in oklab, var(--color-ai) 35%, transparent);
+  }
+  .dark .glass-ai {
+    background-image:
+      linear-gradient(135deg,
+        color-mix(in oklab, var(--color-ai) 18%, transparent) 0%,
+        color-mix(in oklab, var(--color-primary) 12%, transparent) 100%),
+      linear-gradient(180deg,
+        color-mix(in oklab, var(--color-card) 65%, transparent),
+        color-mix(in oklab, var(--color-card) 72%, transparent));
+    border-color: color-mix(in oklab, var(--color-ai) 32%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.06),
+      0 1px 2px -1px oklch(0 0 0 / 0.35),
+      0 14px 36px -20px oklch(0 0 0 / 0.50);
+  }
+
+  /* Topbar / sticky chrome — translucent but solid enough */
+  .glass-chrome {
+    background-color: color-mix(in oklab, var(--color-background) 78%, transparent);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-border) 80%, transparent);
+  }
+  .dark .glass-chrome {
+    background-color: color-mix(in oklab, var(--color-background) 72%, transparent);
+  }
 }
