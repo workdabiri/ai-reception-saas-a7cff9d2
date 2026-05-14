@@ -368,7 +368,7 @@ function DashboardPage() {
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
             <div className="flex items-center gap-2">
-              <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary-soft text-primary ring-1 ring-primary/20">
+              <div className="grid h-7 w-7 place-items-center rounded-lg bg-ai-soft text-ai ring-1 ring-inset ring-ai/20">
                 <Sparkles className="h-3.5 w-3.5" />
               </div>
               <div>
@@ -376,7 +376,7 @@ function DashboardPage() {
                 <p className="text-[11px] text-muted-foreground">Operator sends every reply.</p>
               </div>
             </div>
-            <span className="rounded-md border border-primary/20 bg-primary-soft px-1.5 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider">
+            <span className="rounded-md bg-ai-soft px-1.5 py-0.5 text-[10px] font-semibold text-ai uppercase tracking-wider ring-1 ring-inset ring-ai/20">
               Human review
             </span>
           </div>
