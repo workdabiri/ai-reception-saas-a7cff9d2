@@ -48,12 +48,23 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "foll
   );
 }
 
+// Neutral-first channel chips: all channels share one neutral surface so the
+// inbox/dashboard isn't a rainbow of channel colors. The colored channel
+// glyph (icon) carries identity instead. Planned/future read as disabled.
 const channelTone: Record<Channel, string> = {
-  email: "bg-primary-soft text-primary ring-primary/20",
-  webform: "bg-info/12 text-info ring-info/25",
-  sms: "bg-warning/15 text-warning-foreground ring-warning/30",
-  whatsapp: "bg-success/12 text-success ring-success/25",
-  voice: "bg-secondary text-secondary-foreground ring-border",
+  email: "bg-secondary text-secondary-foreground ring-border",
+  webform: "bg-secondary text-secondary-foreground ring-border",
+  sms: "bg-secondary text-muted-foreground ring-border",
+  whatsapp: "bg-secondary text-muted-foreground ring-border",
+  voice: "bg-secondary text-muted-foreground ring-border",
+};
+
+const channelDot: Record<Channel, string> = {
+  email: "bg-primary",
+  webform: "bg-info",
+  sms: "bg-muted-foreground/50",
+  whatsapp: "bg-muted-foreground/50",
+  voice: "bg-muted-foreground/50",
 };
 
 export function ChannelChip({ channel, label }: { channel: Channel; label: string }) {
@@ -62,9 +73,9 @@ export function ChannelChip({ channel, label }: { channel: Channel; label: strin
     <span
       className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${channelTone[channel]}`}
     >
-      <span className="h-1 w-1 rounded-full bg-current opacity-70" />
+      <span className={`h-1 w-1 rounded-full ${channelDot[channel]}`} />
       {label}
-      {planned && <span className="ml-0.5 text-[9px] uppercase tracking-wider opacity-70">planned</span>}
+      {planned && <span className="ml-0.5 text-[9px] uppercase tracking-wider opacity-60">planned</span>}
     </span>
   );
 }
