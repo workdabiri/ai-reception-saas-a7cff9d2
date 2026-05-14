@@ -293,7 +293,7 @@ function DashboardPage() {
         <div className="lg:col-span-7 rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">Channel command center</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Channel command center</p>
               <h2 className="mt-0.5 text-[13px] font-semibold tracking-tight">Where customers reach you</h2>
             </div>
             <Link to="/channels" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
