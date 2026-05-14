@@ -2,16 +2,16 @@ import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
 import { Info } from "lucide-react";
 
 const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
-  new: "bg-info/12 text-info ring-info/30",
-  open: "bg-info/12 text-info ring-info/25",
-  waiting: "bg-warning/15 text-warning-foreground ring-warning/35",
+  new: "bg-secondary text-foreground/80 ring-border",
+  open: "bg-secondary text-foreground/80 ring-border",
+  waiting: "bg-attention/10 text-attention ring-attention/25",
   closed: "bg-secondary text-muted-foreground ring-border",
-  "needs-review": "bg-ai-soft text-ai ring-ai/30",
-  "follow-up": "bg-attention/12 text-attention ring-attention/30",
-  urgent: "bg-destructive/12 text-destructive ring-destructive/30",
-  active: "bg-success/12 text-success ring-success/25",
-  "access-denied": "bg-destructive/12 text-destructive ring-destructive/30",
-  future: "bg-secondary text-muted-foreground ring-border",
+  "needs-review": "bg-ai-soft text-ai ring-ai/25",
+  "follow-up": "bg-attention/10 text-attention ring-attention/25",
+  urgent: "bg-destructive/10 text-destructive ring-destructive/25",
+  active: "bg-success/10 text-success ring-success/25",
+  "access-denied": "bg-destructive/10 text-destructive ring-destructive/25",
+  future: "bg-secondary text-muted-foreground/80 ring-border",
 };
 
 const chipLabel: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
@@ -45,21 +45,26 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "foll
   );
 }
 
-const channelTone: Record<Channel, string> = {
-  email: "bg-primary-soft text-primary ring-primary/20",
-  webform: "bg-info/12 text-info ring-info/25",
-  sms: "bg-warning/15 text-warning-foreground ring-warning/30",
-  whatsapp: "bg-success/12 text-success ring-success/25",
-  voice: "bg-secondary text-secondary-foreground ring-border",
+// Neutral-first: channel chip is a neutral pill with a small colored dot only.
+// Active channels get a subtle brand/info dot; planned/future use slate/disabled.
+const channelDot: Record<Channel, string> = {
+  email: "bg-primary",
+  webform: "bg-info",
+  sms: "bg-muted-foreground/40",
+  whatsapp: "bg-muted-foreground/40",
+  voice: "bg-muted-foreground/40",
 };
 
 export function ChannelChip({ channel, label }: { channel: Channel; label: string }) {
   const planned = channel === "sms" || channel === "whatsapp" || channel === "voice";
+  const tone = planned
+    ? "bg-secondary text-muted-foreground/80 ring-border"
+    : "bg-secondary text-foreground/80 ring-border";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${channelTone[channel]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${tone}`}
     >
-      <span className="h-1 w-1 rounded-full bg-current opacity-70" />
+      <span className={`h-1.5 w-1.5 rounded-full ${channelDot[channel]}`} />
       {label}
       {planned && <span className="ml-0.5 text-[9px] uppercase tracking-wider opacity-70">planned</span>}
     </span>
@@ -123,12 +128,12 @@ export function PageHeader({
 
 export function MockBanner() {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-warning/25 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent px-4 py-3 shadow-soft">
-      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-warning/25 text-warning-foreground">
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-soft">
+      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-secondary text-muted-foreground ring-1 ring-inset ring-border">
         <Info className="h-3 w-3" />
       </span>
-      <div className="text-[12.5px] leading-snug text-warning-foreground/90">
-        <span className="font-semibold text-warning-foreground">Prototype with mock data only.</span>{" "}
+      <div className="text-[12.5px] leading-snug text-muted-foreground">
+        <span className="font-semibold text-foreground">Prototype with mock data only.</span>{" "}
         Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts; an operator sends every reply.
       </div>
     </div>
