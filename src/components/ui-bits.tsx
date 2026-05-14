@@ -128,12 +128,12 @@ export function PageHeader({
 
 export function MockBanner() {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-warning/25 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent px-4 py-3 shadow-soft">
-      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-warning/25 text-warning-foreground">
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-soft">
+      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-secondary text-muted-foreground ring-1 ring-inset ring-border">
         <Info className="h-3 w-3" />
       </span>
-      <div className="text-[12.5px] leading-snug text-warning-foreground/90">
-        <span className="font-semibold text-warning-foreground">Prototype with mock data only.</span>{" "}
+      <div className="text-[12.5px] leading-snug text-muted-foreground">
+        <span className="font-semibold text-foreground">Prototype with mock data only.</span>{" "}
         Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts; an operator sends every reply.
       </div>
     </div>
