@@ -69,9 +69,9 @@ export function AIDraftPanel({
     "Some details (pricing, availability, insurance) may be outdated. Verify before sending.";
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[oklch(0.55_0.20_295)]/25 bg-gradient-to-b from-[oklch(0.555_0.195_295)]/8 via-card to-card shadow-card">
+    <div className="overflow-hidden rounded-2xl glass-ai shadow-card">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 border-b border-[oklch(0.55_0.20_295)]/15 bg-ai-soft px-4 py-3">
+      <div className="flex items-start justify-between gap-3 border-b border-[oklch(0.55_0.20_295)]/20 px-4 py-3" style={{ background: "color-mix(in oklab, var(--color-ai) 8%, transparent)" }}>
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="grid h-7 w-7 place-items-center rounded-lg gradient-ai text-ai-foreground shadow-soft">
