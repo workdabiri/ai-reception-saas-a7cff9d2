@@ -45,21 +45,26 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "foll
   );
 }
 
-const channelTone: Record<Channel, string> = {
-  email: "bg-primary-soft text-primary ring-primary/20",
-  webform: "bg-info/12 text-info ring-info/25",
-  sms: "bg-warning/15 text-warning-foreground ring-warning/30",
-  whatsapp: "bg-success/12 text-success ring-success/25",
-  voice: "bg-secondary text-secondary-foreground ring-border",
+// Neutral-first: channel chip is a neutral pill with a small colored dot only.
+// Active channels get a subtle brand/info dot; planned/future use slate/disabled.
+const channelDot: Record<Channel, string> = {
+  email: "bg-primary",
+  webform: "bg-info",
+  sms: "bg-muted-foreground/40",
+  whatsapp: "bg-muted-foreground/40",
+  voice: "bg-muted-foreground/40",
 };
 
 export function ChannelChip({ channel, label }: { channel: Channel; label: string }) {
   const planned = channel === "sms" || channel === "whatsapp" || channel === "voice";
+  const tone = planned
+    ? "bg-secondary text-muted-foreground/80 ring-border"
+    : "bg-secondary text-foreground/80 ring-border";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${channelTone[channel]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${tone}`}
     >
-      <span className="h-1 w-1 rounded-full bg-current opacity-70" />
+      <span className={`h-1.5 w-1.5 rounded-full ${channelDot[channel]}`} />
       {label}
       {planned && <span className="ml-0.5 text-[9px] uppercase tracking-wider opacity-70">planned</span>}
     </span>
