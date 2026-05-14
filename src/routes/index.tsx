@@ -61,27 +61,29 @@ type Stat = {
 };
 
 const stats: Stat[] = [
-  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "info", delta: { value: "+3", dir: "up" } },
-  { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
+  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "neutral", delta: { value: "+3", dir: "up" } },
+  { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "attention", delta: { value: "-1", dir: "down" } },
   { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "attention", delta: { value: "+2", dir: "up" } },
   { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "ai", delta: { value: "+4", dir: "up" } },
   { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
 ];
 
+// Neutral-first: icon containers stay subtle. Only attention/ai/danger get a tinted icon background.
 const toneStyles: Record<Tone, string> = {
-  neutral: "bg-secondary text-secondary-foreground ring-border",
-  info: "bg-info/10 text-info ring-info/25",
-  warning: "bg-warning/15 text-warning-foreground ring-warning/30",
-  attention: "bg-attention/12 text-attention ring-attention/25",
-  ai: "bg-ai-soft text-ai ring-ai/25",
-  danger: "bg-destructive/10 text-destructive ring-destructive/25",
-  success: "bg-success/10 text-success ring-success/25",
+  neutral: "bg-secondary text-muted-foreground ring-border",
+  info: "bg-secondary text-muted-foreground ring-border",
+  warning: "bg-attention/10 text-attention ring-attention/20",
+  attention: "bg-attention/10 text-attention ring-attention/20",
+  ai: "bg-ai-soft text-ai ring-ai/20",
+  danger: "bg-destructive/10 text-destructive ring-destructive/20",
+  success: "bg-success/10 text-success ring-success/20",
 };
 
+// Top accent line is the primary semantic signal — neutral cards get no accent.
 const toneAccent: Record<Tone, string> = {
-  neutral: "var(--color-border-strong)",
+  neutral: "transparent",
   info: "var(--color-info)",
-  warning: "var(--color-warning)",
+  warning: "var(--color-attention)",
   attention: "var(--color-attention)",
   ai: "var(--color-ai)",
   danger: "var(--color-destructive)",
