@@ -14,7 +14,7 @@ import {
   Plus,
   Radio,
   PanelLeftClose,
-  PanelLeftOpen,
+  
   HelpCircle,
   ChevronsUpDown,
   Shield,
