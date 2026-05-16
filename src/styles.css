@@ -228,9 +228,10 @@
   --attention: oklch(0.640 0.205 38);
   --attention-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.910 0.014 252);
-  --border-strong: oklch(0.860 0.016 252);
-  --input: oklch(0.910 0.014 252);
+  /* Hairline borders — rely on shadow for primary depth, border just defines edge */
+  --border: rgba(15, 17, 36, 0.06);
+  --border-strong: rgba(15, 17, 36, 0.10);
+  --input: rgba(15, 17, 36, 0.10);
   --ring: oklch(0.515 0.225 277);
 
   /* Sidebar — deeper, slightly tinted */
