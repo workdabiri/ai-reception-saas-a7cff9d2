@@ -131,19 +131,22 @@ function CustomersPage() {
 
         {/* Reception summary */}
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <SummaryCard label="Customers" value={rows.length} />
-          <SummaryCard label="Open conversations" value={totals.open} tone="primary" />
-          <SummaryCard label="Unread messages" value={totals.unread} tone="warning" />
-          <SummaryCard label="Need follow-up" value={totals.followUp} tone="warning" />
+          <SummaryCard label="Customers" value={rows.length} accent="var(--color-primary)" />
+          <SummaryCard label="Open conversations" value={totals.open} accent="var(--color-info)" />
+          <SummaryCard label="Unread messages" value={totals.unread} accent="var(--color-attention)" />
+          <SummaryCard label="Need follow-up" value={totals.followUp} accent="var(--color-attention)" />
         </div>
 
-        <div className="mt-4 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-warning-foreground">
-          <Shield className="mt-1 h-4 w-4 shrink-0" />
+        <div className="workspace-scoped-callout mt-4 flex items-start gap-2 px-4 py-3">
+          <Shield className="mt-[2px] h-4 w-4 shrink-0 text-warning" />
           <div>
-            <span className="font-medium">Workspace-scoped data.</span>{" "}
-            Visible only to permitted members of this workspace. Server verifies membership. Mock data — no real PII.
+            <div className="workspace-scoped-callout-title">Workspace-scoped data</div>
+            <div className="workspace-scoped-callout-body">
+              Visible only to permitted members of this workspace. Server verifies membership. Mock data — no real PII shown.
+            </div>
           </div>
         </div>
+
 
         <div className="mt-5 rounded-xl border border-border bg-card shadow-card overflow-hidden">
           {/* Filter bar */}
