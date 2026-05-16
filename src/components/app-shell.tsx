@@ -246,7 +246,7 @@ export function AppShell({
           {mobilePrimary.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.to, item.exact);
-            const label = item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label;
+            const label = item.label;
             return (
               <Link
                 key={item.id}
