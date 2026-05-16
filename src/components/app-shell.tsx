@@ -246,6 +246,7 @@ export function AppShell({
                     : "text-muted-foreground hover:bg-secondary"
                 }`}
               >
+                {active && <span className="bottom-nav-active-bar" />}
                 <Icon className="h-[18px] w-[18px]" />
                 {item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label}
                 {item.badge ? (
