@@ -56,33 +56,33 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "foll
 }
 
 // Neutral-first channel chips: all channels share one neutral surface so the
-// inbox/dashboard isn't a rainbow of channel colors. The colored channel
-// glyph (icon) carries identity instead. Planned/future read as disabled.
-const channelTone: Record<Channel, string> = {
-  email: "bg-secondary text-secondary-foreground ring-border",
-  webform: "bg-secondary text-secondary-foreground ring-border",
-  sms: "bg-secondary text-muted-foreground ring-border",
-  whatsapp: "bg-secondary text-muted-foreground ring-border",
-  voice: "bg-secondary text-muted-foreground ring-border",
-};
-
-const channelDot: Record<Channel, string> = {
-  email: "bg-primary",
-  webform: "bg-info",
-  sms: "bg-muted-foreground/50",
-  whatsapp: "bg-muted-foreground/50",
-  voice: "bg-muted-foreground/50",
+// inbox/dashboard isn't a rainbow of channel backgrounds. A brand-colored dot
+// gives each channel an at-a-glance identity. Planned channels read as muted.
+const channelDotVar: Record<Channel, string> = {
+  email: "var(--channel-email)",
+  webform: "var(--channel-webform)",
+  sms: "var(--channel-sms)",
+  whatsapp: "var(--channel-whatsapp)",
+  voice: "var(--channel-voice)",
 };
 
 export function ChannelChip({ channel, label }: { channel: Channel; label: string }) {
   const planned = channel === "sms" || channel === "whatsapp" || channel === "voice";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${channelTone[channel]}`}
+      className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground ring-1 ring-inset ring-border"
+      style={planned ? { opacity: 0.7 } : undefined}
     >
-      <span className={`h-1 w-1 rounded-full ${channelDot[channel]}`} />
+      <span
+        className="h-1.5 w-1.5 rounded-full"
+        style={{ background: channelDotVar[channel] }}
+      />
       {label}
-      {planned && <span className="ml-1 text-[9px] uppercase tracking-wider opacity-60">planned</span>}
+      {planned && (
+        <span className="ml-1 text-[9px] uppercase tracking-wider text-muted-foreground/70">
+          soon
+        </span>
+      )}
     </span>
   );
 }
