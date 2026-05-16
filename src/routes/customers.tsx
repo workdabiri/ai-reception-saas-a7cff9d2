@@ -37,8 +37,8 @@ const statusLabel: Record<InboxStatus, string> = {
 const statusTone: Record<InboxStatus, string> = {
   new: "bg-secondary text-secondary-foreground border-border",
   open: "bg-info/10 text-info border-info/25",
-  waiting: "bg-warning/12 text-warning-foreground border-warning/30",
-  "needs-followup": "bg-attention/12 text-attention border-attention/30",
+  waiting: "bg-warning/12 text-warning-foreground dark:text-[var(--status-warning-text)] border-warning/30",
+  "needs-followup": "bg-attention/12 text-attention dark:text-[var(--status-pending-text)] border-attention/30",
   closed: "bg-success/8 text-success/85 border-success/20",
 };
 
@@ -131,19 +131,22 @@ function CustomersPage() {
 
         {/* Reception summary */}
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <SummaryCard label="Customers" value={rows.length} />
-          <SummaryCard label="Open conversations" value={totals.open} tone="primary" />
-          <SummaryCard label="Unread messages" value={totals.unread} tone="warning" />
-          <SummaryCard label="Need follow-up" value={totals.followUp} tone="warning" />
+          <SummaryCard label="Customers" value={rows.length} accent="var(--color-primary)" />
+          <SummaryCard label="Open conversations" value={totals.open} accent="var(--color-info)" />
+          <SummaryCard label="Unread messages" value={totals.unread} accent="var(--color-attention)" />
+          <SummaryCard label="Need follow-up" value={totals.followUp} accent="var(--color-attention)" />
         </div>
 
-        <div className="mt-4 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-warning-foreground">
-          <Shield className="mt-1 h-4 w-4 shrink-0" />
+        <div className="workspace-scoped-callout mt-4 flex items-start gap-2 px-4 py-3">
+          <Shield className="mt-[2px] h-4 w-4 shrink-0 text-warning" />
           <div>
-            <span className="font-medium">Workspace-scoped data.</span>{" "}
-            Visible only to permitted members of this workspace. Server verifies membership. Mock data — no real PII.
+            <div className="workspace-scoped-callout-title">Workspace-scoped data</div>
+            <div className="workspace-scoped-callout-body">
+              Visible only to permitted members of this workspace. Server verifies membership. Mock data — no real PII shown.
+            </div>
           </div>
         </div>
+
 
         <div className="mt-5 rounded-xl border border-border bg-card shadow-card overflow-hidden">
           {/* Filter bar */}
@@ -263,7 +266,7 @@ function CustomersPage() {
                         </td>
                         <td className="px-3 py-3">
                           {r.needsFollowUp ? (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[11px] font-medium text-warning-foreground">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[11px] font-medium text-warning-foreground dark:text-[var(--status-warning-text)]">
                               <AlertTriangle className="h-3 w-3" /> Yes
                             </span>
                           ) : (
@@ -319,7 +322,7 @@ function CustomersPage() {
                             </span>
                           )}
                           {r.needsFollowUp && (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[10px] font-medium text-warning-foreground">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[10px] font-medium text-warning-foreground dark:text-[var(--status-warning-text)]">
                               <AlertTriangle className="h-2.5 w-2.5" /> Follow-up
                             </span>
                           )}
@@ -338,16 +341,18 @@ function CustomersPage() {
   );
 }
 
-function SummaryCard({ label, value, tone = "neutral" }: { label: string; value: number; tone?: "neutral" | "primary" | "warning" }) {
-  const toneCls = {
-    neutral: "text-foreground",
-    primary: "text-primary",
-    warning: "text-warning-foreground",
-  }[tone];
+function SummaryCard({ label, value, accent }: { label: string; value: number; accent: string }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-soft">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className={`mt-2 text-2xl font-medium tabular-nums tracking-tight ${toneCls}`}>{value}</div>
+    <div
+      style={{ ["--kpi-accent" as never]: accent }}
+      className="kpi-accent relative overflow-hidden rounded-xl bg-surface px-6 py-5 shadow-card dark:shadow-none"
+    >
+      <div className="text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-3 text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground" style={{ fontFeatureSettings: '"tnum" 1' }}>
+        {value}
+      </div>
     </div>
   );
 }

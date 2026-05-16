@@ -26,7 +26,7 @@ type Props = {
 
 const confidenceTone: Record<DraftConfidence, string> = {
   High: "bg-success/12 text-success border-success/25",
-  Medium: "bg-warning/20 text-warning-foreground border-warning/35",
+  Medium: "bg-warning/20 text-warning-foreground dark:text-[var(--status-warning-text)] border-warning/35",
   Low: "bg-destructive/12 text-destructive border-destructive/25",
 };
 
@@ -37,7 +37,7 @@ const confidencePct: Record<DraftConfidence, number> = {
 };
 
 const stateTone: Record<DraftState, string> = {
-  pending: "bg-ai-soft text-[oklch(0.40_0.18_290)] border-[oklch(0.55_0.20_295)]/25",
+  pending: "bg-primary/10 dark:bg-primary/[0.18] text-primary border-primary/30",
   accepted: "bg-success/12 text-success border-success/25",
   edited: "bg-info/12 text-info border-info/25",
   rejected: "bg-muted text-muted-foreground border-border",
@@ -156,7 +156,7 @@ export function AIDraftPanel({
 
       {/* Risk warning */}
       {showRisk && (
-        <div className="mx-4 mb-3 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground">
+        <div className="mx-4 mb-3 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground dark:text-[var(--status-warning-text)] dark:text-[var(--status-warning-text)]">
           <ShieldAlert className="mt-1 h-3.5 w-3.5 shrink-0" />
           <div>
             <div className="font-medium">Verify before sending</div>

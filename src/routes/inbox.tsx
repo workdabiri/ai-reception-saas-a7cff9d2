@@ -89,8 +89,8 @@ const inboxStatusLabel: Record<InboxStatus, string> = {
 const inboxStatusTone: Record<InboxStatus, string> = {
   new: "bg-secondary text-secondary-foreground border-border",
   open: "bg-info/10 text-info border-info/25",
-  waiting: "bg-warning/12 text-warning-foreground border-warning/30",
-  "needs-followup": "bg-attention/12 text-attention border-attention/30",
+  waiting: "bg-warning/12 text-warning-foreground dark:text-[var(--status-warning-text)] border-warning/30",
+  "needs-followup": "bg-attention/12 text-attention dark:text-[var(--status-pending-text)] border-attention/30",
   closed: "bg-success/8 text-success/85 border-success/20",
 };
 
@@ -548,7 +548,7 @@ function InboxPage() {
                 onClick={() => setNoteMode(true)}
                 className={`inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium transition ${
                   noteMode
-                    ? "bg-warning/30 text-warning-foreground"
+                    ? "bg-warning/30 text-warning-foreground dark:text-[var(--status-warning-text)]"
                     : "text-muted-foreground hover:bg-secondary"
                 }`}
               >
@@ -599,18 +599,18 @@ function InboxPage() {
                       Add note
                     </button>
                   ) : (
-                    <button
-                      title="Mock — no message will be sent in this prototype"
-                      className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
-                    >
-                      <Send className="h-3.5 w-3.5" />
-                      Send reply
-                      <span
-                        className="ml-1 rounded-[3px] border-[0.5px] border-border px-[5px] py-[2px] text-[9px] font-medium uppercase tracking-[0.05em] bg-background text-muted-foreground dark:bg-white/[0.08]"
+                    <div className="inline-flex items-center">
+                      <button
+                        title="Mock — no message will be sent in this prototype"
+                        className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
                       >
-                        mock
+                        <Send className="h-3.5 w-3.5" />
+                        Send reply
+                      </button>
+                      <span className="mock-suffix ml-2 self-center rounded border-[0.5px] border-border bg-background px-1.5 py-1 text-[10px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
+                        Mock
                       </span>
-                    </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -711,11 +711,13 @@ function CustomerContext({
       </div>
 
       {/* Visibility warning */}
-      <div className="mx-5 mt-4 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground">
-        <Shield className="mt-1 h-3.5 w-3.5 shrink-0" />
+      <div className="workspace-scoped-callout mx-5 mt-4 flex items-start gap-2 px-3 py-3">
+        <Shield className="mt-[2px] h-3.5 w-3.5 shrink-0 text-warning" />
         <div>
-          <div className="font-medium">Workspace-scoped</div>
-          Customer data is visible only to members of this workspace. Mock data — no real PII shown.
+          <div className="workspace-scoped-callout-title">Workspace-scoped</div>
+          <div className="workspace-scoped-callout-body">
+            Customer data is visible only to members of this workspace. Mock data — no real PII shown.
+          </div>
         </div>
       </div>
 
@@ -891,7 +893,7 @@ function ThreadItem({
       message.author === "system-assignment"
         ? "border-info/30 text-info"
         : message.author === "system-status"
-          ? "border-warning/30 text-warning-foreground"
+          ? "border-warning/30 text-warning-foreground dark:text-[var(--status-warning-text)]"
           : "border-primary/30 text-primary";
     return (
       <div className="flex items-center gap-3">
@@ -909,16 +911,16 @@ function ThreadItem({
   // Internal note
   if (message.author === "internal-note") {
     return (
-      <div className="rounded-xl border border-warning/40 bg-warning/10 p-3 shadow-soft">
-        <div className="mb-2 flex items-center justify-between text-[11px] text-warning-foreground">
-          <span className="inline-flex items-center gap-2 font-medium">
-            <StickyNote className="h-3 w-3" />
+      <div className="rounded-xl border border-border border-l-[3px] border-l-warning bg-warning/8 p-3 shadow-soft">
+        <div className="mb-2 flex items-center justify-between text-[11px]">
+          <span className="inline-flex items-center gap-2 font-medium text-foreground">
+            <StickyNote className="h-3 w-3 text-warning" />
             Internal note · {message.authorName}
           </span>
-          <span className="opacity-70 tabular-nums">{message.time}</span>
+          <span className="tabular-nums text-muted-foreground">{message.time}</span>
         </div>
         <p className="text-sm text-foreground/90">{message.body}</p>
-        <div className="mt-2 text-[10px] uppercase tracking-wider text-warning-foreground/70">
+        <div className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground">
           Not visible to customer
         </div>
       </div>
@@ -1041,7 +1043,7 @@ const inboxSectionGroups: SectionGroup[] = [
 const badgeToneClass: Record<NonNullable<SectionRow["badgeTone"]>, string> = {
   primary: "bg-primary-soft text-primary",
   muted: "bg-secondary text-muted-foreground",
-  warning: "bg-warning/20 text-warning-foreground",
+  warning: "bg-warning/20 text-warning-foreground dark:text-[var(--status-warning-text)]",
   success: "bg-success/10 text-success",
   info: "bg-info/10 text-info",
 };

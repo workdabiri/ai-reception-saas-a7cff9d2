@@ -15,7 +15,7 @@ import { useState } from "react";
 const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
   new: "bg-secondary text-secondary-foreground ring-border",
   open: "bg-info/10 text-info ring-info/25",
-  waiting: "bg-warning/12 text-warning-foreground ring-warning/30",
+  waiting: "bg-warning/12 text-warning-foreground dark:text-[var(--status-warning-text)] ring-warning/30",
   closed: "bg-success/8 text-success/85 ring-success/20",
   "needs-review": "bg-ai-soft text-ai ring-ai/25",
   "follow-up": "bg-attention/12 text-attention ring-attention/30",
