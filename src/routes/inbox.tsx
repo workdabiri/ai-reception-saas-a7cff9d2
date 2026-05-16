@@ -89,8 +89,8 @@ const inboxStatusLabel: Record<InboxStatus, string> = {
 const inboxStatusTone: Record<InboxStatus, string> = {
   new: "bg-secondary text-secondary-foreground border-border",
   open: "bg-info/10 text-info border-info/25",
-  waiting: "bg-warning/12 text-warning-foreground border-warning/30",
-  "needs-followup": "bg-attention/12 text-attention border-attention/30",
+  waiting: "bg-warning/12 text-warning-foreground dark:text-[var(--status-warning-text)] border-warning/30",
+  "needs-followup": "bg-attention/12 text-attention dark:text-[var(--status-pending-text)] border-attention/30",
   closed: "bg-success/8 text-success/85 border-success/20",
 };
 
