@@ -48,7 +48,7 @@ export const Route = createFileRoute("/customers/$customerId")({
         </p>
         <Link
           to="/customers"
-          className="mt-5 inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-secondary"
+          className="mt-5 inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back to customers
         </Link>
@@ -120,7 +120,7 @@ function CustomerProfilePage() {
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
         <Link
           to="/customers"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Customers
         </Link>
@@ -131,12 +131,12 @@ function CustomerProfilePage() {
             description={`${linked.length} conversation${linked.length === 1 ? "" : "s"} · last seen ${customer.lastSeen}`}
             action={
               <div className="flex items-center gap-2">
-                <button className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-secondary">
+                <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary">
                   <Tag className="h-3.5 w-3.5" /> Manage tags
                 </button>
                 <Link
                   to="/inbox"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
                 >
                   <MessageSquare className="h-3.5 w-3.5" /> Open in inbox
                 </Link>
@@ -147,7 +147,7 @@ function CustomerProfilePage() {
 
         {/* Visibility warning */}
         <div className="mt-5 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-warning-foreground">
-          <Shield className="mt-0.5 h-4 w-4 shrink-0" />
+          <Shield className="mt-1 h-4 w-4 shrink-0" />
           <div>
             <span className="font-medium">Visible only inside this workspace.</span>{" "}
             Customer data and notes are workspace-scoped to permitted members. Mock data —
@@ -179,12 +179,12 @@ function CustomerProfilePage() {
                   {customer.tags.map((t: string) => (
                     <span
                       key={t}
-                      className="rounded-md border border-border bg-surface-muted px-1.5 py-0.5 text-[11px] font-medium"
+                      className="rounded-md border border-border bg-surface-muted px-2 py-1 text-[11px] font-medium"
                     >
                       {t}
                     </span>
                   ))}
-                  <button className="rounded-md border border-dashed border-border px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-secondary">
+                  <button className="rounded-md border border-dashed border-border px-2 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary">
                     + Tag
                   </button>
                 </div>
@@ -198,7 +198,7 @@ function CustomerProfilePage() {
                   <Plus className="h-3 w-3" /> Add note
                 </button>
               </div>
-              <div className="mt-1 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+              <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
                 <Lock className="h-3 w-3" />
                 Private to this workspace · never shared with the customer
               </div>
@@ -214,7 +214,7 @@ function CustomerProfilePage() {
                     className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning-foreground"
                   >
                     <div className="mb-1 flex items-center justify-between text-[11px]">
-                      <span className="inline-flex items-center gap-1.5 font-medium">
+                      <span className="inline-flex items-center gap-2 font-medium">
                         <StickyNote className="h-3 w-3" />
                         {n.author}
                       </span>
@@ -254,17 +254,17 @@ function CustomerProfilePage() {
                       <li key={c.id}>
                         <Link
                           to="/inbox"
-                          className="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-muted"
+                          className="flex items-center gap-3 px-3 py-3 hover:bg-surface-muted"
                         >
                           <div className="min-w-0 flex-1">
                             <div className="truncate text-sm font-medium">{c.subject}</div>
-                            <div className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                            <div className="mt-1 truncate text-[11px] text-muted-foreground">
                               {channelLabel[c.channel]} · {c.updated} ·{" "}
                               {a ? `Assigned to ${a}` : "Unassigned"}
                             </div>
                           </div>
                           <span
-                            className={`shrink-0 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${statusTone[c.inboxStatus]}`}
+                            className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[c.inboxStatus]}`}
                           >
                             {statusLabel[c.inboxStatus]}
                           </span>
@@ -289,13 +289,13 @@ function CustomerProfilePage() {
                       className="rounded-lg border border-border bg-card p-3"
                     >
                       <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                        <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+                        <span className="inline-flex items-center gap-2 font-medium text-foreground">
                           <MessageBadge author={m.author} />
                           {m.authorName}
                         </span>
                         <span className="tabular-nums">{m.time}</span>
                       </div>
-                      <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-foreground/90">
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground/90">
                         {m.body}
                       </p>
                       <div className="mt-2 truncate text-[11px] text-muted-foreground">
@@ -325,7 +325,7 @@ function CustomerProfilePage() {
                         <Clock className="h-3 w-3" />
                         {e.time}
                       </div>
-                      <div className="mt-0.5 text-sm">
+                      <div className="mt-1 text-sm">
                         {timelineLabel(e)}{" "}
                         <span className="text-muted-foreground">in {e.subject}</span>
                       </div>

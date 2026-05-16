@@ -65,7 +65,7 @@ function SettingsPage() {
                   <a
                     key={s.id}
                     href={`#${s.id}`}
-                    className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
                   >
                     <Icon className="h-4 w-4" />
                     {s.label}
@@ -87,10 +87,10 @@ function SettingsPage() {
               <Field label="Workspace slug" value="tehran-dental" suffix=".airec.app" />
               <Select label="Locale" value="Persian / English" options={["Persian / English", "English (United States)", "English (UK)", "Español", "Français"]} />
               <Select label="Timezone" value="Asia/Tehran" options={["Asia/Tehran", "Asia/Dubai", "Europe/London", "America/New_York", "Asia/Singapore"]} />
-              <div className="grid gap-1.5 mb-1 sm:grid-cols-[180px_1fr] sm:items-center">
+              <div className="grid gap-2 mb-1 sm:grid-cols-[180px_1fr] sm:items-center">
                 <label className="text-xs font-medium text-muted-foreground">Status</label>
                 <div>
-                  <span className="inline-flex items-center gap-1.5 rounded-md border border-success/20 bg-success/10 px-2 py-0.5 text-[11px] font-medium text-success">
+                  <span className="inline-flex items-center gap-2 rounded-md border border-success/20 bg-success/10 px-2 py-1 text-[11px] font-medium text-success">
                     <span className="h-1.5 w-1.5 rounded-full bg-current" /> Active
                   </span>
                 </div>
@@ -139,7 +139,7 @@ function SettingsPage() {
                 value="New"
                 options={["New", "Open", "Needs review"]}
               />
-              <div className="space-y-2.5 mt-2">
+              <div className="space-y-3 mt-2">
                 <Toggle label="Auto-classification of incoming messages" enabled={false} disabled note="Planned capability — operators classify manually for MVP" />
                 <Toggle label="Manual review mode" enabled note="Every reply is reviewed and sent by an operator" />
                 <Toggle label="Notify assigned operator on new message" enabled />
@@ -159,7 +159,7 @@ function SettingsPage() {
                 title="Human review required"
                 body="AI auto-reply is intentionally disabled in MVP. Drafts are suggestions, never sent automatically."
               />
-              <div className="space-y-2.5 mt-4">
+              <div className="space-y-3 mt-4">
                 <Toggle label="AI draft assistance" enabled={false} disabled note="Future capability — operators draft manually for MVP" />
                 <Toggle label="Human review required for every reply" enabled locked note="Cannot be disabled in MVP" />
                 <Toggle label="Auto-reply without operator review" enabled={false} disabled note="Not available in MVP" />
@@ -184,7 +184,7 @@ function SettingsPage() {
               title="Audit settings"
               description="What this workspace records to the audit log for compliance and review."
             >
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 <Toggle label="Audit sensitive actions" enabled />
                 <Toggle label="Track member changes" enabled />
                 <Toggle label="Track role changes" enabled />
@@ -221,7 +221,7 @@ function SettingsPage() {
                       className="rounded-xl border border-dashed border-border bg-surface-muted/60 p-4 opacity-90"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-3">
                           <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-muted-foreground">
                             <Icon className="h-4 w-4" />
                           </div>
@@ -232,7 +232,7 @@ function SettingsPage() {
                         </div>
                         <button
                           disabled
-                          className="cursor-not-allowed rounded-md border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+                          className="cursor-not-allowed rounded-md border border-border bg-surface px-3 py-1 text-[11px] font-medium text-muted-foreground"
                         >
                           Not enabled
                         </button>
@@ -271,7 +271,7 @@ function Section({
         </div>
         <div>
           <h2 className="text-base font-medium">{title}</h2>
-          {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
+          {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
         </div>
       </div>
       {children}
@@ -291,7 +291,7 @@ function Field({
   readOnly?: boolean;
 }) {
   return (
-    <div className="grid gap-1.5 mb-3 last:mb-0 sm:grid-cols-[180px_1fr] sm:items-center">
+    <div className="grid gap-2 mb-3 last:mb-0 sm:grid-cols-[180px_1fr] sm:items-center">
       <label className="text-xs font-medium text-muted-foreground">{label}</label>
       <div className="flex items-stretch overflow-hidden rounded-lg border border-input bg-surface focus-within:ring-2 focus-within:ring-ring/40">
         <input
@@ -321,7 +321,7 @@ function Select({
   compact?: boolean;
 }) {
   return (
-    <div className={`grid gap-1.5 ${compact ? "" : "mb-3 last:mb-0 sm:grid-cols-[180px_1fr] sm:items-center"}`}>
+    <div className={`grid gap-2 ${compact ? "" : "mb-3 last:mb-0 sm:grid-cols-[180px_1fr] sm:items-center"}`}>
       {label && <label className="text-xs font-medium text-muted-foreground">{label}</label>}
       <select
         defaultValue={value}
@@ -352,7 +352,7 @@ function Toggle({
   const isInteractive = !disabled && !locked;
   return (
     <div
-      className={`flex items-center justify-between rounded-lg border border-border px-3.5 py-2.5 ${
+      className={`flex items-center justify-between rounded-lg border border-border px-4 py-3 ${
         disabled ? "bg-surface-muted/60" : "bg-surface"
       }`}
     >
@@ -361,7 +361,7 @@ function Toggle({
           {label}
           {locked && <Lock className="h-3 w-3 text-muted-foreground" />}
         </div>
-        {note && <div className="mt-0.5 text-[11px] text-muted-foreground">{note}</div>}
+        {note && <div className="mt-1 text-[11px] text-muted-foreground">{note}</div>}
       </div>
       <button
         type="button"

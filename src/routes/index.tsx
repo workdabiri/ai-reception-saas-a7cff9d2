@@ -110,7 +110,7 @@ function DashboardPage() {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2 py-0.5 text-success ring-1 ring-inset ring-success/20">
+                <span className="inline-flex items-center gap-2 rounded-full bg-success/10 px-2 py-1 text-success ring-1 ring-inset ring-success/20">
                   <span className="h-1.5 w-1.5 rounded-full bg-success" />
                   Live
                 </span>
@@ -118,7 +118,7 @@ function DashboardPage() {
                 <span aria-hidden className="opacity-50">·</span>
                 <span>{currentWorkspace.role}</span>
               </div>
-              <h1 className="mt-1.5 truncate text-[22px] lg:text-[26px] font-medium tracking-tight leading-tight text-foreground">
+              <h1 className="mt-2 truncate text-[22px] lg:text-[26px] font-medium tracking-tight leading-tight text-foreground">
                 Operations <span className="text-muted-foreground">Command Center</span>
               </h1>
               <p className="mt-1 hidden sm:block text-[12.5px] text-muted-foreground max-w-xl">
@@ -135,17 +135,17 @@ function DashboardPage() {
             <button className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-muted-foreground hover:bg-secondary">
               <Search className="h-3.5 w-3.5" />
               <span>Search…</span>
-              <kbd className="ml-2 rounded border border-border bg-secondary px-1 py-0.5 text-[10px]">⌘K</kbd>
+              <kbd className="ml-2 rounded border border-border bg-secondary px-1 py-1 text-[10px]">⌘K</kbd>
             </button>
             <Link
               to="/channels"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-foreground/80 hover:bg-secondary"
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-foreground/80 hover:bg-secondary"
             >
               Channels
             </Link>
             <Link
               to="/inbox"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground shadow-soft hover:bg-primary/90 active:translate-y-px"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-[12.5px] font-medium text-primary-foreground shadow-soft hover:bg-primary/90 active:translate-y-px"
             >
               Open inbox <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -179,7 +179,7 @@ function DashboardPage() {
                   {s.value}
                 </div>
                 {s.delta && (
-                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-medium tabular-nums ${deltaStyles[s.delta.dir]}`}>
+                  <span className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10.5px] font-medium tabular-nums ${deltaStyles[s.delta.dir]}`}>
                     {Trend && <Trend className="h-3 w-3" />}
                     {s.delta.value}
                   </span>
@@ -196,18 +196,18 @@ function DashboardPage() {
       {/* Today's queue + recent messages */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         <div className="lg:col-span-8 rounded-xl border border-border bg-card shadow-card overflow-hidden">
-          <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-3.5">
+          <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h2 className="text-[13px] font-medium tracking-tight">Today's attention queue</h2>
-                <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground ring-1 ring-inset ring-border">
+                <span className="rounded-full bg-secondary px-2 py-1 text-[10px] font-medium text-muted-foreground ring-1 ring-inset ring-border">
                   {todaysQueue.length} items
                 </span>
               </div>
               <p className="text-[11.5px] text-muted-foreground">Triage in order — oldest waiting first.</p>
             </div>
-            <div className="flex items-center gap-1.5">
-              <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-[11.5px] font-medium text-foreground/80 hover:bg-secondary">
+            <div className="flex items-center gap-2">
+              <button className="hidden sm:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[11.5px] font-medium text-foreground/80 hover:bg-secondary">
                 <Filter className="h-3 w-3" /> Filter
               </button>
               <Link
@@ -222,28 +222,28 @@ function DashboardPage() {
             <table className="w-full text-[13px]">
               <thead className="bg-surface-muted/60 text-[10.5px] uppercase tracking-wider text-muted-foreground">
                 <tr>
-                  <th className="px-5 py-2.5 text-left font-medium">Customer</th>
-                  <th className="px-3 py-2.5 text-left font-medium">Subject</th>
-                  <th className="px-3 py-2.5 text-left font-medium">Channel</th>
-                  <th className="px-3 py-2.5 text-left font-medium">Status</th>
-                  <th className="px-3 py-2.5 text-left font-medium">Waiting</th>
-                  <th className="px-5 py-2.5 text-left font-medium">Assignee</th>
+                  <th className="px-5 py-3 text-left font-medium">Customer</th>
+                  <th className="px-3 py-3 text-left font-medium">Subject</th>
+                  <th className="px-3 py-3 text-left font-medium">Channel</th>
+                  <th className="px-3 py-3 text-left font-medium">Status</th>
+                  <th className="px-3 py-3 text-left font-medium">Waiting</th>
+                  <th className="px-5 py-3 text-left font-medium">Assignee</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {todaysQueue.map((q) => (
                   <tr key={q.id} className="group transition hover:bg-surface-muted/40">
-                    <td className="px-5 py-2.5">
-                      <div className="flex items-center gap-2.5">
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-3">
                         <Avatar initials={q.initials} size="sm" />
                         <span className="font-medium">{q.customer}</span>
                       </div>
                     </td>
-                    <td className="px-3 py-2.5 text-foreground/80 max-w-[220px] truncate">{q.subject}</td>
-                    <td className="px-3 py-2.5"><ChannelChip channel={q.channel} label={channelLabel[q.channel]} /></td>
-                    <td className="px-3 py-2.5"><StatusChip status={q.status} /></td>
-                    <td className="px-3 py-2.5 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
-                    <td className="px-5 py-2.5 text-muted-foreground">
+                    <td className="px-3 py-3 text-foreground/80 max-w-[220px] truncate">{q.subject}</td>
+                    <td className="px-3 py-3"><ChannelChip channel={q.channel} label={channelLabel[q.channel]} /></td>
+                    <td className="px-3 py-3"><StatusChip status={q.status} /></td>
+                    <td className="px-3 py-3 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
+                    <td className="px-5 py-3 text-muted-foreground">
                       {q.assignee ?? <span className="italic text-warning-foreground/80">Unassigned</span>}
                     </td>
                   </tr>
@@ -254,7 +254,7 @@ function DashboardPage() {
         </div>
 
         <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card flex flex-col">
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
               <h2 className="text-[13px] font-medium tracking-tight">Recent messages</h2>
               <p className="text-[11.5px] text-muted-foreground">Latest inbound activity.</p>
@@ -272,8 +272,8 @@ function DashboardPage() {
                     <span className="truncate text-[13px] font-medium">{m.customer}</span>
                     <span className="shrink-0 text-[10.5px] text-muted-foreground font-mono-tab">{m.time}</span>
                   </div>
-                  <p className="mt-0.5 line-clamp-2 text-[12px] text-muted-foreground leading-snug">{m.snippet}</p>
-                  <div className="mt-1.5"><ChannelChip channel={m.channel} label={channelLabel[m.channel]} /></div>
+                  <p className="mt-1 line-clamp-2 text-[12px] text-muted-foreground leading-snug">{m.snippet}</p>
+                  <div className="mt-2"><ChannelChip channel={m.channel} label={channelLabel[m.channel]} /></div>
                 </div>
               </li>
             ))}
@@ -284,10 +284,10 @@ function DashboardPage() {
       {/* Channel command center + AI drafts */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         <div className="lg:col-span-7 rounded-xl border border-border bg-card shadow-card">
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
               <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-primary">Channel command center</p>
-              <h2 className="mt-0.5 text-[13px] font-medium tracking-tight">Where customers reach you</h2>
+              <h2 className="mt-1 text-[13px] font-medium tracking-tight">Where customers reach you</h2>
             </div>
             <Link to="/channels" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
               All sources <ArrowUpRight className="h-3 w-3" />
@@ -295,7 +295,7 @@ function DashboardPage() {
           </div>
           <div className="p-3 sm:p-4">
             <div
-              className="grid gap-2.5"
+              className="grid gap-3"
               style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
             >
               {channelOverview.map((c) => {
@@ -309,18 +309,18 @@ function DashboardPage() {
                   <Link
                     key={c.key}
                     to={active ? "/inbox" : "/channels"}
-                    className={`group relative flex flex-col gap-2.5 rounded-xl border bg-card p-3.5 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card ${active ? "border-border hover:border-primary/30" : "border-dashed border-border/80 bg-surface-muted/40"}`}
+                    className={`group relative flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card ${active ? "border-border hover:border-primary/30" : "border-dashed border-border/80 bg-surface-muted/40"}`}
                   >
                     <div className="flex items-center justify-between">
                       <div className={`grid h-9 w-9 place-items-center rounded-lg ring-1 ring-inset ${active ? "bg-primary-soft ring-primary/15" : "bg-secondary ring-border"}`}>
                         <ChannelIcon channel={c.key} size={20} />
                       </div>
                       {active ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wider text-success ring-1 ring-success/20">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider text-success ring-1 ring-success/20">
                           <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} /> Active
                         </span>
                       ) : (
-                        <span className={`rounded-full px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wider ring-1 ring-inset ${planned ? "bg-secondary text-muted-foreground ring-border" : "bg-surface-muted text-muted-foreground/70 ring-border"}`}>
+                        <span className={`rounded-full px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider ring-1 ring-inset ${planned ? "bg-secondary text-muted-foreground ring-border" : "bg-surface-muted text-muted-foreground/70 ring-border"}`}>
                           {c.status === "Future" ? "Future" : "Planned"}
                         </span>
                       )}
@@ -328,7 +328,7 @@ function DashboardPage() {
                     <div className="flex items-center justify-between gap-2">
                       <div className="text-[13px] font-medium tracking-tight truncate">{c.name}</div>
                       {c.unread > 0 && (
-                        <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground tabular-nums shadow-soft">{c.unread}</span>
+                        <span className="rounded-full bg-primary px-2 py-1 text-[10px] font-medium text-primary-foreground tabular-nums shadow-soft">{c.unread}</span>
                       )}
                     </div>
                     {active ? (
@@ -359,7 +359,7 @@ function DashboardPage() {
         </div>
 
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div className="flex items-center gap-2">
               <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary-soft text-primary ring-1 ring-primary/20">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -369,13 +369,13 @@ function DashboardPage() {
                 <p className="text-[11px] text-muted-foreground">Operator sends every reply.</p>
               </div>
             </div>
-            <span className="rounded-md border border-primary/20 bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium text-primary uppercase tracking-wider">
+            <span className="rounded-md border border-primary/20 bg-primary-soft px-2 py-1 text-[10px] font-medium text-primary uppercase tracking-wider">
               Human review
             </span>
           </div>
           <ul className="divide-y divide-border">
             {draftQueue.map((d) => (
-              <li key={d.id} className="px-5 py-3.5">
+              <li key={d.id} className="px-5 py-4">
                 <div className="flex items-start gap-3">
                   <Avatar initials={d.initials} size="sm" />
                   <div className="min-w-0 flex-1">
@@ -384,10 +384,10 @@ function DashboardPage() {
                       <span className="text-[10.5px] text-muted-foreground tabular-nums shrink-0">{d.prepared}</span>
                     </div>
                     <div className="text-[11.5px] text-muted-foreground truncate">{d.subject}</div>
-                    <div className="mt-1.5 rounded-lg border border-dashed border-primary/25 bg-primary-soft/40 p-2.5 text-[12px] leading-snug text-foreground/90 line-clamp-2">
+                    <div className="mt-2 rounded-lg border border-dashed border-primary/25 bg-primary-soft/40 p-3 text-[12px] leading-snug text-foreground/90 line-clamp-2">
                       {d.draft}
                     </div>
-                    <div className="mt-1.5 flex items-center justify-between text-[10.5px]">
+                    <div className="mt-2 flex items-center justify-between text-[10.5px]">
                       <span className="text-muted-foreground">
                         Confidence: <span className="font-medium text-foreground/80">{d.confidence}</span>
                       </span>
@@ -406,7 +406,7 @@ function DashboardPage() {
       {/* Operator workload + Audit + Planned */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
-          <div className="border-b border-border px-5 py-3.5">
+          <div className="border-b border-border px-5 py-4">
             <h2 className="text-[13px] font-medium tracking-tight">Operator workload</h2>
             <p className="text-[11.5px] text-muted-foreground">Today's distribution.</p>
           </div>
@@ -423,16 +423,16 @@ function DashboardPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <span className="truncate text-[13px] font-medium">{op.name}</span>
-                        <span className="rounded-md border border-border bg-surface px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wider text-muted-foreground">
+                        <span className="rounded-md border border-border bg-surface px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider text-muted-foreground">
                           {op.role}
                         </span>
                       </div>
-                      <div className="mt-1.5 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
+                      <div className="mt-2 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
                         <div className="bg-warning" style={{ width: `${openPct}%` }} />
                         <div className="bg-primary" style={{ width: `${draftPct}%` }} />
                         <div className="bg-success" style={{ width: `${resPct}%` }} />
                       </div>
-                      <div className="mt-1.5 flex items-center gap-3 text-[10.5px] text-muted-foreground tabular-nums">
+                      <div className="mt-2 flex items-center gap-3 text-[10.5px] text-muted-foreground tabular-nums">
                         <span className="inline-flex items-center gap-1"><Clock3 className="h-2.5 w-2.5" /><span className="font-medium text-foreground">{op.open}</span> open</span>
                         <span className="inline-flex items-center gap-1"><Sparkles className="h-2.5 w-2.5" /><span className="font-medium text-foreground">{op.drafts}</span> drafts</span>
                         <span className="inline-flex items-center gap-1"><CheckCircle2 className="h-2.5 w-2.5" /><span className="font-medium text-foreground">{op.resolvedToday}</span> done</span>
@@ -446,7 +446,7 @@ function DashboardPage() {
         </div>
 
         <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card">
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
               <h2 className="text-[13px] font-medium tracking-tight">Trust & access</h2>
               <p className="text-[11.5px] text-muted-foreground">Recent audit activity.</p>
@@ -457,7 +457,7 @@ function DashboardPage() {
           </div>
           <ul className="divide-y divide-border">
             {auditEvents.slice(0, 5).map((e) => (
-              <li key={e.id} className="flex items-center gap-3 px-5 py-2.5">
+              <li key={e.id} className="flex items-center gap-3 px-5 py-3">
                 <div className="grid h-7 w-7 place-items-center rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground ring-1 ring-border">
                   {e.actor.split(" ").map((p) => p[0]).slice(0, 2).join("")}
                 </div>
@@ -485,7 +485,7 @@ function DashboardPage() {
               <p className="text-[11px] text-muted-foreground">Roadmap.</p>
             </div>
           </div>
-          <ul className="mt-3 space-y-1.5 text-[12px]">
+          <ul className="mt-3 space-y-2 text-[12px]">
             {[
               "WhatsApp channel",
               "SMS channel",
@@ -495,7 +495,7 @@ function DashboardPage() {
             ].map((p) => (
               <li
                 key={p}
-                className="flex items-center justify-between rounded-lg border border-dashed border-border px-2.5 py-1.5"
+                className="flex items-center justify-between rounded-lg border border-dashed border-border px-3 py-2"
               >
                 <span className="truncate">{p}</span>
                 <StatusChip status="future" />

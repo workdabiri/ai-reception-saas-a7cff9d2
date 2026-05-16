@@ -23,19 +23,19 @@ export function WorkspaceSwitcher() {
     <div className="relative m-3">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-3 rounded-xl border border-sidebar-border bg-surface px-3 py-2.5 text-left transition hover:bg-sidebar-accent"
+        className="flex w-full items-center gap-3 rounded-xl border border-sidebar-border bg-surface px-3 py-3 text-left transition hover:bg-sidebar-accent"
       >
         <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground font-medium text-sm">
           {active.initials}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <span className="truncate text-sm font-medium text-sidebar-foreground">
               {active.name}
             </span>
             <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${statusTone[active.status]}`} />
           </div>
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
             <Shield className="h-3 w-3" />
             <span>{active.role}</span>
             <span className="opacity-50">·</span>
@@ -63,7 +63,7 @@ export function WorkspaceSwitcher() {
                         setActive(w);
                         setOpen(false);
                       }}
-                      className="flex w-full items-start gap-3 px-3 py-2.5 text-left hover:bg-surface-muted"
+                      className="flex w-full items-start gap-3 px-3 py-3 text-left hover:bg-surface-muted"
                     >
                       <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-secondary text-secondary-foreground text-xs font-medium">
                         {w.initials}
@@ -73,16 +73,16 @@ export function WorkspaceSwitcher() {
                           <span className="truncate text-sm font-medium">{w.name}</span>
                           {isActive && <Check className="h-3.5 w-3.5 text-primary" />}
                         </div>
-                        <div className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                        <div className="mt-1 truncate text-[11px] text-muted-foreground">
                           {w.industry} · {w.members} members
                         </div>
-                        <div className="mt-1 flex items-center gap-1.5">
+                        <div className="mt-1 flex items-center gap-2">
                           <span
-                            className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${roleTone[w.role]}`}
+                            className={`inline-flex items-center rounded-md border px-2 py-1 text-[10px] font-medium ${roleTone[w.role]}`}
                           >
                             {w.role}
                           </span>
-                          <span className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                          <span className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-[10px] font-medium text-muted-foreground">
                             <span className={`h-1.5 w-1.5 rounded-full ${statusTone[w.status]}`} />
                             {w.status}
                           </span>

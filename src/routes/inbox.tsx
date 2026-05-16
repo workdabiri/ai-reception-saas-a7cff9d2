@@ -104,7 +104,7 @@ const priorityTone: Record<Priority, { dot: string; label: string; text: string 
 function InboxStatusChip({ status }: { status: InboxStatus }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${inboxStatusTone[status]}`}
+      className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${inboxStatusTone[status]}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
       {inboxStatusLabel[status]}
@@ -233,9 +233,9 @@ function InboxPage() {
             mobileView === "list" ? "flex" : "hidden"
           } md:flex`}
         >
-          <div className="space-y-2.5 border-b border-border p-3">
+          <div className="space-y-3 border-b border-border p-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                 <InboxIcon className="h-3 w-3" />
                 Inbox
               </div>
@@ -254,12 +254,12 @@ function InboxPage() {
             <div className="relative">
               <button
                 onClick={() => setQueueMenuOpen((v) => !v)}
-                className="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-2.5 py-2 text-left transition hover:bg-surface-muted"
+                className="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 text-left transition hover:bg-surface-muted"
               >
                 <span className="min-w-0 truncate text-[13px] font-medium">
                   {activeQueueLabel}
                 </span>
-                <span className="flex items-center gap-1.5 shrink-0 text-[11px] text-muted-foreground">
+                <span className="flex items-center gap-2 shrink-0 text-[11px] text-muted-foreground">
                   <span className="tabular-nums">{filtered.length}</span>
                   <ChevronRight className={`h-3.5 w-3.5 transition ${queueMenuOpen ? "rotate-90" : ""}`} />
                 </span>
@@ -279,14 +279,14 @@ function InboxPage() {
                             setSection(row.filter);
                             setQueueMenuOpen(false);
                           }}
-                          className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[12.5px] transition ${
+                          className={`flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[12.5px] transition ${
                             isActive ? "bg-primary-soft text-primary font-medium" : "hover:bg-secondary"
                           }`}
                         >
                           {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`} />}
                           <span className="min-w-0 flex-1 truncate">{row.label}</span>
                           {row.badge !== undefined && row.badge !== 0 && (
-                            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
+                            <span className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-medium tabular-nums ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
                               {row.badge}
                             </span>
                           )}
@@ -310,7 +310,7 @@ function InboxPage() {
             </div>
 
             {/* Channel chips */}
-            <div className="-mx-1 flex items-center gap-1 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="-mx-1 flex items-center gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {channelChips.map((chip, i) => {
                 const isActive =
                   (chip.value === "all" && section.kind === "inbox" && section.value === "all") ||
@@ -326,7 +326,7 @@ function InboxPage() {
                         setSection({ kind: "channel", value: chip.value as Channel, label: chip.label });
                       }
                     }}
-                    className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-medium transition ${
+                    className={`shrink-0 rounded-full border px-3 py-1 text-[11px] font-medium transition ${
                       isActive
                         ? "border-primary bg-primary text-primary-foreground"
                         : chip.planned
@@ -373,18 +373,18 @@ function InboxPage() {
                             {c.updated}
                           </span>
                         </div>
-                        <p className="mt-0.5 truncate text-xs font-medium">{c.subject}</p>
-                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                        <p className="mt-1 truncate text-xs font-medium">{c.subject}</p>
+                        <p className="mt-1 truncate text-xs text-muted-foreground">
                           {c.preview}
                         </p>
-                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           <InboxStatusChip status={c.inboxStatus} />
                           <ChannelChip channel={c.channel} label={channelLabel[c.channel]} />
                           {c.unread && (
                             <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
                           )}
                         </div>
-                        <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                        <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
                           <span className="inline-flex items-center gap-1 truncate">
                             {a ? (
                               <>
@@ -436,7 +436,7 @@ function InboxPage() {
           } md:flex`}
         >
           {/* Thread header */}
-          <div className="border-b border-border bg-surface px-4 py-3 sm:px-6 sm:py-3.5">
+          <div className="border-b border-border bg-surface px-4 py-3 sm:px-6 sm:py-4">
             <div className="flex items-center justify-between gap-2 sm:gap-3">
               <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                 {/* Mobile back button */}
@@ -470,7 +470,7 @@ function InboxPage() {
                   <ActionBtn icon={Tag} label="Classify" />
                   <ActionBtn icon={Flag} label="Priority" />
                 </span>
-                <button className="hidden sm:inline-flex items-center gap-1.5 rounded-md bg-foreground px-2.5 py-1.5 text-xs font-medium text-background hover:opacity-90">
+                <button className="hidden sm:inline-flex items-center gap-2 rounded-md bg-foreground px-3 py-2 text-xs font-medium text-background hover:opacity-90">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Close
                 </button>
@@ -488,18 +488,18 @@ function InboxPage() {
               </div>
             </div>
             {/* Mobile-only chip row */}
-            <div className="mt-2 flex items-center gap-1.5 sm:hidden">
+            <div className="mt-2 flex items-center gap-2 sm:hidden">
               <InboxStatusChip status={active.inboxStatus} />
               <PriorityFlag priority={active.priority} />
               {active.classification && (
-                <span className="rounded-md border border-border bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                <span className="rounded-md border border-border bg-surface-muted px-2 py-1 text-[10px] font-medium text-muted-foreground">
                   {active.classification}
                 </span>
               )}
             </div>
             {active.classification && (
-              <div className="mt-2.5 hidden sm:flex items-center gap-2 text-[11px] text-muted-foreground">
-                <span className="rounded-md border border-border bg-surface-muted px-1.5 py-0.5 font-medium">
+              <div className="mt-3 hidden sm:flex items-center gap-2 text-[11px] text-muted-foreground">
+                <span className="rounded-md border border-border bg-surface-muted px-2 py-1 font-medium">
                   {active.classification}
                 </span>
                 <span>·</span>
@@ -594,14 +594,14 @@ function InboxPage() {
                     Save draft
                   </button>
                   {noteMode ? (
-                    <button className="inline-flex items-center gap-1.5 rounded-md bg-warning px-3 py-1.5 text-xs font-medium text-[oklch(0.20_0.04_75)] hover:opacity-95">
+                    <button className="inline-flex items-center gap-2 rounded-md bg-warning px-3 py-2 text-xs font-medium text-[oklch(0.20_0.04_75)] hover:opacity-95">
                       <StickyNote className="h-3.5 w-3.5" />
                       Add note
                     </button>
                   ) : (
                     <button
                       title="Mock — no message will be sent in this prototype"
-                      className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
+                      className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
                     >
                       <Send className="h-3.5 w-3.5" />
                       Send reply
@@ -689,7 +689,7 @@ function CustomerContext({
             <ExternalLink className="h-3.5 w-3.5" />
           </button>
         </div>
-        <div className="mt-3 grid grid-cols-1 gap-1.5">
+        <div className="mt-3 grid grid-cols-1 gap-2">
           <ContactRow icon={Mail} value={customer.email} />
           <ContactRow icon={Phone} value={`${customer.phone} · placeholder`} />
         </div>
@@ -697,12 +697,12 @@ function CustomerContext({
           {customer.tags.map((t) => (
             <span
               key={t}
-              className="rounded-md border border-border bg-surface-muted px-1.5 py-0.5 text-[11px] font-medium"
+              className="rounded-md border border-border bg-surface-muted px-2 py-1 text-[11px] font-medium"
             >
               {t}
             </span>
           ))}
-          <button className="rounded-md border border-dashed border-border px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-secondary">
+          <button className="rounded-md border border-dashed border-border px-2 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary">
             + Tag
           </button>
         </div>
@@ -710,7 +710,7 @@ function CustomerContext({
 
       {/* Visibility warning */}
       <div className="mx-5 mt-4 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground">
-        <Shield className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+        <Shield className="mt-1 h-3.5 w-3.5 shrink-0" />
         <div>
           <div className="font-medium">Workspace-scoped</div>
           Customer data is visible only to members of this workspace. Mock data — no real PII shown.
@@ -834,7 +834,7 @@ function ActionBtn({
   label: string;
 }) {
   return (
-    <button className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium hover:bg-secondary">
+    <button className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary">
       <Icon className="h-3.5 w-3.5" />
       {label}
     </button>
@@ -866,7 +866,7 @@ function NextAction({ label, hint }: { label: string; hint: string }) {
           <div className="text-xs font-medium">{label}</div>
           <div className="text-[11px] text-muted-foreground">{hint}</div>
         </div>
-        <ArrowRight className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
+        <ArrowRight className="mt-1 h-3.5 w-3.5 text-muted-foreground" />
       </button>
     </li>
   );
@@ -895,7 +895,7 @@ function ThreadItem({
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
         <div
-          className={`inline-flex items-center gap-1.5 rounded-full border bg-surface px-2.5 py-1 text-[11px] font-medium ${tone}`}
+          className={`inline-flex items-center gap-2 rounded-full border bg-surface px-3 py-1 text-[11px] font-medium ${tone}`}
         >
           {message.body} · <span className="opacity-70 tabular-nums">{message.time}</span>
         </div>
@@ -908,8 +908,8 @@ function ThreadItem({
   if (message.author === "internal-note") {
     return (
       <div className="rounded-xl border border-warning/40 bg-warning/10 p-3 shadow-soft">
-        <div className="mb-1.5 flex items-center justify-between text-[11px] text-warning-foreground">
-          <span className="inline-flex items-center gap-1.5 font-medium">
+        <div className="mb-2 flex items-center justify-between text-[11px] text-warning-foreground">
+          <span className="inline-flex items-center gap-2 font-medium">
             <StickyNote className="h-3 w-3" />
             Internal note · {message.authorName}
           </span>
@@ -938,7 +938,7 @@ function ThreadItem({
           <span className="tabular-nums">{message.time}</span>
         </div>
         <div
-          className={`rounded-2xl border px-4 py-2.5 text-sm leading-relaxed shadow-soft ${
+          className={`rounded-2xl border px-4 py-3 text-sm leading-relaxed shadow-soft ${
             mine
               ? "rounded-tr-sm border-primary bg-primary text-primary-foreground"
               : "rounded-tl-sm border-border bg-card"
@@ -1065,7 +1065,7 @@ function InboxSectionsPanel({
       <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2">
         {inboxSectionGroups.map((g) => (
           <div key={g.id} className="mt-3 first:mt-0">
-            <div className="px-2 pb-1 pt-1.5 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
+            <div className="px-2 pb-1 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
               {g.title}
             </div>
             <ul className="space-y-px">
@@ -1077,7 +1077,7 @@ function InboxSectionsPanel({
                     <button
                       disabled={row.disabled}
                       onClick={() => !row.disabled && onSelect(row.filter)}
-                      className={`group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[12.5px] transition ${
+                      className={`group flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-[12.5px] transition ${
                         active
                           ? "bg-primary-soft text-primary font-medium"
                           : row.disabled
@@ -1095,7 +1095,7 @@ function InboxSectionsPanel({
                       <span className="min-w-0 flex-1 truncate">{row.label}</span>
                       {row.badge !== undefined && row.badge !== 0 && (
                         <span
-                          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
+                          className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-medium ${
                             badgeToneClass[row.badgeTone ?? "muted"]
                           }`}
                         >

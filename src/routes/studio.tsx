@@ -574,7 +574,7 @@ function StudioPage() {
           <div className="ml-auto flex items-center gap-1 rounded-lg border border-border bg-surface p-1">
             {(["light", "dark"] as const).map((m) => (
               <button key={m} onClick={() => setMode(m)}
-                className={`px-3 py-1.5 text-[11px] font-medium rounded-md capitalize transition ${
+                className={`px-3 py-2 text-[11px] font-medium rounded-md capitalize transition ${
                   mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}>
                 {m} mode
@@ -593,19 +593,19 @@ function StudioPage() {
             </div>
             <div className="flex-1 min-w-[260px]">
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-ai/30 bg-ai-soft px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-ai">
+                <span className="inline-flex items-center gap-2 rounded-full border border-ai/30 bg-ai-soft px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-ai">
                   <Sparkles className="h-3 w-3" /> Selected · Applied globally
                 </span>
               </div>
               <h1 className="mt-2 text-2xl font-medium tracking-tight text-display gradient-text-primary tracking-tight">
                 Warm Premium AI Operations SaaS
               </h1>
-              <p className="text-sm text-muted-foreground max-w-3xl mt-1.5">
+              <p className="text-sm text-muted-foreground max-w-3xl mt-2">
                 A hybrid of Warm Premium SMB and AI Operations Pro. This is the unified visual identity used across
                 Dashboard, Inbox, Channels, Customers, Members, Settings, Audit Log and States — in both light and dark mode.
               </p>
             </div>
-            <Link to="/" className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground shadow-soft hover:opacity-95">
+            <Link to="/" className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-[12.5px] font-medium text-primary-foreground shadow-soft hover:opacity-95">
               Open the app <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -663,10 +663,10 @@ function StudioPage() {
             ))}
           </div>
           <div className="flex flex-wrap gap-2 mt-5">
-            <Link to="/" className="inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium shadow hover:opacity-90">
+            <Link to="/" className="inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium shadow hover:opacity-90">
               Back to app <ChevronRight className="h-3.5 w-3.5" />
             </Link>
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">
+            <span className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">
               Reply with "Apply C+B" to roll out globally
             </span>
           </div>
@@ -751,7 +751,7 @@ function Spec({ title, rows }: { title: string; rows: [string, string][] }) {
       <div className="text-xs font-medium text-foreground mb-2">{title}</div>
       <div className="divide-y divide-border">
         {rows.map(([k, v]) => (
-          <div key={k} className="flex justify-between py-1.5 gap-2">
+          <div key={k} className="flex justify-between py-2 gap-2">
             <span className="text-muted-foreground">{k}</span>
             <span className="font-mono text-[11px] text-foreground text-right">{v}</span>
           </div>

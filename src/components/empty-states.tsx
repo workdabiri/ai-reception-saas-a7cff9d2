@@ -80,7 +80,7 @@ export function EmptyState({
       </div>
       {badge && (
         <span
-          className={`mt-5 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium tracking-wide ${t.chip}`}
+          className={`mt-5 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-medium tracking-wide ${t.chip}`}
         >
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           {badge}
@@ -109,7 +109,7 @@ export function NoConversationsState() {
       action={
         <Link
           to="/settings"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
         >
           Configure channels
         </Link>
@@ -128,7 +128,7 @@ export function NoActiveWorkspaceState() {
       title="No active workspace"
       description="Select or create a workspace to continue."
       action={
-        <button className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95">
+        <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95">
           Choose a workspace
         </button>
       }
@@ -222,12 +222,12 @@ function FlowStep({
         ? "bg-info/10 text-info ring-info/25"
         : "bg-primary-soft text-primary ring-primary/25";
   return (
-    <div className="relative flex items-start gap-3 rounded-xl border border-border bg-surface px-3.5 py-3 text-left shadow-soft">
+    <div className="relative flex items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-left shadow-soft">
       <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneCls}`}>
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <span className="font-mono text-[10px] font-medium text-muted-foreground">
             {String(n).padStart(2, "0")}
           </span>
@@ -251,18 +251,18 @@ export function InboxOperatorFirstEmpty() {
           <Sparkles className="h-3 w-3" />
         </span>
       </div>
-      <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+      <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
         <span className="h-1.5 w-1.5 rounded-full bg-success" /> Operator-first workflow
       </span>
       <h3 className="mt-3 text-[17px] font-medium tracking-tight">
         AI drafts. <span className="text-muted-foreground">You</span> send.
       </h3>
-      <p className="mt-1.5 max-w-md text-[13px] leading-relaxed text-muted-foreground">
+      <p className="mt-2 max-w-md text-[13px] leading-relaxed text-muted-foreground">
         New messages will land here. The assistant prepares a draft reply — but every message
         leaves your workspace only when an operator reviews and approves it.
       </p>
 
-      <div className="mt-6 grid w-full gap-2.5 sm:grid-cols-3">
+      <div className="mt-6 grid w-full gap-3 sm:grid-cols-3">
         <FlowStep n={1} icon={ArrowDownToLine} tone="info" title="Message arrives" body="Customer writes via email, web form or a connected channel." />
         <FlowStep n={2} icon={Sparkles} tone="ai" title="AI drafts a reply" body="A grounded draft with citations appears in the side panel." />
         <FlowStep n={3} icon={Send} tone="primary" title="Operator sends" body="You edit, approve, and send. Nothing auto-sends — ever." />
@@ -271,13 +271,13 @@ export function InboxOperatorFirstEmpty() {
       <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
         <Link
           to="/settings"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
         >
           Connect a channel
         </Link>
         <Link
           to="/states"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-all"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-all"
         >
           <Eye className="h-3.5 w-3.5" /> See sample conversation
         </Link>
@@ -309,7 +309,7 @@ export function FilterNoMatchState({
       {onReset && (
         <button
           onClick={onReset}
-          className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1.5 text-[11.5px] font-medium text-foreground hover:bg-secondary transition-colors"
+          className="mt-4 inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-[11.5px] font-medium text-foreground hover:bg-secondary transition-colors"
         >
           Clear filters
         </button>
@@ -330,16 +330,16 @@ export function CustomersOperatorFirstEmpty() {
           <UserPlus className="h-3 w-3" />
         </span>
       </div>
-      <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+      <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
         <span className="h-1.5 w-1.5 rounded-full bg-info" /> Built from real conversations
       </span>
       <h3 className="mt-3 text-[17px] font-medium tracking-tight">No customers yet</h3>
-      <p className="mt-1.5 max-w-md text-[13px] leading-relaxed text-muted-foreground">
+      <p className="mt-2 max-w-md text-[13px] leading-relaxed text-muted-foreground">
         Customer records appear automatically the first time someone reaches you. The operator stays
         in control — tags, notes, and assignments live next to the thread.
       </p>
 
-      <div className="mt-6 grid w-full gap-2.5 sm:grid-cols-3">
+      <div className="mt-6 grid w-full gap-3 sm:grid-cols-3">
         <FlowStep n={1} icon={ArrowDownToLine} tone="info" title="First message" body="A new sender is captured with channel, contact and history." />
         <FlowStep n={2} icon={Sparkles} tone="ai" title="Profile enriched" body="AI suggests tags from past threads — operator confirms." />
         <FlowStep n={3} icon={Eye} tone="primary" title="You stay in control" body="Every status, tag and follow-up is an operator decision." />
@@ -348,7 +348,7 @@ export function CustomersOperatorFirstEmpty() {
       <div className="mt-6">
         <Link
           to="/inbox"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
         >
           Open the inbox
         </Link>

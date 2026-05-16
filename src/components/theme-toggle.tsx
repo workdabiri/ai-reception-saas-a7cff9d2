@@ -82,7 +82,7 @@ export function ThemeToggle({ variant = "icon" }: { variant?: "icon" | "full" })
             <button
               key={t}
               onClick={() => setTheme(t)}
-              className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-[12px] font-medium capitalize transition ${
+              className={`flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-2 text-[12px] font-medium capitalize transition ${
                 active
                   ? "bg-primary-soft text-primary"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
