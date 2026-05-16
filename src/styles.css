@@ -228,6 +228,11 @@
   --attention: oklch(0.640 0.205 38);
   --attention-foreground: oklch(0.99 0 0);
 
+  /* Pending / Mock indicators — Amber */
+  --status-pending: oklch(0.665 0.165 60);
+  --status-pending-text: oklch(0.55 0.14 60);
+  --text-tertiary: oklch(0.55 0.024 256);
+
   /* Hairline borders — rely on shadow for primary depth, border just defines edge */
   --border: rgba(15, 17, 36, 0.06);
   --border-strong: rgba(15, 17, 36, 0.10);
@@ -283,6 +288,12 @@
   --info-foreground: #FFFFFF;
   --attention: #FFB94C;
   --attention-foreground: #0F1124;
+
+  /* Pending / Mock indicators — Amber */
+  --status-pending: #FFD340;
+  --status-pending-text: oklch(0.85 0.09 60);
+  --text-tertiary: #9CA3C7;
+
   --border: rgba(255, 255, 255, 0.10);
   --border-strong: rgba(255, 255, 255, 0.15);
   --input: rgba(255, 255, 255, 0.10);

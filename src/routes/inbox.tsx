@@ -605,7 +605,9 @@ function InboxPage() {
                     >
                       <Send className="h-3.5 w-3.5" />
                       Send reply
-                      <span className="ml-1 rounded bg-primary-foreground/15 px-1 text-[10px] font-medium uppercase tracking-wider">
+                      <span
+                        className="ml-1 rounded-[3px] border-[0.5px] border-border px-[5px] py-[2px] text-[9px] font-medium uppercase tracking-[0.05em] bg-background text-muted-foreground dark:bg-white/[0.08]"
+                      >
                         mock
                       </span>
                     </button>

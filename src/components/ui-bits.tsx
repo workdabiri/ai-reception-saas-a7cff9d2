@@ -1,5 +1,6 @@
 import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
-import { Info } from "lucide-react";
+import { Info, X } from "lucide-react";
+import { useState } from "react";
 
 // Monday-style strict semantics. Each chip color carries a distinct meaning:
 //   new        → neutral (untouched)
@@ -143,15 +144,31 @@ export function PageHeader({
 }
 
 export function MockBanner() {
+  const [dismissed, setDismissed] = useState(false);
+  if (dismissed) return null;
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-warning/25 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent px-4 py-3 shadow-soft">
-      <span className="mt-1 grid h-5 w-5 place-items-center rounded-full bg-warning/25 text-warning-foreground">
-        <Info className="h-3 w-3" />
-      </span>
-      <div className="text-[12.5px] leading-snug text-warning-foreground/90">
-        <span className="font-medium text-warning-foreground">Prototype with mock data only.</span>{" "}
+    <div
+      className="flex items-start gap-3 rounded-r-md border-l-[3px] px-4 py-[10px]"
+      style={{
+        background: "rgba(253, 171, 61, 0.06)",
+        borderLeftColor: "var(--status-pending)",
+      }}
+    >
+      <Info
+        className="mt-0.5 h-3.5 w-3.5 shrink-0"
+        style={{ color: "var(--status-pending)" }}
+      />
+      <div className="flex-1 text-[12px] leading-snug text-muted-foreground">
+        <span className="font-medium text-foreground">Prototype with mock data only.</span>{" "}
         Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts; an operator sends every reply.
       </div>
+      <button
+        onClick={() => setDismissed(true)}
+        className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded text-muted-foreground transition hover:text-foreground hover:bg-secondary"
+        aria-label="Dismiss"
+      >
+        <X className="h-3 w-3" />
+      </button>
     </div>
   );
 }
