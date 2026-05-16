@@ -765,13 +765,13 @@ function CustomerContext({
             .map((n) => (
               <li
                 key={n.id}
-                className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning-foreground"
+                className="rounded-r-[8px] rounded-l-none border-0 border-l-[3px] border-l-warning bg-[rgba(255,203,0,0.06)] py-3 px-3.5 dark:bg-[rgba(255,211,64,0.08)]"
               >
-                <div className="mb-1 flex items-center justify-between text-[11px]">
-                  <span className="font-medium">{n.authorName}</span>
-                  <span className="opacity-70 tabular-nums">{n.time}</span>
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="text-[13px] font-medium text-foreground">{n.authorName}</span>
+                  <span className="text-[12px] text-muted-foreground tabular-nums">{n.time}</span>
                 </div>
-                <p className="leading-snug">{n.body}</p>
+                <p className="text-[13px] font-normal leading-[1.5] text-muted-foreground">{n.body}</p>
               </li>
             ))}
           {active.messages.filter((m) => m.author === "internal-note").length === 0 && (
