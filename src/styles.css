@@ -666,6 +666,20 @@
     opacity: 1;
     transition-delay: 160ms;
   }
+  /* Thin sidebar scrollbar */
+  .sidebar-nav {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+  .sidebar-nav::-webkit-scrollbar { width: 4px; }
+  .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-nav::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+  }
+  .sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-strong);
+  }
 
   /* ─── Controlled Soft Glass Accents ─── */
   /* Restrained translucent surfaces. Use sparingly: command headers,
