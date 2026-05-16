@@ -249,7 +249,7 @@ export function AppShell({
                 <Icon className="h-[18px] w-[18px]" />
                 {item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label}
                 {item.badge ? (
-                  <span className="absolute right-2 top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium text-primary-foreground ring-2 ring-surface">
+                  <span className="absolute right-2 top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground ring-2 ring-surface">
                     {item.badge}
                   </span>
                 ) : null}
@@ -296,7 +296,7 @@ export function AppShell({
                       <Icon className="h-4 w-4 text-muted-foreground" />
                       {it.label}
                       {it.badge ? (
-                        <span className="absolute right-2 top-2 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium text-primary-foreground">
+                        <span className="absolute right-2 top-2 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground">
                           {it.badge}
                         </span>
                       ) : null}
@@ -482,7 +482,7 @@ function NavRow({
             )}
             <Icon className="h-[18px] w-[18px]" />
             {item.badge ? (
-              <span className="absolute -right-1 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium text-primary-foreground ring-2 ring-sidebar">
+              <span className="absolute -right-1 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground ring-2 ring-sidebar">
                 {item.badge}
               </span>
             ) : null}
