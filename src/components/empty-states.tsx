@@ -11,6 +11,9 @@ import {
   Send,
   Eye,
   ArrowDownToLine,
+  Search,
+  FileText,
+  Link as LinkIcon,
   SearchX,
   UserPlus,
   type LucideIcon,
@@ -20,28 +23,27 @@ import type { ReactNode } from "react";
 
 export type EmptyStateTone = "neutral" | "warning" | "destructive" | "primary";
 
-const toneStyles: Record<
-  EmptyStateTone,
-  { icon: string; ring: string; chip: string }
-> = {
+// Unified, calm icon-tile treatment. Default `neutral` matches the design
+// system's empty-state spec (56px tile, app-bg fill, tertiary icon).
+const toneStyles: Record<EmptyStateTone, { tile: string; icon: string; chip: string }> = {
   neutral: {
-    icon: "bg-secondary text-muted-foreground",
-    ring: "ring-border",
+    tile: "bg-background dark:bg-white/[0.04]",
+    icon: "text-muted-foreground/80",
     chip: "border-border bg-surface text-muted-foreground",
   },
   primary: {
-    icon: "bg-primary-soft text-primary",
-    ring: "ring-primary/20",
+    tile: "bg-primary-soft",
+    icon: "text-primary",
     chip: "border-primary/20 bg-primary-soft text-primary",
   },
   warning: {
-    icon: "bg-warning/15 text-warning-foreground",
-    ring: "ring-warning/30",
+    tile: "bg-warning/12",
+    icon: "text-warning-foreground",
     chip: "border-warning/30 bg-warning/10 text-warning-foreground",
   },
   destructive: {
-    icon: "bg-destructive/10 text-destructive",
-    ring: "ring-destructive/20",
+    tile: "bg-destructive/10",
+    icon: "text-destructive",
     chip: "border-destructive/20 bg-destructive/5 text-destructive",
   },
 };
@@ -54,7 +56,7 @@ export function EmptyState({
   badge,
   action,
   helper,
-  compact,
+  compact: _compact,
 }: {
   icon: LucideIcon;
   title: string;
@@ -63,38 +65,111 @@ export function EmptyState({
   badge?: string;
   action?: ReactNode;
   helper?: ReactNode;
+  /** @deprecated padding is now uniform */
   compact?: boolean;
 }) {
+  void _compact;
   const t = toneStyles[tone];
   return (
-    <div
-      className={`relative flex flex-col items-center text-center overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-surface to-surface-muted/40 ${
-        compact ? "px-6 py-10" : "px-8 py-16"
-      }`}
-    >
-      <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-border-strong to-transparent" />
-      <div
-        className={`grid h-14 w-14 place-items-center rounded-2xl ring-8 ring-background shadow-soft ${t.icon} ${t.ring}`}
-      >
-        <Icon className="h-6 w-6" />
+    <div className="mx-auto flex w-full max-w-[360px] flex-col items-center px-6 py-16 text-center">
+      <div className={`mb-4 grid h-14 w-14 place-items-center rounded-2xl ${t.tile}`}>
+        <Icon strokeWidth={1.75} className={`h-7 w-7 ${t.icon}`} />
       </div>
       {badge && (
         <span
-          className={`mt-5 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-medium tracking-wide ${t.chip}`}
+          className={`mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-medium tracking-wide ${t.chip}`}
         >
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           {badge}
         </span>
       )}
-      <h3 className="mt-4 text-[17px] font-medium tracking-tight">{title}</h3>
-      <p className="mt-2 max-w-md text-[13.5px] leading-relaxed text-muted-foreground">
-        {description}
-      </p>
-      {action && <div className="mt-6">{action}</div>}
+      <h3 className="mb-1.5 text-[16px] font-medium leading-tight text-foreground">{title}</h3>
+      <p className="mb-5 text-[13px] leading-[1.5] text-muted-foreground">{description}</p>
+      {action && <div>{action}</div>}
       {helper && (
-        <div className="mt-5 max-w-md text-[11.5px] leading-relaxed text-muted-foreground/80">{helper}</div>
+        <div className="mt-4 text-[11.5px] leading-relaxed text-muted-foreground/80">{helper}</div>
       )}
     </div>
+  );
+}
+
+/** Secondary-style small action button used inside empty states. */
+function EmptyAction({
+  to,
+  onClick,
+  children,
+}: {
+  to?: string;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  const cls =
+    "inline-flex items-center gap-2 h-8 rounded-md border border-border bg-surface px-3 text-[12px] font-medium text-foreground transition hover:bg-secondary hover:border-border-strong";
+  if (to) {
+    return (
+      <Link to={to as "/"} className={cls}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <button onClick={onClick} className={cls}>
+      {children}
+    </button>
+  );
+}
+
+// ─── Unified empty-state presets (per design system spec) ─────────────────
+
+export function EmptyInboxState() {
+  return (
+    <EmptyState
+      icon={Inbox}
+      title="No conversations yet"
+      description="When customers reach out, their messages will appear here."
+    />
+  );
+}
+
+export function EmptySearchState({ onReset }: { onReset?: () => void } = {}) {
+  return (
+    <EmptyState
+      icon={Search}
+      title="No matches"
+      description="Try adjusting your filters or search terms."
+      action={onReset ? <EmptyAction onClick={onReset}>Clear filters</EmptyAction> : undefined}
+    />
+  );
+}
+
+export function EmptyAuditLogState() {
+  return (
+    <EmptyState
+      icon={FileText}
+      title="No activity yet"
+      description="Audit events will appear here as your team takes actions."
+    />
+  );
+}
+
+export function EmptyCustomersState() {
+  return (
+    <EmptyState
+      icon={Users}
+      title="No customers yet"
+      description="Customer profiles will be created automatically when conversations begin."
+    />
+  );
+}
+
+export function NoChannelsState() {
+  return (
+    <EmptyState
+      icon={LinkIcon}
+      title="No channels connected"
+      description="Connect a channel to start receiving messages."
+      action={<EmptyAction to="/settings">Connect a channel</EmptyAction>}
+    />
   );
 }
 

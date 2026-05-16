@@ -6,15 +6,15 @@ function Bone({
   className = "",
   w,
   h = "h-3",
+  rounded = "rounded",
 }: {
   className?: string;
   w?: string;
   h?: string;
+  rounded?: string;
 }) {
   return (
-    <div
-      className={`animate-pulse rounded bg-secondary/80 ${h} ${w ?? "w-full"} ${className}`}
-    />
+    <div className={`skeleton ${rounded} ${h} ${w ?? "w-full"} ${className}`} />
   );
 }
 
@@ -35,9 +35,9 @@ export function LoadingSkeleton({
           >
             <div className="flex items-start justify-between">
               <Bone w="w-24" />
-              <div className="h-8 w-8 animate-pulse rounded-lg bg-secondary/80" />
+              <div className="skeleton h-8 w-8 rounded-lg" />
             </div>
-            <Bone className="mt-4" w="w-20" h="h-8" />
+            <Bone className="mt-4" w="w-[60px]" h="h-8" />
             <Bone className="mt-3" w="w-16" h="h-2.5" />
           </div>
         ))}
@@ -50,7 +50,7 @@ export function LoadingSkeleton({
       <div className="divide-y divide-border rounded-xl border border-border bg-surface">
         {Array.from({ length: count }).map((_, i) => (
           <div key={i} className="flex items-center gap-4 px-4 py-3">
-            <div className="h-8 w-8 shrink-0 animate-pulse rounded-full bg-secondary/80" />
+            <div className="skeleton h-8 w-8 shrink-0 rounded-full" />
             <Bone w="w-40" />
             <Bone w="w-24" />
             <Bone className="ml-auto" w="w-16" h="h-2.5" />
@@ -64,11 +64,8 @@ export function LoadingSkeleton({
     return (
       <div className="space-y-1 p-2">
         {Array.from({ length: count }).map((_, i) => (
-          <div
-            key={i}
-            className="flex items-start gap-3 rounded-lg px-3 py-3"
-          >
-            <div className="h-8 w-8 shrink-0 animate-pulse rounded-full bg-secondary/80" />
+          <div key={i} className="flex items-start gap-3 rounded-lg px-3 py-3">
+            <div className="skeleton h-8 w-8 shrink-0 rounded-full" />
             <div className="min-w-0 flex-1 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <Bone w="w-28" />
@@ -82,7 +79,6 @@ export function LoadingSkeleton({
       </div>
     );
   }
-
   if (variant === "card") {
     return (
       <div className="rounded-xl border border-border bg-surface p-5 shadow-card">
