@@ -258,6 +258,31 @@
   --sidebar-ring: oklch(0.66 0.175 268);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   LAYER 2 — Night Mode (deeper, OLED-friendly, max contrast)
+   Activated by adding `.night` alongside `.dark` on <html>.
+   Same semantic tokens — only canvas/borders deepen and primary
+   brightens slightly so CTAs stay visible on near-black surfaces.
+   ═══════════════════════════════════════════════════════════════════ */
+.dark.night {
+  --background: var(--c-ink-950);
+  --surface: var(--c-ink-900);
+  --surface-muted: var(--c-ink-850);
+  --card: var(--c-ink-900);
+  --popover: var(--c-ink-850);
+  --secondary: oklch(0.180 0.022 265);
+  --muted: oklch(0.180 0.022 265);
+  --border: oklch(1 0 0 / 7%);
+  --border-strong: oklch(1 0 0 / 13%);
+  --input: oklch(1 0 0 / 8%);
+  --sidebar: oklch(0.095 0.020 265);
+  --sidebar-accent: oklch(0.170 0.022 265);
+  --sidebar-border: oklch(1 0 0 / 5%);
+  /* Slightly brighter primary so CTAs pop on near-black canvas */
+  --primary: oklch(0.715 0.180 277);
+  --ring: oklch(0.715 0.180 277);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
