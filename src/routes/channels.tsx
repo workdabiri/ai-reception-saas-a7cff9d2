@@ -190,23 +190,34 @@ function Totals({
   icon: typeof Inbox;
   label: string;
   value: number;
-  tone?: "neutral" | "primary" | "warning" | "success";
+  tone?: "neutral" | "info" | "primary" | "warning" | "success";
 }) {
-  const toneCls = {
+  const iconCls = {
     neutral: "bg-secondary text-secondary-foreground",
+    info: "bg-info/10 text-info",
     primary: "bg-primary-soft text-primary",
-    warning: "bg-warning/15 text-warning-foreground",
+    warning: "bg-warning/15 text-warning-foreground dark:text-[var(--status-warning-text)]",
     success: "bg-success/10 text-success",
   }[tone];
+  const accent = {
+    neutral: "transparent",
+    info: "var(--color-info)",
+    primary: "var(--color-primary)",
+    warning: "var(--color-attention)",
+    success: "var(--color-success)",
+  }[tone];
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-soft">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">{label}</span>
-        <div className={`grid h-7 w-7 place-items-center rounded-lg ${toneCls}`}>
+    <div
+      style={{ ["--kpi-accent" as never]: accent }}
+      className="kpi-accent relative overflow-hidden rounded-xl bg-surface px-6 py-5 shadow-card dark:shadow-none"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">{label}</span>
+        <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconCls}`}>
           <Icon className="h-3.5 w-3.5" />
         </div>
       </div>
-      <div className="mt-2 text-2xl font-medium tabular-nums tracking-tight">
+      <div className="mt-3 text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground" style={{ fontFeatureSettings: '"tnum" 1' }}>
         {value}
       </div>
     </div>
