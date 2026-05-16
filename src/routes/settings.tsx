@@ -424,18 +424,18 @@ function Callout({
   title: string;
   body: string;
 }) {
-  const tones = {
-    info: "border-info/20 bg-info/10 text-info",
-    warning: "border-warning/30 bg-warning/10 text-warning-foreground",
-    primary: "border-primary/20 bg-primary-soft/40 text-primary",
+  const toneCls = {
+    info: "callout--info",
+    warning: "callout--warning",
+    primary: "callout--primary",
   } as const;
   return (
-    <div className={`mt-4 rounded-xl border p-4 ${tones[tone]}`}>
-      <div className="flex items-center gap-2 text-xs font-medium">
-        <Icon className="h-3.5 w-3.5" />
+    <div className={`callout mt-4 ${toneCls[tone]}`}>
+      <div className="callout-title">
+        <Icon className="callout-icon" />
         {title}
       </div>
-      <p className="mt-1 text-sm text-foreground/90">{body}</p>
+      <p className="callout-body">{body}</p>
     </div>
   );
 }
