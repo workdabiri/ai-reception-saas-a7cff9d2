@@ -402,6 +402,9 @@
     border-radius: 0.875rem;
     box-shadow: var(--shadow-card);
   }
+  .shadow-xs {
+    box-shadow: var(--shadow-xs);
+  }
   /* Border-less depth: cards sit ~9% L above bg; hover lifts ~13% L.
      In dark/night this is what makes card edges readable without a 1px border. */
   .card-raised {
