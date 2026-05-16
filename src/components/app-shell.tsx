@@ -252,7 +252,11 @@ export function AppShell({
                 <Icon className="h-[18px] w-[18px]" />
                 {item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label}
                 {item.badge ? (
-                  <span className="absolute right-2 top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground ring-2 ring-surface">
+                  <span className={`absolute right-2 top-1 flex h-[18px] min-w-[20px] items-center justify-center rounded-[9px] px-[6px] text-[11px] font-medium tabular-nums ${
+                    active
+                      ? "bg-primary/20 text-primary"
+                      : "bg-surface text-secondary-foreground ring-1 ring-border"
+                  }`}>
                     {item.badge}
                   </span>
                 ) : null}
