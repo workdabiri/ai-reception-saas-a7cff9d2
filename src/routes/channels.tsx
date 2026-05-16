@@ -156,8 +156,8 @@ function ChannelsPage() {
 
         {/* Totals */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Totals icon={Inbox} label="Total unread" value={totals.unread} tone="primary" />
-          <Totals icon={Users} label="Customers across channels" value={totals.customers} />
+          <Totals icon={Inbox} label="Total unread" value={totals.unread} tone="info" />
+          <Totals icon={Users} label="Customers across channels" value={totals.customers} tone="primary" />
           <Totals icon={Clock} label="Waiting for operator" value={totals.waiting} tone="warning" />
           <Totals icon={Activity} label="Active sources" value={channelOverview.filter(c => c.status === "Mock Active").length} tone="success" />
         </div>
