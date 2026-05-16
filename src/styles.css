@@ -607,6 +607,66 @@
     box-shadow: 0 1px 2px -1px oklch(0.20 0.07 268 / 0.20);
   }
 
+  /* ─── Sidebar collapse/expand premium animation ───
+     iOS-style ease-out curve. Container animates first, labels fade after. */
+  .sidebar-anim {
+    transition: width 280ms cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: hidden;
+  }
+  .sidebar-toggle-icon {
+    transition: transform 280ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  /* Labels next to nav icons */
+  .sidebar-label {
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    transition-delay: 120ms; /* expanding: wait for container */
+    opacity: 1;
+    transform: translateX(0);
+    white-space: nowrap;
+  }
+  [data-collapsed="true"] .sidebar-label {
+    opacity: 0;
+    transform: translateX(-8px);
+    transition-delay: 0ms; /* collapsing: fade immediately */
+    pointer-events: none;
+  }
+  /* Section titles use same timing but collapse to zero height when hidden */
+  .sidebar-section-title {
+    overflow: hidden;
+    transition: opacity 200ms ease-out, transform 200ms ease-out, height 280ms cubic-bezier(0.32, 0.72, 0, 1), margin 280ms cubic-bezier(0.32, 0.72, 0, 1), padding 280ms cubic-bezier(0.32, 0.72, 0, 1);
+    transition-delay: 120ms, 120ms, 0ms, 0ms, 0ms;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  [data-collapsed="true"] .sidebar-section-title {
+    opacity: 0;
+    transform: translateX(-8px);
+    height: 0;
+    margin: 0;
+    padding: 0;
+    transition-delay: 0ms;
+    pointer-events: none;
+  }
+  /* Badge: pill when expanded, dot when collapsed */
+  .sidebar-badge {
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    transition-delay: 120ms;
+    opacity: 1;
+  }
+  [data-collapsed="true"] .sidebar-badge {
+    opacity: 0;
+    transition-delay: 0ms;
+    pointer-events: none;
+  }
+  .sidebar-badge-dot {
+    opacity: 0;
+    transition: opacity 160ms ease-out;
+  }
+  [data-collapsed="true"] .sidebar-badge-dot {
+    opacity: 1;
+    transition-delay: 160ms;
+  }
+
   /* ─── Controlled Soft Glass Accents ─── */
   /* Restrained translucent surfaces. Use sparingly: command headers,
      topbar, AI Draft Panel, mobile bottom nav, drawers. Not for tables. */
