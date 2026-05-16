@@ -375,23 +375,3 @@ function FilterSelect({
     </select>
   );
 }
-
-function EmptyState({
-  icon: Icon,
-  title,
-  hint,
-}: {
-  icon: typeof Users;
-  title: string;
-  hint: string;
-}) {
-  return (
-    <div className="grid place-items-center px-6 py-16 text-center">
-      <div className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-muted-foreground">
-        <Icon className="h-5 w-5" />
-      </div>
-      <h3 className="mt-3 text-sm font-semibold">{title}</h3>
-      <p className="mt-1 max-w-sm text-xs text-muted-foreground">{hint}</p>
-    </div>
-  );
-}
