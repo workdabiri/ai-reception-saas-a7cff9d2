@@ -407,9 +407,9 @@
   .kpi-accent::before {
     content: "";
     position: absolute;
-    inset: 0 0 auto 0;
-    height: 2px;
-    border-radius: 1rem 1rem 0 0;
+    inset: 0 auto 0 0;
+    width: 3px;
+    border-radius: 999px;
     background: var(--kpi-accent, var(--color-primary));
     opacity: 0.85;
   }
