@@ -425,11 +425,21 @@
     background-color: var(--color-card);
     border-radius: 0.875rem;
     box-shadow: var(--shadow-card);
-    transition: background-color 160ms ease, box-shadow 160ms ease;
+    transition: background-color 160ms ease, box-shadow 200ms ease-out,
+      transform 200ms ease-out;
   }
   .card-raised:hover,
   .hover\:card-hover:hover {
     background-color: var(--color-card-hover);
+  }
+  /* Light mode only: KPI/raised cards lift on hover for tactile depth.
+     Dark mode keeps depth from luminance and skips the translate. */
+  .card-raised:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-1px);
+  }
+  .dark .card-raised:hover {
+    transform: none;
   }
   .bg-card-hover { background-color: var(--color-card-hover); }
   .bg-surface-hover { background-color: var(--color-surface-hover); }
