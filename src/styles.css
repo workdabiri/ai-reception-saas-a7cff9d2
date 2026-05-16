@@ -414,18 +414,23 @@
     opacity: 0.85;
   }
   .nav-active {
-    background-image: linear-gradient(180deg, oklch(0.475 0.195 268 / 0.10), oklch(0.475 0.195 268 / 0.06));
+    background-color: color-mix(in oklab, var(--color-primary) 8%, transparent);
     color: var(--color-primary);
-    box-shadow: inset 0 0 0 1px oklch(0.475 0.195 268 / 0.18), 0 1px 2px -1px oklch(0.475 0.195 268 / 0.20);
   }
   .nav-active-bar {
     position: absolute;
-    left: 0;
-    top: 8px;
-    bottom: 8px;
+    left: -8px;
+    top: 6px;
+    bottom: 6px;
     width: 3px;
-    border-radius: 0 999px 999px 0;
-    background-image: linear-gradient(180deg, oklch(0.475 0.195 268), oklch(0.555 0.195 295));
+    border-radius: 2px;
+    background: var(--color-primary);
+    transform-origin: center;
+    animation: nav-bar-in 200ms ease-out both;
+  }
+  @keyframes nav-bar-in {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
   }
   .font-mono-tab {
     font-family: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
