@@ -79,20 +79,24 @@ const inboxStatusLabel: Record<InboxStatus, string> = {
   closed: "Closed",
 };
 
-// Neutral-first: only states that demand operator action carry color.
-// Waiting / Needs follow-up share the attention (amber) family.
+// Monday-style strict semantics — each state communicates a distinct meaning:
+//   new        → neutral (untouched)
+//   open       → info/blue (working on it)
+//   waiting    → warning/amber (waiting on customer)
+//   followup   → attention/orange (we're overdue — escalation)
+//   closed     → success/green, de-emphasized (done)
 const inboxStatusTone: Record<InboxStatus, string> = {
   new: "bg-secondary text-secondary-foreground border-border",
-  open: "bg-secondary text-secondary-foreground border-border",
-  waiting: "bg-warning/12 text-warning-foreground border-warning/25",
-  "needs-followup": "bg-warning/12 text-warning-foreground border-warning/25",
-  closed: "bg-secondary text-muted-foreground border-border",
+  open: "bg-info/10 text-info border-info/25",
+  waiting: "bg-warning/12 text-warning-foreground border-warning/30",
+  "needs-followup": "bg-attention/12 text-attention border-attention/30",
+  closed: "bg-success/8 text-success/85 border-success/20",
 };
 
 const priorityTone: Record<Priority, { dot: string; label: string; text: string }> = {
-  low: { dot: "bg-muted-foreground/40", label: "Low", text: "text-muted-foreground" },
-  normal: { dot: "bg-muted-foreground/60", label: "Normal", text: "text-muted-foreground" },
-  high: { dot: "bg-warning", label: "High", text: "text-warning-foreground" },
+  low: { dot: "bg-muted-foreground/35", label: "Low", text: "text-muted-foreground" },
+  normal: { dot: "bg-muted-foreground/55", label: "Normal", text: "text-muted-foreground" },
+  high: { dot: "bg-attention", label: "High", text: "text-attention" },
   urgent: { dot: "bg-destructive", label: "Urgent", text: "text-destructive" },
 };
 
