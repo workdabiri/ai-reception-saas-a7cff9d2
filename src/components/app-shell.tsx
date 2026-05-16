@@ -303,7 +303,7 @@ export function AppShell({
                       <Icon className="h-4 w-4 text-muted-foreground" />
                       {it.label}
                       {it.badge ? (
-                        <span className="absolute right-2 top-2 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground">
+                        <span className="absolute right-2 top-2 flex h-[18px] min-w-[20px] items-center justify-center rounded-[9px] bg-surface px-[6px] text-[11px] font-medium tabular-nums text-secondary-foreground ring-1 ring-border">
                           {it.badge}
                         </span>
                       ) : null}
