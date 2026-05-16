@@ -218,7 +218,7 @@ function CustomerProfilePage() {
                         <StickyNote className="h-3 w-3" />
                         {n.author}
                       </span>
-                      <span className="opacity-70">{n.time}</span>
+                      <span className="opacity-70 tabular-nums">{n.time}</span>
                     </div>
                     <p className="leading-snug">{n.body}</p>
                   </li>
@@ -293,7 +293,7 @@ function CustomerProfilePage() {
                           <MessageBadge author={m.author} />
                           {m.authorName}
                         </span>
-                        <span>{m.time}</span>
+                        <span className="tabular-nums">{m.time}</span>
                       </div>
                       <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-foreground/90">
                         {m.body}

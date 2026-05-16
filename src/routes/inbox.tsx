@@ -769,7 +769,7 @@ function CustomerContext({
               >
                 <div className="mb-1 flex items-center justify-between text-[11px]">
                   <span className="font-medium">{n.authorName}</span>
-                  <span className="opacity-70">{n.time}</span>
+                  <span className="opacity-70 tabular-nums">{n.time}</span>
                 </div>
                 <p className="leading-snug">{n.body}</p>
               </li>
@@ -797,7 +797,7 @@ function CustomerContext({
                 <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/50" />
                 <div className="min-w-0">
                   <div className="font-medium text-foreground">{systemLabel(m)}</div>
-                  <div className="text-muted-foreground">{m.time}</div>
+                  <div className="text-muted-foreground tabular-nums">{m.time}</div>
                 </div>
               </li>
             ))}
@@ -897,7 +897,7 @@ function ThreadItem({
         <div
           className={`inline-flex items-center gap-1.5 rounded-full border bg-surface px-2.5 py-1 text-[11px] font-medium ${tone}`}
         >
-          {message.body} · <span className="opacity-70">{message.time}</span>
+          {message.body} · <span className="opacity-70 tabular-nums">{message.time}</span>
         </div>
         <div className="h-px flex-1 bg-border" />
       </div>
@@ -913,7 +913,7 @@ function ThreadItem({
             <StickyNote className="h-3 w-3" />
             Internal note · {message.authorName}
           </span>
-          <span className="opacity-70">{message.time}</span>
+          <span className="opacity-70 tabular-nums">{message.time}</span>
         </div>
         <p className="text-sm text-foreground/90">{message.body}</p>
         <div className="mt-2 text-[10px] uppercase tracking-wider text-warning-foreground/70">
@@ -935,7 +935,7 @@ function ThreadItem({
         <div className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground">
           <span className="font-medium text-foreground">{message.authorName}</span>
           <span>·</span>
-          <span>{message.time}</span>
+          <span className="tabular-nums">{message.time}</span>
         </div>
         <div
           className={`rounded-2xl border px-4 py-2.5 text-sm leading-relaxed shadow-soft ${

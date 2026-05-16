@@ -332,7 +332,7 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
         </DetailRow>
         <DetailRow label="Timestamp">
           <div className="inline-flex items-center gap-1.5 text-sm tabular-nums text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" /> {event.time}
+            <Clock className="h-3.5 w-3.5" /> <span className="tabular-nums">{event.time}</span>
             <span className="text-[11px] opacity-70">· {event.iso}</span>
           </div>
         </DetailRow>
