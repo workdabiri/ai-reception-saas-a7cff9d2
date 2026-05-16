@@ -508,7 +508,7 @@ function NavRow({
       to={item.to as "/"}
       aria-label={item.label}
       className={[
-        "group relative flex items-center h-10 w-full rounded-xl transition-colors",
+        "group relative flex items-center h-9 w-full rounded-lg transition-colors",
         active
           ? "bg-primary-soft text-primary"
           : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground",
