@@ -209,15 +209,15 @@ function InboxPage() {
     />
   );
 
-  const channelChips: { value: Channel | "planned" | "future" | "all"; label: string; planned?: boolean }[] = [
+  const channelChips: { value: Channel | "planned" | "future" | "all"; label: string; planned?: boolean; dotChannel?: string }[] = [
     { value: "all", label: "All" },
     { value: "webform", label: "Web" },
     { value: "email", label: "Email" },
-    { value: "planned", label: "Instagram", planned: true },
-    { value: "planned", label: "WhatsApp", planned: true },
-    { value: "planned", label: "Telegram", planned: true },
-    { value: "planned", label: "SMS", planned: true },
-    { value: "future", label: "Voice", planned: true },
+    { value: "planned", label: "Instagram", planned: true, dotChannel: "instagram" },
+    { value: "planned", label: "WhatsApp", planned: true, dotChannel: "whatsapp" },
+    { value: "planned", label: "Telegram", planned: true, dotChannel: "telegram" },
+    { value: "planned", label: "SMS", planned: true, dotChannel: "sms" },
+    { value: "future", label: "Voice", planned: true, dotChannel: "voice" },
   ];
 
   const queueRows = inboxSectionGroups[0].rows;
