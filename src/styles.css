@@ -462,22 +462,6 @@
     transform-origin: center;
     animation: nav-bar-in 200ms ease-out both;
   }
-  .bottom-nav-active-bar {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    width: 24px;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--color-primary);
-    transform-origin: center;
-    animation: bottom-nav-bar-in 200ms ease-out forwards;
-  }
-  @keyframes bottom-nav-bar-in {
-    from { transform: translateX(-50%) scaleX(0); }
-    to { transform: translateX(-50%) scaleX(1); }
-  }
   @keyframes nav-bar-in {
     from { transform: scaleY(0); }
     to { transform: scaleY(1); }

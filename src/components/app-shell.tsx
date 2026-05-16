@@ -246,7 +246,6 @@ export function AppShell({
                     : "text-muted-foreground hover:bg-secondary"
                 }`}
               >
-                {active && <span className="bottom-nav-active-bar" />}
                 <Icon className="h-[18px] w-[18px]" />
                 {item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label}
                 {item.badge ? (
@@ -478,7 +477,9 @@ function NavRow({
                 : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
             }`}
           >
-            {active && <span className="nav-active-bar" />}
+            {active && (
+              <span className="absolute -left-2 top-2 bottom-2 w-0.5 rounded-r-full bg-primary" />
+            )}
             <Icon className="h-[18px] w-[18px]" />
             {item.badge ? (
               <span className="absolute -right-1 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground ring-2 ring-sidebar">
