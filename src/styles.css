@@ -282,12 +282,15 @@
    ═══════════════════════════════════════════════════════════════════ */
 .dark.night {
   --background: var(--c-ink-950);
-  --surface: var(--c-ink-900);
-  --surface-muted: var(--c-ink-850);
-  --card: var(--c-ink-900);
-  --popover: var(--c-ink-850);
-  --secondary: oklch(0.180 0.022 265);
-  --muted: oklch(0.180 0.022 265);
+  /* Cards lifted ~9% L above near-black bg so edges read without borders */
+  --surface: oklch(0.180 0.022 265);
+  --surface-muted: oklch(0.145 0.022 265);
+  --surface-hover: oklch(0.220 0.024 265);
+  --card: oklch(0.180 0.022 265);
+  --card-hover: oklch(0.220 0.024 265);
+  --popover: oklch(0.195 0.022 265);
+  --secondary: oklch(0.165 0.022 265);
+  --muted: oklch(0.165 0.022 265);
   --border: oklch(1 0 0 / 7%);
   --border-strong: oklch(1 0 0 / 13%);
   --input: oklch(1 0 0 / 8%);
