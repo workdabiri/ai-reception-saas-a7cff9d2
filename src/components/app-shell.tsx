@@ -252,11 +252,7 @@ export function AppShell({
                 <Icon className="h-[18px] w-[18px]" />
                 {item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label}
                 {item.badge ? (
-                  <span className={`absolute right-2 top-1 flex h-[18px] min-w-[20px] items-center justify-center rounded-[9px] px-[6px] text-[11px] font-medium tabular-nums ${
-                    active
-                      ? "bg-primary/20 text-primary"
-                      : "bg-surface text-secondary-foreground ring-1 ring-border"
-                  }`}>
+                  <span className="absolute right-2 top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground ring-2 ring-surface">
                     {item.badge}
                   </span>
                 ) : null}
@@ -303,7 +299,7 @@ export function AppShell({
                       <Icon className="h-4 w-4 text-muted-foreground" />
                       {it.label}
                       {it.badge ? (
-                        <span className="absolute right-2 top-2 flex h-[18px] min-w-[20px] items-center justify-center rounded-[9px] bg-surface px-[6px] text-[11px] font-medium tabular-nums text-secondary-foreground ring-1 ring-border">
+                        <span className="absolute right-2 top-2 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground">
                           {it.badge}
                         </span>
                       ) : null}
@@ -489,7 +485,7 @@ function NavRow({
             )}
             <Icon className="h-[18px] w-[18px]" />
             {item.badge ? (
-              <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[20px] items-center justify-center rounded-[9px] bg-surface px-[6px] text-[11px] font-medium tabular-nums text-muted-foreground ring-1 ring-border">
+              <span className="absolute -right-1 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium tabular-nums text-primary-foreground ring-2 ring-sidebar">
                 {item.badge}
               </span>
             ) : null}
@@ -522,11 +518,13 @@ function NavRow({
       />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge ? (
-        <span className={`flex h-[18px] min-w-[20px] items-center justify-center rounded-[9px] px-[6px] text-[11px] font-medium tabular-nums ${
-          active
-            ? "bg-primary/20 text-primary"
-            : "bg-surface text-secondary-foreground ring-1 ring-border"
-        }`}>
+        <span
+          className={`rounded-md px-2 py-1 text-[10px] font-medium tabular-nums shadow-soft ${
+            active
+              ? "gradient-primary text-primary-foreground"
+              : "bg-secondary text-secondary-foreground"
+          }`}
+        >
           {item.badge}
         </span>
       ) : null}
