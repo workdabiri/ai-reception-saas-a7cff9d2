@@ -1,5 +1,6 @@
 import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
-import { Info } from "lucide-react";
+import { Info, X } from "lucide-react";
+import { useState } from "react";
 
 // Monday-style strict semantics. Each chip color carries a distinct meaning:
 //   new        → neutral (untouched)

@@ -204,8 +204,18 @@ export function AppShell({
               </kbd>
             </div>
             <div className="ml-auto flex items-center gap-2">
-              <span className="hidden lg:inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning/10 px-3 py-1 text-[11px] font-medium text-warning-foreground">
-                <span className="live-indicator-dot live-indicator-dot--warning !h-1.5 !w-1.5" />
+              <span
+                className="hidden lg:inline-flex items-center gap-1.5 rounded-md border-[0.5px] px-2 py-[3px] text-[11px] font-medium"
+                style={{
+                  background: "rgba(253, 171, 61, 0.10)",
+                  color: "var(--status-pending-text)",
+                  borderColor: "rgba(253, 171, 61, 0.30)",
+                }}
+              >
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ background: "var(--status-pending)" }}
+                />
                 Mock data
               </span>
               <button className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px">
