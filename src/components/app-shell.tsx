@@ -403,14 +403,10 @@ function SharedSidebar({
       <div className="flex-1 overflow-y-auto py-2">
         {MENU_CONFIG.sections.map((section, idx) => (
           <div key={section.id} className={idx > 0 ? "mt-3" : ""}>
-            {!collapsed ? (
-              <div className="px-4 pb-2 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
-                {section.title}
-              </div>
-            ) : idx > 0 ? (
-              <div className="mx-3 my-2 h-px bg-sidebar-border/60" />
-            ) : null}
-            <nav className={`px-2 space-y-1 ${collapsed ? "flex flex-col items-center" : ""}`}>
+            <div className="sidebar-section-title px-4 pb-2 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
+              {section.title}
+            </div>
+            <nav className="px-3 space-y-1">
               {section.items.map((item) => (
                 <NavRow
                   key={item.to + item.label}
