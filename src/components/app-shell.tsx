@@ -478,7 +478,7 @@ function NavRow({
             }`}
           >
             {active && (
-              <span className="absolute -left-2 top-2 bottom-2 w-0.5 rounded-r-full bg-primary" />
+              <span className="absolute -left-3 top-1.5 bottom-1.5 w-[3px] rounded-[2px] bg-primary" />
             )}
             <Icon className="h-[18px] w-[18px]" />
             {item.badge ? (
