@@ -180,18 +180,16 @@ export function AppShell({
         />
 
         {/* Main */}
-        <div data-sidebar-collapsed={collapsed} className="flex-1 flex min-w-0 flex-col transition-[width] duration-300 ease-in-out">
+        <div data-sidebar-collapsed={collapsed} className="flex-1 flex min-w-0 flex-col">
           <header className="sticky top-0 z-20 flex h-14 items-center gap-3 glass-chrome px-4 lg:px-6">
             <button
               onClick={toggle}
               aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
               className="hidden md:inline-grid h-9 w-9 place-items-center rounded-lg border border-border bg-surface text-muted-foreground transition hover:text-foreground hover:bg-secondary"
             >
-              {collapsed ? (
-                <PanelLeftOpen className="h-4 w-4" />
-              ) : (
-                <PanelLeftClose className="h-4 w-4" />
-              )}
+              <PanelLeftClose
+                className={`sidebar-toggle-icon h-4 w-4 ${collapsed ? "rotate-180" : ""}`}
+              />
             </button>
             <div className="relative w-full max-w-md group">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
