@@ -12,6 +12,7 @@ import {
 } from "@/lib/mock-data";
 import { Search, Download, Shield, Users, ChevronRight, AlertTriangle, MessageCircle } from "lucide-react";
 import type { ChannelKey } from "@/lib/mock-data";
+import { CustomersOperatorFirstEmpty, FilterNoMatchState } from "@/components/empty-states";
 
 const channelToKey = (c: Channel): ChannelKey => (c === "webform" ? "webchat" : (c as ChannelKey));
 
@@ -184,11 +185,18 @@ function CustomersPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <EmptyState
-              icon={Users}
-              title="No customers match"
-              hint="Try a different search or clear filters."
-            />
+            rows.length === 0 ? (
+              <CustomersOperatorFirstEmpty />
+            ) : (
+              <FilterNoMatchState
+                label="customers"
+                onReset={() => {
+                  setQuery("");
+                  setStatusFilter("all");
+                  setChannelFilter("all");
+                }}
+              />
+            )
           ) : (
             <>
               {/* Desktop / tablet table */}
@@ -365,25 +373,5 @@ function FilterSelect({
         </option>
       ))}
     </select>
-  );
-}
-
-function EmptyState({
-  icon: Icon,
-  title,
-  hint,
-}: {
-  icon: typeof Users;
-  title: string;
-  hint: string;
-}) {
-  return (
-    <div className="grid place-items-center px-6 py-16 text-center">
-      <div className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-muted-foreground">
-        <Icon className="h-5 w-5" />
-      </div>
-      <h3 className="mt-3 text-sm font-semibold">{title}</h3>
-      <p className="mt-1 max-w-sm text-xs text-muted-foreground">{hint}</p>
-    </div>
   );
 }
