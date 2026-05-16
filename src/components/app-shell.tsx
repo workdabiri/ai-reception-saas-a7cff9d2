@@ -226,45 +226,52 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="flex-1 min-w-0 pb-20 md:pb-0">
+          <main className="flex-1 min-w-0 pb-16 md:pb-0">
             {children ?? <Outlet />}
           </main>
         </div>
 
         {/* Mobile bottom nav */}
-        <nav className="fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-1 rounded-2xl glass-surface p-2 shadow-pop md:hidden" style={{ paddingBottom: "max(0.375rem, env(safe-area-inset-bottom))" }}>
+        <nav
+          className="fixed inset-x-0 bottom-0 z-30 flex h-16 items-center justify-around bg-surface border-t border-border/60 shadow-[0_-2px_8px_rgba(15,17,36,0.04)] md:hidden"
+          style={{ padding: "8px 0", paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
+        >
           {mobilePrimary.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.to, item.exact);
+            const label = item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label;
             return (
               <Link
                 key={item.id}
                 to={item.to as "/"}
-                className={`relative flex flex-1 flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-medium transition ${
-                  active
-                    ? "bg-primary-soft text-primary"
-                    : "text-muted-foreground hover:bg-secondary"
-                }`}
+                className="group relative flex flex-col items-center justify-center gap-1 min-w-[56px] px-2 py-1.5 rounded-lg transition-all duration-150 ease-out hover:bg-secondary/60"
               >
                 {active && (
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-6 rounded-[2px] bg-primary" />
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] w-6 rounded-b-[2px] bg-primary" />
                 )}
-                <Icon className="h-[18px] w-[18px]" />
-                {item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label}
-                {item.badge ? (
-                  <span className={`absolute right-2 top-1 flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-[9px] text-[11px] font-medium tabular-nums ${active ? "bg-primary/20 text-primary" : "bg-background dark:bg-white/[0.08] text-muted-foreground"}`}>
-                    {item.badge}
-                  </span>
-                ) : null}
+                <div className="relative">
+                  <Icon
+                    strokeWidth={1.75}
+                    className={`h-[22px] w-[22px] transition-colors ${active ? "text-primary" : "text-muted-foreground"}`}
+                  />
+                  {item.badge ? (
+                    <span className="absolute -top-1 -right-2 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-[8px] text-[10px] font-medium tabular-nums bg-app text-foreground/80 border-[1.5px] border-surface">
+                      {item.badge}
+                    </span>
+                  ) : null}
+                </div>
+                <span className={`text-[11px] font-medium leading-none ${active ? "text-primary" : "text-muted-foreground"}`}>
+                  {label}
+                </span>
               </Link>
             );
           })}
           <button
             onClick={() => setMoreOpen(true)}
-            className="relative flex flex-1 flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-medium text-muted-foreground transition hover:bg-secondary"
+            className="group relative flex flex-col items-center justify-center gap-1 min-w-[56px] px-2 py-1.5 rounded-lg transition-all duration-150 ease-out hover:bg-secondary/60"
           >
-            <MoreHorizontal className="h-[18px] w-[18px]" />
-            More
+            <MoreHorizontal strokeWidth={1.75} className="h-[22px] w-[22px] text-muted-foreground" />
+            <span className="text-[11px] font-medium leading-none text-muted-foreground">More</span>
           </button>
         </nav>
 
