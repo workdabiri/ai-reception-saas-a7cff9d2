@@ -321,7 +321,7 @@ function CustomerProfilePage() {
                       <span className="absolute -left-[22px] top-1 grid h-3 w-3 place-items-center rounded-full bg-card ring-2 ring-border">
                         <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                       </span>
-                      <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                      <div className="flex items-center gap-2 text-[11px] text-muted-foreground tabular-nums">
                         <Clock className="h-3 w-3" />
                         {e.time}
                       </div>
