@@ -34,11 +34,11 @@ const statusLabel: Record<InboxStatus, string> = {
 };
 
 const statusTone: Record<InboxStatus, string> = {
-  new: "bg-info/10 text-info border-info/20",
-  open: "bg-success/10 text-success border-success/20",
-  waiting: "bg-warning/15 text-warning-foreground border-warning/30",
-  "needs-followup": "bg-primary-soft text-primary border-primary/30",
-  closed: "bg-muted text-muted-foreground border-border",
+  new: "bg-secondary text-secondary-foreground border-border",
+  open: "bg-info/10 text-info border-info/25",
+  waiting: "bg-warning/12 text-warning-foreground border-warning/30",
+  "needs-followup": "bg-attention/12 text-attention border-attention/30",
+  closed: "bg-success/8 text-success/85 border-success/20",
 };
 
 type Row = {

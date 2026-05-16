@@ -1,18 +1,25 @@
 import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
 import { Info } from "lucide-react";
 
-// Neutral-first: most chips are neutral. Color only when it carries meaning
-// (attention, error, AI review, success, urgent). Default operational states
-// like "new" / "open" stay neutral so the UI doesn't feel rainbow-colored.
+// Monday-style strict semantics. Each chip color carries a distinct meaning:
+//   new        → neutral (untouched)
+//   open       → info/blue (being actioned)
+//   waiting    → warning/amber (on customer)
+//   follow-up  → attention/orange (we're overdue)
+//   urgent     → destructive/rose
+//   needs-review → ai/violet (AI awaits operator)
+//   active     → success/emerald
+//   closed     → success, de-emphasized (done)
+//   future     → neutral muted (planned)
 const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
   new: "bg-secondary text-secondary-foreground ring-border",
-  open: "bg-secondary text-secondary-foreground ring-border",
-  waiting: "bg-warning/12 text-warning-foreground ring-warning/25",
-  closed: "bg-secondary text-muted-foreground ring-border",
+  open: "bg-info/10 text-info ring-info/25",
+  waiting: "bg-warning/12 text-warning-foreground ring-warning/30",
+  closed: "bg-success/8 text-success/85 ring-success/20",
   "needs-review": "bg-ai-soft text-ai ring-ai/25",
-  "follow-up": "bg-warning/12 text-warning-foreground ring-warning/25",
+  "follow-up": "bg-attention/12 text-attention ring-attention/30",
   urgent: "bg-destructive/10 text-destructive ring-destructive/25",
-  active: "bg-success/10 text-success ring-success/20",
+  active: "bg-success/10 text-success ring-success/25",
   "access-denied": "bg-destructive/10 text-destructive ring-destructive/25",
   future: "bg-secondary text-muted-foreground ring-border",
 };
