@@ -599,18 +599,18 @@ function InboxPage() {
                       Add note
                     </button>
                   ) : (
-                    <button
-                      title="Mock — no message will be sent in this prototype"
-                      className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
-                    >
-                      <Send className="h-3.5 w-3.5" />
-                      Send reply
-                      <span
-                        className="ml-1 rounded-[3px] border-[0.5px] border-border px-[5px] py-[2px] text-[9px] font-medium uppercase tracking-[0.05em] bg-background text-muted-foreground dark:bg-white/[0.08]"
+                    <div className="inline-flex items-center">
+                      <button
+                        title="Mock — no message will be sent in this prototype"
+                        className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
                       >
-                        mock
+                        <Send className="h-3.5 w-3.5" />
+                        Send reply
+                      </button>
+                      <span className="mock-suffix ml-2 self-center rounded border-[0.5px] border-border bg-background px-1.5 py-1 text-[10px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
+                        Mock
                       </span>
-                    </button>
+                    </div>
                   )}
                 </div>
               </div>
