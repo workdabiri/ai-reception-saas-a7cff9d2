@@ -256,24 +256,26 @@ function DashboardPage() {
         <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card flex flex-col">
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
-              <h2 className="text-[13px] font-medium tracking-tight">Recent messages</h2>
+              <h2 className="text-[14px] font-medium">Recent messages</h2>
               <p className="text-[11.5px] text-muted-foreground">Latest inbound activity.</p>
             </div>
-            <Link to="/inbox" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
+            <Link to="/inbox" className="text-[12px] font-medium text-primary hover:underline inline-flex items-center gap-1">
               All <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
-          <ul className="divide-y divide-border flex-1">
+          <ul className="flex-1">
             {recentMessages.map((m) => (
-              <li key={m.id} className="flex gap-3 px-5 py-3 transition hover:bg-surface-muted/40">
-                <Avatar initials={m.initials} size="sm" />
+              <li key={m.id} className="flex gap-3 px-4 py-3 border-b-[0.5px] border-border last:border-b-0 transition hover:bg-surface-hover cursor-pointer">
+                <Avatar initials={m.initials} size="md" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="truncate text-[13px] font-medium">{m.customer}</span>
-                    <span className="shrink-0 text-[10.5px] text-muted-foreground font-mono-tab">{m.time}</span>
+                    <span className="truncate text-[13px] font-medium text-foreground">{m.customer}</span>
+                    <span className="shrink-0 text-[11px] text-muted-foreground font-mono-tab">{m.time}</span>
                   </div>
-                  <p className="mt-1 line-clamp-2 text-[12px] text-muted-foreground leading-snug">{m.snippet}</p>
-                  <div className="mt-2"><ChannelChip channel={m.channel} label={channelLabel[m.channel]} /></div>
+                  <p className="mt-0.5 truncate text-[12px] text-muted-foreground leading-[1.4]">{m.snippet}</p>
+                  <div className="mt-1.5 inline-flex [&>span]:h-[18px] [&>span]:px-1.5 [&>span]:py-0 [&>span]:text-[10px] [&>span]:leading-[18px]">
+                    <ChannelChip channel={m.channel} label={channelLabel[m.channel]} />
+                  </div>
                 </div>
               </li>
             ))}
