@@ -347,18 +347,18 @@ function SharedSidebar({
   return (
     <aside
       data-collapsed={collapsed}
-      className={`hidden md:flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar/95 backdrop-blur sidebar-anim sticky top-0 h-screen [height:100dvh] self-start ${
+      className={`hidden md:flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar/95 backdrop-blur sidebar-anim sticky top-0 h-screen [height:100dvh] self-start px-2 py-3 ${
         collapsed ? "w-16" : "w-[240px]"
       }`}
     >
-      {/* Workspace area */}
-      <div className={`flex items-center gap-3 px-3 pt-4 pb-3 ${collapsed ? "justify-center" : ""}`}>
+      {/* TOP: Workspace switcher (fixed) */}
+      <header className="shrink-0">
         {collapsed ? (
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 aria-label="Workspace"
-                className="relative grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-medium text-sm shadow-ring-primary"
+                className="relative mx-auto grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-medium text-sm shadow-ring-primary"
               >
                 {ws.initials}
                 <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-success ring-2 ring-sidebar" />
@@ -372,12 +372,12 @@ function SharedSidebar({
             </TooltipContent>
           </Tooltip>
         ) : (
-          <button className="flex w-full items-center gap-3 rounded-xl border border-sidebar-border bg-surface px-3 py-2 text-left transition hover:bg-sidebar-accent">
+          <button className="flex h-14 w-full items-center gap-3 rounded-[10px] px-3 py-2 text-left transition hover:bg-sidebar-accent">
             <div className="relative grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-medium text-sm shadow-soft">
               {ws.initials}
               <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success ring-2 ring-surface" />
             </div>
-            <div className="min-w-0 flex-1 transition-opacity duration-200">
+            <div className="min-w-0 flex-1">
               <div className="truncate text-[13px] font-medium leading-tight">
                 {ws.name}
               </div>
@@ -393,18 +393,16 @@ function SharedSidebar({
             <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
           </button>
         )}
-      </div>
+      </header>
 
-      <div className="mx-3 h-px bg-sidebar-border" />
-
-      {/* Sections */}
-      <div className="flex-1 overflow-y-auto py-2">
+      {/* MIDDLE: Scrollable nav */}
+      <nav className="sidebar-nav my-4 flex-1 overflow-y-auto">
         {MENU_CONFIG.sections.map((section, idx) => (
-          <div key={section.id} className={idx > 0 ? "mt-3" : ""}>
-            <div className="sidebar-section-title px-4 pb-2 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
+          <section key={section.id} className={idx > 0 ? "mt-4" : ""}>
+            <h4 className="sidebar-section-title px-3 mb-1 text-[11px] font-medium uppercase tracking-[0.06em] text-muted-foreground/70">
               {section.title}
-            </div>
-            <nav className="px-3 space-y-1">
+            </h4>
+            <div className="space-y-px">
               {section.items.map((item) => (
                 <NavRow
                   key={item.to + item.label}
@@ -413,53 +411,83 @@ function SharedSidebar({
                   active={isActive(item.to, item.exact)}
                 />
               ))}
-            </nav>
-          </div>
+            </div>
+          </section>
         ))}
-      </div>
+      </nav>
 
-      {/* Bottom area */}
-      <div className={`mt-auto border-t border-sidebar-border ${collapsed ? "flex flex-col items-center gap-2 py-3" : "p-3 space-y-2"}`}>
-        {!collapsed && (
-          <div className="sidebar-ai-card rounded-xl p-4">
-            <div className="relative z-10 flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.10em] text-white/85">
-              <span className="grid h-4 w-4 place-items-center rounded-md bg-white/15 ring-1 ring-white/25">
-                <Sparkles className="h-2.5 w-2.5" />
-              </span>
+      {/* BOTTOM: AI Active card (fixed) */}
+      <div className="shrink-0">
+        {collapsed ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                aria-label="AI Active — Human-in-the-loop"
+                className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-primary/15 ring-1 ring-inset ring-primary/25 text-primary transition hover:bg-primary/20"
+              >
+                <Sparkles className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="text-xs">
+              <div className="font-medium">AI Active</div>
+              <div className="text-[10px] text-muted-foreground">Human-in-the-loop</div>
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          <div
+            className="rounded-xl p-3"
+            style={{
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--color-primary) 18%, transparent), color-mix(in oklab, var(--color-primary) 9%, transparent))",
+              border: "0.5px solid color-mix(in oklab, var(--color-primary) 22%, transparent)",
+            }}
+          >
+            <div className="flex items-center gap-1.5 mb-1 text-[10px] font-medium uppercase tracking-[0.06em] text-primary">
+              <Sparkles className="h-4 w-4" />
               AI Active
             </div>
-            <div className="relative z-10 mt-2 text-[12.5px] font-medium leading-tight text-white">
+            <div className="mb-1 text-[13px] font-medium leading-tight text-foreground">
               Human-in-the-loop
             </div>
-            <p className="relative z-10 mt-1 text-[11px] leading-snug text-white/75">
+            <p className="text-[11px] leading-[1.4] text-muted-foreground">
               AI prepares drafts. Operators review and send every reply.
             </p>
           </div>
         )}
-
-        {collapsed ? (
-          <>
-            {MENU_CONFIG.bottomItems.map((it) => (
-              <BottomIcon key={it.id} icon={it.icon} label={it.label} />
-            ))}
-          </>
-        ) : (
-          <div className="flex items-center gap-1 rounded-lg border border-sidebar-border bg-surface p-1">
-            {MENU_CONFIG.bottomItems.map((it) => {
-              const Icon = it.icon;
-              return (
-                <button
-                  key={it.id}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-2 text-[12px] font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {it.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
       </div>
+
+      {/* BOTTOM: Footer controls (fixed) */}
+      <footer className="shrink-0 mt-2 pt-2 border-t border-sidebar-border/60 flex flex-col gap-0.5">
+        {MENU_CONFIG.bottomItems.map((it) => {
+          const Icon = it.icon;
+          if (collapsed) {
+            return (
+              <Tooltip key={it.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    aria-label={it.label}
+                    className="mx-auto grid h-8 w-10 place-items-center rounded-lg text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="text-xs">
+                  {it.label}
+                </TooltipContent>
+              </Tooltip>
+            );
+          }
+          return (
+            <button
+              key={it.id}
+              className="flex h-8 w-full items-center gap-3 rounded-lg px-3 text-[13px] text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground"
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="sidebar-label truncate">{it.label}</span>
+            </button>
+          );
+        })}
+      </footer>
     </aside>
   );
 }
@@ -480,7 +508,7 @@ function NavRow({
       to={item.to as "/"}
       aria-label={item.label}
       className={[
-        "group relative flex items-center h-10 w-full rounded-xl transition-colors",
+        "group relative flex items-center h-9 w-full rounded-lg transition-colors",
         active
           ? "bg-primary-soft text-primary"
           : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground",
@@ -489,7 +517,7 @@ function NavRow({
       {active && (
         <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-[2px] bg-primary" />
       )}
-      <span className="relative grid h-10 w-10 shrink-0 place-items-center">
+      <span className="relative grid h-9 w-10 shrink-0 place-items-center">
         <Icon
           className={`h-[18px] w-[18px] transition-colors ${
             active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
