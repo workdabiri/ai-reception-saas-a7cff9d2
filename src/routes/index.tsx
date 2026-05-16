@@ -164,22 +164,22 @@ function DashboardPage() {
             <div
               key={s.label}
               style={{ ["--kpi-accent" as never]: toneAccent[s.tone] }}
-              className="kpi-accent group relative overflow-hidden rounded-xl border border-border bg-card p-5 shadow-soft transition hover:shadow-card"
+              className="kpi-accent group relative overflow-hidden rounded-xl bg-surface py-5 px-6 shadow-card transition hover:shadow-elev"
             >
               <div className="relative flex items-start justify-between gap-2">
                 <span className="text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
                   {s.label}
                 </span>
-                <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneStyles[s.tone]}`}>
-                  <Icon className="h-[16px] w-[16px]" />
+                <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[s.tone]}`}>
+                  <Icon className="h-4 w-4" />
                 </div>
               </div>
               <div className="relative mt-4 flex items-end justify-between gap-2">
-                <div className="text-[34px] font-semibold leading-none tracking-tight font-mono-tab text-foreground">
+                <div className="text-[32px] font-medium leading-none tabular-nums text-foreground">
                   {s.value}
                 </div>
                 {s.delta && (
-                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-bold font-mono-tab ${deltaStyles[s.delta.dir]}`}>
+                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-bold tabular-nums ${deltaStyles[s.delta.dir]}`}>
                     {Trend && <Trend className="h-3 w-3" />}
                     {s.delta.value}
                   </span>
