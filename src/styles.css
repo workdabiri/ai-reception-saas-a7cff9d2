@@ -231,7 +231,35 @@
   /* Pending / Mock indicators — Amber */
   --status-pending: oklch(0.665 0.165 60);
   --status-pending-text: oklch(0.55 0.14 60);
+  --text-primary: oklch(0.205 0.040 264);
+  --text-secondary: oklch(0.40 0.024 256);
   --text-tertiary: oklch(0.55 0.024 256);
+
+  /* App + surface aliases for hand-written tokens (light) */
+  --bg-app: oklch(0.970 0.008 260);
+  --bg-surface: oklch(1 0 0);
+  --bg-surface-raised: oklch(1 0 0);
+  --border-subtle: rgba(15, 17, 36, 0.06);
+
+  /* Status — solid colors, soft backgrounds, readable text (light) */
+  --status-info: #2563EB;
+  --status-success: #059669;
+  --status-warning: #D97706;
+  --status-danger: #E11D48;
+  --status-neutral: #6B7280;
+
+  --status-info-soft: rgba(37, 99, 235, 0.10);
+  --status-success-soft: rgba(5, 150, 105, 0.10);
+  --status-warning-soft: rgba(217, 119, 6, 0.12);
+  --status-pending-soft: rgba(217, 119, 6, 0.10);
+  --status-danger-soft: rgba(225, 29, 72, 0.10);
+  --status-neutral-soft: rgba(107, 114, 128, 0.10);
+
+  --status-info-text: #1D4ED8;
+  --status-success-text: #047857;
+  --status-warning-text: #92400E;
+  --status-danger-text: #BE123C;
+  --status-neutral-text: #4B5563;
 
   /* Hairline borders — rely on shadow for primary depth, border just defines edge */
   --border: rgba(15, 17, 36, 0.06);
