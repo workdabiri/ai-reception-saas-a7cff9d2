@@ -518,13 +518,11 @@ function NavRow({
       />
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge ? (
-        <span
-          className={`rounded-md px-2 py-1 text-[10px] font-medium tabular-nums shadow-soft ${
-            active
-              ? "gradient-primary text-primary-foreground"
-              : "bg-secondary text-secondary-foreground"
-          }`}
-        >
+        <span className={`flex h-[18px] min-w-[20px] items-center justify-center rounded-[9px] px-[6px] text-[11px] font-medium tabular-nums ${
+          active
+            ? "bg-primary/20 text-primary"
+            : "bg-surface text-secondary-foreground ring-1 ring-border"
+        }`}>
           {item.badge}
         </span>
       ) : null}
