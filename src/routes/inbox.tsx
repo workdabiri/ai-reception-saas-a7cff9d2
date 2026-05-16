@@ -416,9 +416,8 @@ function InboxPage() {
                   <FilterNoMatchState
                     label="conversations"
                     onReset={() => {
-                      setSearch("");
-                      setStatusFilter("all");
-                      setSection("all");
+                      setQuery("");
+                      setSection({ kind: "inbox", value: "all", label: "All conversations" });
                     }}
                   />
                 )}
