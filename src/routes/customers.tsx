@@ -185,11 +185,18 @@ function CustomersPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <EmptyState
-              icon={Users}
-              title="No customers match"
-              hint="Try a different search or clear filters."
-            />
+            rows.length === 0 ? (
+              <CustomersOperatorFirstEmpty />
+            ) : (
+              <FilterNoMatchState
+                label="customers"
+                onReset={() => {
+                  setQuery("");
+                  setStatusFilter("all");
+                  setChannelFilter("all");
+                }}
+              />
+            )
           ) : (
             <>
               {/* Desktop / tablet table */}
