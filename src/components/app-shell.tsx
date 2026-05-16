@@ -205,10 +205,7 @@ export function AppShell({
             </div>
             <div className="ml-auto flex items-center gap-2">
               <span className="hidden lg:inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning/10 px-3 py-1 text-[11px] font-medium text-warning-foreground">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-warning opacity-60" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-warning" />
-                </span>
+                <span className="live-indicator-dot live-indicator-dot--warning !h-1.5 !w-1.5" />
                 Mock data
               </span>
               <button className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px">
