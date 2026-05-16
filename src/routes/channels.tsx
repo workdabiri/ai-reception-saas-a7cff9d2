@@ -37,6 +37,13 @@ const statusTone: Record<ChannelStatus, string> = {
   "Not enabled in MVP": "bg-muted text-muted-foreground border-border",
 };
 
+/** Map a ChannelStatus → muted-status-tag variant for inactive (not-yet) features. */
+const mutedTagVariant: Partial<Record<ChannelStatus, string>> = {
+  Planned: "muted-status-tag--planned",
+  Future: "muted-status-tag--future",
+  "Not enabled in MVP": "muted-status-tag--not-enabled",
+};
+
 const healthLabel: Record<ChannelHealth, string> = {
   healthy: "Healthy (mock)",
   degraded: "Degraded",
@@ -52,6 +59,14 @@ const healthDot: Record<ChannelHealth, string> = {
 };
 
 function StatusPill({ status }: { status: ChannelStatus }) {
+  // Inactive (not-yet) statuses use the unified muted tag.
+  if (status !== "Mock Active") {
+    return (
+      <span className={`muted-status-tag ${mutedTagVariant[status] ?? ""}`}>
+        {status}
+      </span>
+    );
+  }
   return (
     <span
       className={`inline-flex items-center gap-2 rounded-full border px-2 py-1 text-[11px] font-medium ${statusTone[status]}`}
