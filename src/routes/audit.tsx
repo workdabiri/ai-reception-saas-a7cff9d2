@@ -370,45 +370,46 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-const securityStates = [
+type SecVariant = "danger" | "warning" | "neutral";
+const securityStates: { title: string; desc: string; Icon: typeof ShieldOff; variant: SecVariant }[] = [
   {
     title: "Access denied",
     desc: "Server-side membership check rejected the request.",
     Icon: ShieldOff,
-    tone: "destructive",
+    variant: "danger",
   },
   {
     title: "No active workspace",
     desc: "User has no workspace selected — feature areas remain hidden.",
     Icon: Building2,
-    tone: "muted",
+    variant: "neutral",
   },
   {
     title: "Removed member",
     desc: "Lost access immediately. Sessions invalidated on next request.",
     Icon: UserIcon,
-    tone: "destructive",
+    variant: "danger",
   },
   {
     title: "Expired session",
     desc: "Operator must re-authenticate before any tenant-scoped action.",
     Icon: Clock,
-    tone: "warning",
+    variant: "warning",
   },
   {
     title: "Cross-workspace blocked",
     desc: "Server prevented data access across tenant boundaries.",
     Icon: AlertTriangle,
-    tone: "warning",
+    variant: "warning",
   },
-] as const;
+];
 
 function SecurityStatesStrip() {
-  const toneCls = {
-    destructive: "border-destructive/20 bg-destructive/5 text-destructive",
-    warning: "border-warning/30 bg-warning/10 text-warning-foreground",
-    muted: "border-border bg-surface-muted text-muted-foreground",
-  } as const;
+  const variantToken: Record<SecVariant, { bg: string; border: string; icon: string }> = {
+    danger:  { bg: "var(--status-danger-soft)",  border: "var(--status-danger)",  icon: "var(--status-danger)" },
+    warning: { bg: "var(--status-warning-soft)", border: "var(--status-warning)", icon: "var(--status-warning)" },
+    neutral: { bg: "var(--status-neutral-soft)", border: "var(--status-neutral)", icon: "var(--status-neutral)" },
+  };
   return (
     <div>
       <div className="mb-2 flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -417,15 +418,21 @@ function SecurityStatesStrip() {
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
         {securityStates.map((s) => {
           const Icon = s.Icon;
+          const v = variantToken[s.variant];
           return (
             <div
               key={s.title}
-              className={`rounded-xl border p-3 ${toneCls[s.tone]}`}
+              className="rounded-lg p-3"
+              style={{
+                background: v.bg,
+                border: `0.5px solid ${v.border}`,
+                borderLeft: `3px solid ${v.border}`,
+              }}
             >
-              <div className="flex items-center gap-2 text-xs font-medium">
-                <Icon className="h-3.5 w-3.5" /> {s.title}
+              <div className="flex items-center gap-1.5 text-[13px] font-medium text-foreground">
+                <Icon className="h-3.5 w-3.5" style={{ color: v.icon }} /> {s.title}
               </div>
-              <p className="mt-1 text-[11px] text-foreground/80">{s.desc}</p>
+              <p className="mt-1 text-[12px] leading-[1.5] text-muted-foreground">{s.desc}</p>
             </div>
           );
         })}
