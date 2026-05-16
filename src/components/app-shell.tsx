@@ -193,13 +193,13 @@ export function AppShell({
                 <PanelLeftClose className="h-4 w-4" />
               )}
             </button>
-            <div className="relative w-full max-w-md">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <div className="relative w-full max-w-md group">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
               <input
                 placeholder="Search conversations, customers…"
-                className="h-9 w-full rounded-lg border border-input bg-surface pl-8 pr-16 text-[13px] placeholder:text-muted-foreground/80 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring/40 transition"
+                className="h-9 w-full cursor-text rounded-lg border border-border/60 bg-surface-raised pl-9 pr-16 text-[14px] text-foreground placeholder:text-muted-foreground/80 transition-[border-color,box-shadow,background-color] hover:border-border focus:outline-none focus:border-primary focus:bg-surface-hover focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--color-primary)_15%,transparent)]"
               />
-              <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 items-center rounded border border-border bg-surface-muted px-2 text-[10px] font-medium text-muted-foreground">
+              <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 items-center rounded border border-border/60 bg-surface px-1.5 text-[11px] font-medium text-muted-foreground/80">
                 ⌘K
               </kbd>
             </div>
