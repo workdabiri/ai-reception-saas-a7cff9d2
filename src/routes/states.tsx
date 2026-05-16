@@ -39,10 +39,10 @@ function StatesPage() {
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
         <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-card lg:p-8">
           <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-primary">
             Reference gallery
           </p>
-          <h1 className="mt-2 text-display text-3xl font-semibold tracking-tight lg:text-4xl">
+          <h1 className="mt-2 text-display text-3xl font-medium tracking-tight lg:text-4xl">
             Empty &amp; error states
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
@@ -60,7 +60,7 @@ function StatesPage() {
               className="rounded-2xl border border-border bg-card p-3 shadow-soft"
             >
               <div className="flex items-center justify-between px-3 py-2">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
                   {it.name}
                 </span>
                 <span className="rounded-md border border-border bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">

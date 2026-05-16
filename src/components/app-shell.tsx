@@ -211,7 +211,7 @@ export function AppShell({
                 </span>
                 Mock data
               </span>
-              <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[12px] font-semibold text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px">
+              <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px">
                 <Plus className="h-3.5 w-3.5" />
                 New conversation
               </button>
@@ -220,7 +220,7 @@ export function AppShell({
                 <Bell className="h-4 w-4" />
                 <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-destructive ring-2 ring-surface" />
               </button>
-              <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-foreground to-foreground/80 text-background text-[11px] font-semibold ring-2 ring-background shadow-soft">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-foreground to-foreground/80 text-background text-[11px] font-medium ring-2 ring-background shadow-soft">
                 AH
               </div>
             </div>
@@ -249,7 +249,7 @@ export function AppShell({
                 <Icon className="h-[18px] w-[18px]" />
                 {item.id === "dashboard" ? "Home" : item.id === "customers" ? "People" : item.label}
                 {item.badge ? (
-                  <span className="absolute right-2 top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground ring-2 ring-surface">
+                  <span className="absolute right-2 top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium text-primary-foreground ring-2 ring-surface">
                     {item.badge}
                   </span>
                 ) : null}
@@ -274,7 +274,7 @@ export function AppShell({
             />
             <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border bg-surface p-4 shadow-pop animate-slide-in-right">
               <div className="mb-3 flex items-center justify-between">
-                <div className="text-sm font-semibold">More</div>
+                <div className="text-sm font-medium">More</div>
                 <button
                   onClick={() => setMoreOpen(false)}
                   className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground"
@@ -296,7 +296,7 @@ export function AppShell({
                       <Icon className="h-4 w-4 text-muted-foreground" />
                       {it.label}
                       {it.badge ? (
-                        <span className="absolute right-2 top-2 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
+                        <span className="absolute right-2 top-2 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium text-primary-foreground">
                           {it.badge}
                         </span>
                       ) : null}
@@ -305,7 +305,7 @@ export function AppShell({
                 })}
               </div>
               <div className="mt-4 pb-6">
-                <div className="mb-1.5 px-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                <div className="mb-1.5 px-1 text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
                   Theme
                 </div>
                 <ThemeToggle variant="full" />
@@ -343,7 +343,7 @@ function SharedSidebar({
             <TooltipTrigger asChild>
               <button
                 aria-label="Workspace"
-                className="relative grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-semibold text-sm shadow-ring-primary"
+                className="relative grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-medium text-sm shadow-ring-primary"
               >
                 {ws.initials}
                 <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-success ring-2 ring-sidebar" />
@@ -358,17 +358,17 @@ function SharedSidebar({
           </Tooltip>
         ) : (
           <button className="flex w-full items-center gap-2.5 rounded-xl border border-sidebar-border bg-surface px-2.5 py-2 text-left transition hover:bg-sidebar-accent">
-            <div className="relative grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-semibold text-sm shadow-soft">
+            <div className="relative grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-medium text-sm shadow-soft">
               {ws.initials}
               <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success ring-2 ring-surface" />
             </div>
             <div className="min-w-0 flex-1 transition-opacity duration-200">
-              <div className="truncate text-[13px] font-semibold leading-tight">
+              <div className="truncate text-[13px] font-medium leading-tight">
                 {ws.name}
               </div>
               <div className="mt-0.5 flex items-center gap-1 text-[10.5px] text-muted-foreground">
                 <Shield className="h-2.5 w-2.5" />
-                <span className={`rounded px-1 py-px text-[10px] font-semibold ${roleTone[ws.role]}`}>
+                <span className={`rounded px-1 py-px text-[10px] font-medium ${roleTone[ws.role]}`}>
                   {ws.role}
                 </span>
                 <span className="opacity-50">·</span>
@@ -387,7 +387,7 @@ function SharedSidebar({
         {MENU_CONFIG.sections.map((section, idx) => (
           <div key={section.id} className={idx > 0 ? "mt-3" : ""}>
             {!collapsed ? (
-              <div className="px-4 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">
+              <div className="px-4 pb-1.5 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
                 {section.title}
               </div>
             ) : idx > 0 ? (
@@ -411,13 +411,13 @@ function SharedSidebar({
       <div className={`mt-auto border-t border-sidebar-border ${collapsed ? "flex flex-col items-center gap-1.5 py-3" : "p-3 space-y-2"}`}>
         {!collapsed && (
           <div className="sidebar-ai-card rounded-xl p-3.5">
-            <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.10em] text-white/85">
+            <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.10em] text-white/85">
               <span className="grid h-4 w-4 place-items-center rounded-md bg-white/15 ring-1 ring-white/25">
                 <Sparkles className="h-2.5 w-2.5" />
               </span>
               AI Active
             </div>
-            <div className="relative z-10 mt-1.5 text-[12.5px] font-semibold leading-tight text-white">
+            <div className="relative z-10 mt-1.5 text-[12.5px] font-medium leading-tight text-white">
               Human-in-the-loop
             </div>
             <p className="relative z-10 mt-1 text-[11px] leading-snug text-white/75">
@@ -482,7 +482,7 @@ function NavRow({
             )}
             <Icon className="h-[18px] w-[18px]" />
             {item.badge ? (
-              <span className="absolute -right-1 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground ring-2 ring-sidebar">
+              <span className="absolute -right-1 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-primary px-1 text-[9px] font-medium text-primary-foreground ring-2 ring-sidebar">
                 {item.badge}
               </span>
             ) : null}
@@ -516,7 +516,7 @@ function NavRow({
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge ? (
         <span
-          className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold tabular-nums shadow-soft ${
+          className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums shadow-soft ${
             active
               ? "gradient-primary text-primary-foreground"
               : "bg-secondary text-secondary-foreground"

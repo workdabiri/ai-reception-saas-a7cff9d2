@@ -42,7 +42,7 @@ export const Route = createFileRoute("/customers/$customerId")({
   notFoundComponent: () => (
     <>
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-        <h1 className="text-xl font-semibold">Customer not found</h1>
+        <h1 className="text-xl font-medium">Customer not found</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           This profile doesn't exist in the current workspace.
         </p>
@@ -136,7 +136,7 @@ function CustomerProfilePage() {
                 </button>
                 <Link
                   to="/inbox"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
                 >
                   <MessageSquare className="h-3.5 w-3.5" /> Open in inbox
                 </Link>
@@ -149,7 +149,7 @@ function CustomerProfilePage() {
         <div className="mt-5 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-warning-foreground">
           <Shield className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
-            <span className="font-semibold">Visible only inside this workspace.</span>{" "}
+            <span className="font-medium">Visible only inside this workspace.</span>{" "}
             Customer data and notes are workspace-scoped to permitted members. Mock data —
             no real PII shown.
           </div>
@@ -162,7 +162,7 @@ function CustomerProfilePage() {
               <div className="flex items-center gap-3">
                 <Avatar initials={customer.initials} tone="primary" />
                 <div className="min-w-0">
-                  <h2 className="truncate text-sm font-semibold">{customer.name}</h2>
+                  <h2 className="truncate text-sm font-medium">{customer.name}</h2>
                   <p className="text-xs text-muted-foreground">Reception contact</p>
                 </div>
               </div>
@@ -214,7 +214,7 @@ function CustomerProfilePage() {
                     className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning-foreground"
                   >
                     <div className="mb-1 flex items-center justify-between text-[11px]">
-                      <span className="inline-flex items-center gap-1.5 font-semibold">
+                      <span className="inline-flex items-center gap-1.5 font-medium">
                         <StickyNote className="h-3 w-3" />
                         {n.author}
                       </span>
@@ -239,7 +239,7 @@ function CustomerProfilePage() {
                   <div className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-muted-foreground">
                     <InboxIcon className="h-4 w-4" />
                   </div>
-                  <p className="mt-2 text-xs font-semibold">No linked conversations</p>
+                  <p className="mt-2 text-xs font-medium">No linked conversations</p>
                   <p className="mt-1 text-[11px] text-muted-foreground">
                     New messages from this customer will appear here.
                   </p>
@@ -349,12 +349,12 @@ function timelineLabel(m: Message) {
 function MessageBadge({ author }: { author: Message["author"] }) {
   if (author === "operator")
     return (
-      <span className="rounded-sm bg-primary/15 px-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+      <span className="rounded-sm bg-primary/15 px-1 text-[10px] font-medium uppercase tracking-wider text-primary">
         Op
       </span>
     );
   return (
-    <span className="rounded-sm bg-secondary px-1 text-[10px] font-semibold uppercase tracking-wider text-secondary-foreground">
+    <span className="rounded-sm bg-secondary px-1 text-[10px] font-medium uppercase tracking-wider text-secondary-foreground">
       Cust
     </span>
   );
@@ -368,7 +368,7 @@ function Card({ children }: { children: React.ReactNode }) {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
       {children}
     </h3>
   );

@@ -47,7 +47,7 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "foll
   const key = (map[status as string] ?? (status as keyof typeof chipStyles));
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset ${chipStyles[key]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${chipStyles[key]}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {chipLabel[key]}
@@ -104,7 +104,7 @@ export function Avatar({
     size === "sm" ? "h-7 w-7 text-[10px]" : size === "lg" ? "h-10 w-10 text-sm" : "h-8 w-8 text-[11px]";
   return (
     <div
-      className={`grid shrink-0 place-items-center rounded-full font-semibold ring-1 ring-border/60 shadow-soft ${cls} ${sz}`}
+      className={`grid shrink-0 place-items-center rounded-full font-medium ring-1 ring-border/60 shadow-soft ${cls} ${sz}`}
     >
       {initials}
     </div>
@@ -126,11 +126,11 @@ export function PageHeader({
     <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
       <div className="min-w-0">
         {eyebrow && (
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
             {eyebrow}
           </p>
         )}
-        <h1 className="text-[26px] font-semibold tracking-tight leading-tight">{title}</h1>
+        <h1 className="text-[26px] font-medium tracking-tight leading-tight">{title}</h1>
         {description && (
           <p className="mt-1.5 text-[13px] text-muted-foreground max-w-xl leading-relaxed">
             {description}
@@ -149,7 +149,7 @@ export function MockBanner() {
         <Info className="h-3 w-3" />
       </span>
       <div className="text-[12.5px] leading-snug text-warning-foreground/90">
-        <span className="font-semibold text-warning-foreground">Prototype with mock data only.</span>{" "}
+        <span className="font-medium text-warning-foreground">Prototype with mock data only.</span>{" "}
         Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts; an operator sends every reply.
       </div>
     </div>

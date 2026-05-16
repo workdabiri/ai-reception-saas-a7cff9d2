@@ -80,13 +80,13 @@ export function EmptyState({
       </div>
       {badge && (
         <span
-          className={`mt-5 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold tracking-wide ${t.chip}`}
+          className={`mt-5 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium tracking-wide ${t.chip}`}
         >
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           {badge}
         </span>
       )}
-      <h3 className="mt-4 text-[17px] font-semibold tracking-tight">{title}</h3>
+      <h3 className="mt-4 text-[17px] font-medium tracking-tight">{title}</h3>
       <p className="mt-2 max-w-md text-[13.5px] leading-relaxed text-muted-foreground">
         {description}
       </p>
@@ -109,7 +109,7 @@ export function NoConversationsState() {
       action={
         <Link
           to="/settings"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
         >
           Configure channels
         </Link>
@@ -128,7 +128,7 @@ export function NoActiveWorkspaceState() {
       title="No active workspace"
       description="Select or create a workspace to continue."
       action={
-        <button className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95">
+        <button className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95">
           Choose a workspace
         </button>
       }
@@ -228,10 +228,10 @@ function FlowStep({
       </div>
       <div className="min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="font-mono text-[10px] font-semibold text-muted-foreground">
+          <span className="font-mono text-[10px] font-medium text-muted-foreground">
             {String(n).padStart(2, "0")}
           </span>
-          <h4 className="text-[12.5px] font-semibold leading-tight">{title}</h4>
+          <h4 className="text-[12.5px] font-medium leading-tight">{title}</h4>
         </div>
         <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">{body}</p>
       </div>
@@ -251,10 +251,10 @@ export function InboxOperatorFirstEmpty() {
           <Sparkles className="h-3 w-3" />
         </span>
       </div>
-      <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
         <span className="h-1.5 w-1.5 rounded-full bg-success" /> Operator-first workflow
       </span>
-      <h3 className="mt-3 text-[17px] font-semibold tracking-tight">
+      <h3 className="mt-3 text-[17px] font-medium tracking-tight">
         AI drafts. <span className="text-muted-foreground">You</span> send.
       </h3>
       <p className="mt-1.5 max-w-md text-[13px] leading-relaxed text-muted-foreground">
@@ -271,13 +271,13 @@ export function InboxOperatorFirstEmpty() {
       <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
         <Link
           to="/settings"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
         >
           Connect a channel
         </Link>
         <Link
           to="/states"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-foreground hover:bg-secondary transition-all"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-all"
         >
           <Eye className="h-3.5 w-3.5" /> See sample conversation
         </Link>
@@ -302,7 +302,7 @@ export function FilterNoMatchState({
       <div className="grid h-11 w-11 place-items-center rounded-xl bg-secondary text-muted-foreground ring-1 ring-border">
         <SearchX className="h-5 w-5" />
       </div>
-      <h3 className="mt-3 text-[14px] font-semibold tracking-tight">No {label} match</h3>
+      <h3 className="mt-3 text-[14px] font-medium tracking-tight">No {label} match</h3>
       <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
         Try adjusting your search, status, or assignee filter.
       </p>
@@ -330,10 +330,10 @@ export function CustomersOperatorFirstEmpty() {
           <UserPlus className="h-3 w-3" />
         </span>
       </div>
-      <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
         <span className="h-1.5 w-1.5 rounded-full bg-info" /> Built from real conversations
       </span>
-      <h3 className="mt-3 text-[17px] font-semibold tracking-tight">No customers yet</h3>
+      <h3 className="mt-3 text-[17px] font-medium tracking-tight">No customers yet</h3>
       <p className="mt-1.5 max-w-md text-[13px] leading-relaxed text-muted-foreground">
         Customer records appear automatically the first time someone reaches you. The operator stays
         in control — tags, notes, and assignments live next to the thread.
@@ -348,7 +348,7 @@ export function CustomersOperatorFirstEmpty() {
       <div className="mt-6">
         <Link
           to="/inbox"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:bg-primary/92 hover:shadow-card transition-all"
         >
           Open the inbox
         </Link>

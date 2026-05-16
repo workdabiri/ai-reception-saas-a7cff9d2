@@ -270,7 +270,7 @@ function Section({
           <Icon className="h-4 w-4" />
         </div>
         <div>
-          <h2 className="text-base font-semibold">{title}</h2>
+          <h2 className="text-base font-medium">{title}</h2>
           {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
         </div>
       </div>
@@ -431,7 +431,7 @@ function Callout({
   } as const;
   return (
     <div className={`mt-4 rounded-xl border p-4 ${tones[tone]}`}>
-      <div className="flex items-center gap-2 text-xs font-semibold">
+      <div className="flex items-center gap-2 text-xs font-medium">
         <Icon className="h-3.5 w-3.5" />
         {title}
       </div>

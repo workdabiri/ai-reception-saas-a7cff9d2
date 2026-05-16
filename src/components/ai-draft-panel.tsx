@@ -77,7 +77,7 @@ export function AIDraftPanel({
             <span className="grid h-7 w-7 place-items-center rounded-lg gradient-ai text-ai-foreground shadow-soft">
               <Sparkles className="h-3.5 w-3.5" />
             </span>
-            <h3 className="text-[13px] font-semibold tracking-tight text-foreground">
+            <h3 className="text-[13px] font-medium tracking-tight text-foreground">
               AI Draft — Human Review Required
             </h3>
           </div>
@@ -86,7 +86,7 @@ export function AIDraftPanel({
           </p>
         </div>
         <span
-          className={`shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${stateTone[state]}`}
+          className={`shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider ${stateTone[state]}`}
         >
           {stateLabel[state]}
         </span>
@@ -95,11 +95,11 @@ export function AIDraftPanel({
       {/* Confidence */}
       <div className="px-4 pt-3">
         <div className="flex items-center justify-between text-[11px]">
-          <span className="font-semibold uppercase tracking-wider text-muted-foreground">
+          <span className="font-medium uppercase tracking-wider text-muted-foreground">
             Confidence
           </span>
           <span
-            className={`rounded-md border px-1.5 py-0.5 text-[10px] font-semibold ${confidenceTone[confidence]}`}
+            className={`rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${confidenceTone[confidence]}`}
           >
             {confidence} · {confidencePct[confidence]}%
           </span>
@@ -136,7 +136,7 @@ export function AIDraftPanel({
 
       {/* Source / context */}
       <div className="mx-4 mb-3 rounded-lg border border-border bg-surface-muted/60 p-3">
-        <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
           <BookOpen className="h-3 w-3" />
           Sources & context
         </div>
@@ -159,7 +159,7 @@ export function AIDraftPanel({
         <div className="mx-4 mb-3 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground">
           <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <div>
-            <div className="font-semibold">Verify before sending</div>
+            <div className="font-medium">Verify before sending</div>
             <div className="leading-snug">{risk}</div>
           </div>
         </div>
@@ -180,14 +180,14 @@ export function AIDraftPanel({
                 setState("accepted");
                 onAccept(text);
               }}
-              className="inline-flex items-center gap-1.5 rounded-lg gradient-ai px-3.5 py-1.5 text-xs font-semibold text-ai-foreground shadow-soft transition hover:opacity-95 active:translate-y-px"
+              className="inline-flex items-center gap-1.5 rounded-lg gradient-ai px-3.5 py-1.5 text-xs font-medium text-ai-foreground shadow-soft transition hover:opacity-95 active:translate-y-px"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Accept draft
             </button>
             <button
               onClick={() => setEditing(true)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-semibold hover:bg-secondary"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-secondary"
             >
               <Pencil className="h-3.5 w-3.5" />
               Edit draft
@@ -218,7 +218,7 @@ export function AIDraftPanel({
                 setState("edited");
                 onEdit(text);
               }}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Save edit

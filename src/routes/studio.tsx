@@ -565,16 +565,16 @@ function StudioPage() {
         borderBottom: "1px solid var(--color-border)",
       }}>
         <div className="mx-auto max-w-[1400px] px-6 py-3 flex items-center gap-3">
-          <Link to="/" className="text-xs font-semibold text-muted-foreground hover:text-foreground">← App</Link>
+          <Link to="/" className="text-xs font-medium text-muted-foreground hover:text-foreground">← App</Link>
           <div className="h-4 w-px bg-border mx-1" />
           <div>
-            <div className="text-sm font-bold gradient-text-primary">Design Direction Studio</div>
+            <div className="text-sm font-medium gradient-text-primary">Design Direction Studio</div>
             <div className="text-[11px] text-muted-foreground">Compare three premium directions, then pick one to apply globally.</div>
           </div>
           <div className="ml-auto flex items-center gap-1 rounded-lg border border-border bg-surface p-1">
             {(["light", "dark"] as const).map((m) => (
               <button key={m} onClick={() => setMode(m)}
-                className={`px-3 py-1.5 text-[11px] font-semibold rounded-md capitalize transition ${
+                className={`px-3 py-1.5 text-[11px] font-medium rounded-md capitalize transition ${
                   mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}>
                 {m} mode
@@ -593,11 +593,11 @@ function StudioPage() {
             </div>
             <div className="flex-1 min-w-[260px]">
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-ai/30 bg-ai-soft px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-ai">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-ai/30 bg-ai-soft px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-ai">
                   <Sparkles className="h-3 w-3" /> Selected · Applied globally
                 </span>
               </div>
-              <h1 className="mt-2 text-2xl font-bold tracking-tight text-display gradient-text-primary">
+              <h1 className="mt-2 text-2xl font-medium tracking-tight text-display gradient-text-primary">
                 Warm Premium AI Operations SaaS
               </h1>
               <p className="text-sm text-muted-foreground max-w-3xl mt-1.5">
@@ -605,7 +605,7 @@ function StudioPage() {
                 Dashboard, Inbox, Channels, Customers, Members, Settings, Audit Log and States — in both light and dark mode.
               </p>
             </div>
-            <Link to="/" className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-[12.5px] font-semibold text-primary-foreground shadow-soft hover:opacity-95">
+            <Link to="/" className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-[12.5px] font-medium text-primary-foreground shadow-soft hover:opacity-95">
               Open the app <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -613,8 +613,8 @@ function StudioPage() {
 
         {/* Intro */}
         <section className="card-premium p-6">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Reference</div>
-          <h2 className="text-xl font-bold tracking-tight text-display mt-1">Original direction comparison</h2>
+          <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Reference</div>
+          <h2 className="text-xl font-medium tracking-tight text-display mt-1">Original direction comparison</h2>
           <p className="text-sm text-muted-foreground max-w-3xl mt-2">
             Three directions previewed side-by-side. The selected hybrid (above) is applied to the live app.
             Toggle Light / Dark to inspect tokens. Mock data only — no production logic.
@@ -626,11 +626,11 @@ function StudioPage() {
           <section key={dir.id} className="space-y-3">
             <div className="flex items-end justify-between gap-4 flex-wrap">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Option {dir.id}</div>
-                <h2 className="text-xl font-bold text-display">{dir.name}</h2>
+                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Option {dir.id}</div>
+                <h2 className="text-xl font-medium text-display">{dir.name}</h2>
                 <p className="text-sm text-muted-foreground max-w-2xl">{dir.tagline}</p>
               </div>
-              <div className="text-[11px] text-muted-foreground"><span className="font-semibold text-foreground">Best for:</span> {dir.best}</div>
+              <div className="text-[11px] text-muted-foreground"><span className="font-medium text-foreground">Best for:</span> {dir.best}</div>
             </div>
             <DirectionBlock dir={dir} mode={mode} />
           </section>
@@ -640,12 +640,12 @@ function StudioPage() {
         <section className="card-premium p-6 ai-feature-bg ring-ai-feature">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="h-4 w-4 text-ai" />
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-ai">Recommended Direction</div>
+            <div className="text-[11px] font-medium uppercase tracking-wider text-ai">Recommended Direction</div>
           </div>
-          <h2 className="text-2xl font-bold text-display">Warm Premium AI Operations SaaS</h2>
+          <h2 className="text-2xl font-medium text-display">Warm Premium AI Operations SaaS</h2>
           <p className="text-sm text-muted-foreground max-w-3xl mt-2">
-            A hybrid of <span className="font-semibold text-foreground">Warm Premium SMB</span> (warm neutrals, friendly typography,
-            calm cards) and <span className="font-semibold text-foreground">AI Operations Pro</span> (refined blue/violet AI accents,
+            A hybrid of <span className="font-medium text-foreground">Warm Premium SMB</span> (warm neutrals, friendly typography,
+            calm cards) and <span className="font-medium text-foreground">AI Operations Pro</span> (refined blue/violet AI accents,
             elevated AI surfaces, dark mode discipline). Friendly enough for small businesses, premium enough for B2B SaaS,
             modern enough for AI, calm enough for support operations.
           </p>
@@ -657,16 +657,16 @@ function StudioPage() {
               { t: "Responsive", d: "Sidebar → icon rail → bottom nav. Context panels become drawers and sheets." },
             ].map((x) => (
               <div key={x.t} className="rounded-xl border border-border bg-card p-4">
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{x.t}</div>
+                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{x.t}</div>
                 <div className="text-sm text-foreground mt-1">{x.d}</div>
               </div>
             ))}
           </div>
           <div className="flex flex-wrap gap-2 mt-5">
-            <Link to="/" className="inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold shadow hover:opacity-90">
+            <Link to="/" className="inline-flex items-center gap-1.5 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium shadow hover:opacity-90">
               Back to app <ChevronRight className="h-3.5 w-3.5" />
             </Link>
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-4 py-2 text-sm font-semibold text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium text-muted-foreground">
               Reply with "Apply C+B" to roll out globally
             </span>
           </div>
@@ -674,15 +674,15 @@ function StudioPage() {
 
         {/* Token reference */}
         <section className="card-premium p-6">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Design system — recommended direction</div>
-          <h2 className="text-xl font-bold text-display mt-1">Tokens, type, spacing, radius, elevation</h2>
+          <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Design system — recommended direction</div>
+          <h2 className="text-xl font-medium text-display mt-1">Tokens, type, spacing, radius, elevation</h2>
           <div className="grid md:grid-cols-2 gap-6 mt-5">
             <div>
-              <div className="text-xs font-bold text-foreground mb-2">Light mode color tokens</div>
+              <div className="text-xs font-medium text-foreground mb-2">Light mode color tokens</div>
               <TokenGrid t={DIRECTIONS[2].modes.light} />
             </div>
             <div>
-              <div className="text-xs font-bold text-foreground mb-2">Dark mode color tokens</div>
+              <div className="text-xs font-medium text-foreground mb-2">Dark mode color tokens</div>
               <TokenGrid t={DIRECTIONS[2].modes.dark} />
             </div>
           </div>
@@ -736,7 +736,7 @@ function TokenGrid({ t }: { t: DirTokens }) {
         <div key={s.name} className="flex items-center gap-2 rounded-md border border-border bg-card p-2">
           <div className="h-7 w-7 rounded-md border border-border" style={{ background: s.v }} />
           <div className="text-[11px] leading-tight">
-            <div className="font-semibold text-foreground">{s.name}</div>
+            <div className="font-medium text-foreground">{s.name}</div>
             <div className="text-muted-foreground font-mono text-[10px] truncate max-w-[140px]">{s.v}</div>
           </div>
         </div>
@@ -748,7 +748,7 @@ function TokenGrid({ t }: { t: DirTokens }) {
 function Spec({ title, rows }: { title: string; rows: [string, string][] }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="text-xs font-bold text-foreground mb-2">{title}</div>
+      <div className="text-xs font-medium text-foreground mb-2">{title}</div>
       <div className="divide-y divide-border">
         {rows.map(([k, v]) => (
           <div key={k} className="flex justify-between py-1.5 gap-2">

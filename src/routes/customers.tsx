@@ -140,7 +140,7 @@ function CustomersPage() {
         <div className="mt-4 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-warning-foreground">
           <Shield className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
-            <span className="font-semibold">Workspace-scoped data.</span>{" "}
+            <span className="font-medium">Workspace-scoped data.</span>{" "}
             Visible only to permitted members of this workspace. Server verifies membership. Mock data — no real PII.
           </div>
         </div>
@@ -244,7 +244,7 @@ function CustomersPage() {
                         <td className="px-3 py-3 text-center text-sm tabular-nums">{r.openConversations}</td>
                         <td className="px-3 py-3 text-center">
                           {r.unreadMessages > 0 ? (
-                            <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-1.5 py-0.5 text-[11px] font-semibold text-primary-foreground">
+                            <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-1.5 py-0.5 text-[11px] font-medium text-primary-foreground">
                               {r.unreadMessages}
                             </span>
                           ) : (
@@ -301,7 +301,7 @@ function CustomersPage() {
                       <Avatar initials={r.initials} />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="truncate text-sm font-semibold">{r.name}</span>
+                          <span className="truncate text-sm font-medium">{r.name}</span>
                           <span className="shrink-0 text-[11px] text-muted-foreground">{r.lastSeen}</span>
                         </div>
                         <p className="mt-0.5 truncate text-xs text-muted-foreground">{r.lastSubject}</p>
@@ -313,7 +313,7 @@ function CustomersPage() {
                             </span>
                           )}
                           {r.unreadMessages > 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
                               <MessageCircle className="h-2.5 w-2.5" />
                               {r.unreadMessages}
                             </span>
@@ -347,7 +347,7 @@ function SummaryCard({ label, value, tone = "neutral" }: { label: string; value:
   return (
     <div className="rounded-xl border border-border bg-card p-4 shadow-soft">
       <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className={`mt-1.5 text-2xl font-semibold tabular-nums tracking-tight ${toneCls}`}>{value}</div>
+      <div className={`mt-1.5 text-2xl font-medium tabular-nums tracking-tight ${toneCls}`}>{value}</div>
     </div>
   );
 }

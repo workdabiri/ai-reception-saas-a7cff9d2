@@ -74,7 +74,7 @@ function ChannelCard({ c }: { c: ChannelOverview }) {
         <ChannelIcon channel={c.key} />
         <StatusPill status={c.status} />
       </div>
-      <h3 className="mt-4 text-base font-semibold tracking-tight">{c.name}</h3>
+      <h3 className="mt-4 text-base font-medium tracking-tight">{c.name}</h3>
       <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
         {c.description}
       </p>
@@ -96,7 +96,7 @@ function ChannelCard({ c }: { c: ChannelOverview }) {
       {isActive ? (
         <Link
           to="/inbox"
-          className="mt-4 inline-flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-xs font-semibold text-foreground hover:bg-surface-muted"
+          className="mt-4 inline-flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-muted"
         >
           Open in inbox <ArrowUpRight className="h-3.5 w-3.5" />
         </Link>
@@ -124,7 +124,7 @@ function Stat({
   return (
     <div className="rounded-lg bg-surface-muted/60 px-2 py-1.5">
       <div
-        className={`text-base font-semibold tabular-nums ${highlight ? "text-primary" : ""}`}
+        className={`text-base font-medium tabular-nums ${highlight ? "text-primary" : ""}`}
       >
         {value}
       </div>
@@ -206,7 +206,7 @@ function Totals({
           <Icon className="h-3.5 w-3.5" />
         </div>
       </div>
-      <div className="mt-2 text-2xl font-semibold tabular-nums tracking-tight">
+      <div className="mt-2 text-2xl font-medium tabular-nums tracking-tight">
         {value}
       </div>
     </div>

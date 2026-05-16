@@ -170,7 +170,7 @@ function MembersPage() {
               </button>
               <button
                 onClick={() => setInvite(true)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
               >
                 <Plus className="h-3.5 w-3.5" /> Invite member
               </button>
@@ -183,13 +183,13 @@ function MembersPage() {
           <div className="flex items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3">
             <Shield className="mt-0.5 h-4 w-4 text-primary" />
             <div className="text-[12px] leading-snug text-muted-foreground">
-              <span className="font-semibold text-foreground">Server verifies membership</span> on every tenant-scoped request. Client-side checks are UX only.
+              <span className="font-medium text-foreground">Server verifies membership</span> on every tenant-scoped request. Client-side checks are UX only.
             </div>
           </div>
           <div className="flex items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3">
             <Lock className="mt-0.5 h-4 w-4 text-warning-foreground" />
             <div className="text-[12px] leading-snug text-muted-foreground">
-              <span className="font-semibold text-foreground">The last Owner cannot be removed.</span> Removed members lose access immediately on next request.
+              <span className="font-medium text-foreground">The last Owner cannot be removed.</span> Removed members lose access immediately on next request.
             </div>
           </div>
         </div>
@@ -275,7 +275,7 @@ function MembersPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold">{m.name}</div>
+                      <div className="truncate text-sm font-medium">{m.name}</div>
                       <div className="truncate text-[11px] text-muted-foreground">{m.email}</div>
                     </div>
                     <DropdownMenu>
@@ -327,7 +327,7 @@ function MembersPage() {
         <div className="mt-8 overflow-hidden rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
             <div>
-              <h2 className="text-sm font-semibold">Permission matrix</h2>
+              <h2 className="text-sm font-medium">Permission matrix</h2>
               <p className="text-[12px] text-muted-foreground">
                 What each role can do inside a workspace. Visualization only — server is the source of truth.
               </p>
@@ -387,7 +387,7 @@ function MembersPage() {
         <div className="mt-6 rounded-xl border border-border bg-card p-5 shadow-card">
           <div className="flex items-center gap-2">
             <ShieldAlert className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-semibold">Safety &amp; access rules</h3>
+            <h3 className="text-sm font-medium">Safety &amp; access rules</h3>
           </div>
           <ul className="mt-3 grid gap-2 text-[12px] text-muted-foreground sm:grid-cols-2">
             <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Last Owner cannot be removed or demoted.</li>

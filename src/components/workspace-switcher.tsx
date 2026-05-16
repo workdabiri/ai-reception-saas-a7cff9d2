@@ -25,12 +25,12 @@ export function WorkspaceSwitcher() {
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center gap-3 rounded-xl border border-sidebar-border bg-surface px-3 py-2.5 text-left transition hover:bg-sidebar-accent"
       >
-        <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground font-semibold text-sm">
+        <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground font-medium text-sm">
           {active.initials}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="truncate text-sm font-semibold text-sidebar-foreground">
+            <span className="truncate text-sm font-medium text-sidebar-foreground">
               {active.name}
             </span>
             <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${statusTone[active.status]}`} />
@@ -65,7 +65,7 @@ export function WorkspaceSwitcher() {
                       }}
                       className="flex w-full items-start gap-3 px-3 py-2.5 text-left hover:bg-surface-muted"
                     >
-                      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-secondary text-secondary-foreground text-xs font-semibold">
+                      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-secondary text-secondary-foreground text-xs font-medium">
                         {w.initials}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -78,7 +78,7 @@ export function WorkspaceSwitcher() {
                         </div>
                         <div className="mt-1 flex items-center gap-1.5">
                           <span
-                            className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-semibold ${roleTone[w.role]}`}
+                            className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${roleTone[w.role]}`}
                           >
                             {w.role}
                           </span>

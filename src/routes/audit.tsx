@@ -192,7 +192,7 @@ function AuditPage() {
                     <ActorIcon type={e.actorType} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-sm font-semibold">{e.actor}</span>
+                        <span className="truncate text-sm font-medium">{e.actor}</span>
                         <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">{e.time}</span>
                       </div>
                       <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
@@ -297,7 +297,7 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
       <div className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
         <div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Event</div>
-          <div className="mt-0.5 text-sm font-semibold">{event.actionLabel}</div>
+          <div className="mt-0.5 text-sm font-medium">{event.actionLabel}</div>
         </div>
         <button
           onClick={onClose}
@@ -422,7 +422,7 @@ function SecurityStatesStrip() {
               key={s.title}
               className={`rounded-xl border p-3 ${toneCls[s.tone]}`}
             >
-              <div className="flex items-center gap-1.5 text-xs font-semibold">
+              <div className="flex items-center gap-1.5 text-xs font-medium">
                 <Icon className="h-3.5 w-3.5" /> {s.title}
               </div>
               <p className="mt-1 text-[11px] text-foreground/80">{s.desc}</p>

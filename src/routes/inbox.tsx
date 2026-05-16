@@ -235,7 +235,7 @@ function InboxPage() {
         >
           <div className="space-y-2.5 border-b border-border p-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                 <InboxIcon className="h-3 w-3" />
                 Inbox
               </div>
@@ -256,7 +256,7 @@ function InboxPage() {
                 onClick={() => setQueueMenuOpen((v) => !v)}
                 className="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-2.5 py-2 text-left transition hover:bg-surface-muted"
               >
-                <span className="min-w-0 truncate text-[13px] font-semibold">
+                <span className="min-w-0 truncate text-[13px] font-medium">
                   {activeQueueLabel}
                 </span>
                 <span className="flex items-center gap-1.5 shrink-0 text-[11px] text-muted-foreground">
@@ -280,13 +280,13 @@ function InboxPage() {
                             setQueueMenuOpen(false);
                           }}
                           className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[12.5px] transition ${
-                            isActive ? "bg-primary-soft text-primary font-semibold" : "hover:bg-secondary"
+                            isActive ? "bg-primary-soft text-primary font-medium" : "hover:bg-secondary"
                           }`}
                         >
                           {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`} />}
                           <span className="min-w-0 flex-1 truncate">{row.label}</span>
                           {row.badge !== undefined && row.badge !== 0 && (
-                            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
+                            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
                               {row.badge}
                             </span>
                           )}
@@ -368,7 +368,7 @@ function InboxPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="truncate text-sm font-semibold">{cust.name}</span>
+                          <span className="truncate text-sm font-medium">{cust.name}</span>
                           <span className="shrink-0 text-[11px] text-muted-foreground">
                             {c.updated}
                           </span>
@@ -388,7 +388,7 @@ function InboxPage() {
                           <span className="inline-flex items-center gap-1 truncate">
                             {a ? (
                               <>
-                                <span className="grid h-4 w-4 place-items-center rounded-full bg-secondary text-[8px] font-bold text-secondary-foreground">
+                                <span className="grid h-4 w-4 place-items-center rounded-full bg-secondary text-[8px] font-medium text-secondary-foreground">
                                   {a.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                                 </span>
                                 <span className="truncate">{a.name}</span>
@@ -450,7 +450,7 @@ function InboxPage() {
                 <Avatar initials={customer.initials} tone="primary" />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h2 className="truncate text-sm font-semibold">{active.subject}</h2>
+                    <h2 className="truncate text-sm font-medium">{active.subject}</h2>
                     <span className="hidden sm:inline-flex">
                       <InboxStatusChip status={active.inboxStatus} />
                     </span>
@@ -594,14 +594,14 @@ function InboxPage() {
                     Save draft
                   </button>
                   {noteMode ? (
-                    <button className="inline-flex items-center gap-1.5 rounded-md bg-warning px-3 py-1.5 text-xs font-semibold text-[oklch(0.20_0.04_75)] hover:opacity-95">
+                    <button className="inline-flex items-center gap-1.5 rounded-md bg-warning px-3 py-1.5 text-xs font-medium text-[oklch(0.20_0.04_75)] hover:opacity-95">
                       <StickyNote className="h-3.5 w-3.5" />
                       Add note
                     </button>
                   ) : (
                     <button
                       title="Mock — no message will be sent in this prototype"
-                      className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
                     >
                       <Send className="h-3.5 w-3.5" />
                       Send reply
@@ -679,7 +679,7 @@ function CustomerContext({
           <div className="flex items-center gap-3">
             <Avatar initials={customer.initials} tone="primary" />
             <div className="min-w-0">
-              <h3 className="truncate text-sm font-semibold">{customer.name}</h3>
+              <h3 className="truncate text-sm font-medium">{customer.name}</h3>
               <p className="truncate text-xs text-muted-foreground">
                 Customer · {customer.conversations} conversations
               </p>
@@ -712,7 +712,7 @@ function CustomerContext({
       <div className="mx-5 mt-4 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground">
         <Shield className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <div>
-          <div className="font-semibold">Workspace-scoped</div>
+          <div className="font-medium">Workspace-scoped</div>
           Customer data is visible only to members of this workspace. Mock data — no real PII shown.
         </div>
       </div>
@@ -743,7 +743,7 @@ function CustomerContext({
                 className="flex w-full items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-left hover:bg-surface-muted"
               >
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-xs font-semibold">{c.subject}</div>
+                  <div className="truncate text-xs font-medium">{c.subject}</div>
                   <div className="truncate text-[11px] text-muted-foreground">
                     {c.updated} · {channelLabel[c.channel]}
                   </div>
@@ -768,7 +768,7 @@ function CustomerContext({
                 className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning-foreground"
               >
                 <div className="mb-1 flex items-center justify-between text-[11px]">
-                  <span className="font-semibold">{n.authorName}</span>
+                  <span className="font-medium">{n.authorName}</span>
                   <span className="opacity-70">{n.time}</span>
                 </div>
                 <p className="leading-snug">{n.body}</p>
@@ -852,7 +852,7 @@ function ContactRow({ icon: Icon, value }: { icon: typeof Mail; value: string })
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+    <h4 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
       {children}
     </h4>
   );
@@ -863,7 +863,7 @@ function NextAction({ label, hint }: { label: string; hint: string }) {
     <li>
       <button className="flex w-full items-start justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 text-left hover:bg-surface-muted">
         <div className="min-w-0">
-          <div className="text-xs font-semibold">{label}</div>
+          <div className="text-xs font-medium">{label}</div>
           <div className="text-[11px] text-muted-foreground">{hint}</div>
         </div>
         <ArrowRight className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" />
@@ -909,7 +909,7 @@ function ThreadItem({
     return (
       <div className="rounded-xl border border-warning/40 bg-warning/10 p-3 shadow-soft">
         <div className="mb-1.5 flex items-center justify-between text-[11px] text-warning-foreground">
-          <span className="inline-flex items-center gap-1.5 font-semibold">
+          <span className="inline-flex items-center gap-1.5 font-medium">
             <StickyNote className="h-3 w-3" />
             Internal note · {message.authorName}
           </span>
@@ -1058,14 +1058,14 @@ function InboxSectionsPanel({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-border px-3 py-3">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
           All filters
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-2 pb-4 pt-2">
         {inboxSectionGroups.map((g) => (
           <div key={g.id} className="mt-3 first:mt-0">
-            <div className="px-2 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/70">
+            <div className="px-2 pb-1 pt-1.5 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
               {g.title}
             </div>
             <ul className="space-y-px">
@@ -1079,7 +1079,7 @@ function InboxSectionsPanel({
                       onClick={() => !row.disabled && onSelect(row.filter)}
                       className={`group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[12.5px] transition ${
                         active
-                          ? "bg-primary-soft text-primary font-semibold"
+                          ? "bg-primary-soft text-primary font-medium"
                           : row.disabled
                           ? "text-muted-foreground/60 cursor-not-allowed"
                           : "text-foreground/85 hover:bg-secondary"
@@ -1088,14 +1088,14 @@ function InboxSectionsPanel({
                       {Icon ? (
                         <Icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
                       ) : (
-                        <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-secondary text-[8px] font-bold text-muted-foreground">
+                        <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-secondary text-[8px] font-medium text-muted-foreground">
                           {row.label.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                         </span>
                       )}
                       <span className="min-w-0 flex-1 truncate">{row.label}</span>
                       {row.badge !== undefined && row.badge !== 0 && (
                         <span
-                          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${
+                          className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
                             badgeToneClass[row.badgeTone ?? "muted"]
                           }`}
                         >
