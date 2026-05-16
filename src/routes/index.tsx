@@ -66,35 +66,36 @@ type Stat = {
 const stats: Stat[] = [
   { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "neutral", delta: { value: "+3", dir: "up" } },
   { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
-  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "warning", delta: { value: "+2", dir: "up" } },
+  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "attention", delta: { value: "+2", dir: "up" } },
   { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "ai", delta: { value: "+4", dir: "up" } },
   { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
 ];
 
-const toneStyles: Record<Tone, string> = {
-  neutral: "bg-secondary text-muted-foreground ring-border",
-  info: "bg-secondary text-muted-foreground ring-border",
-  warning: "bg-warning/12 text-warning-foreground ring-warning/25",
-  attention: "bg-warning/12 text-warning-foreground ring-warning/25",
-  ai: "bg-ai-soft text-ai ring-ai/20",
-  danger: "bg-destructive/10 text-destructive ring-destructive/20",
-  success: "bg-success/10 text-success ring-success/20",
+// Icon wrappers: soft variant tint, no rings or borders.
+const iconTone: Record<Tone, string> = {
+  neutral: "bg-secondary text-muted-foreground",
+  info: "bg-secondary text-muted-foreground",
+  warning: "bg-warning/10 text-warning-foreground",
+  attention: "bg-attention/10 text-attention",
+  ai: "bg-ai-soft text-ai",
+  danger: "bg-destructive/10 text-destructive",
+  success: "bg-success/10 text-success",
 };
 
 const toneAccent: Record<Tone, string> = {
   neutral: "transparent",
   info: "transparent",
   warning: "var(--color-warning)",
-  attention: "var(--color-warning)",
+  attention: "var(--color-attention)",
   ai: "var(--color-ai)",
   danger: "var(--color-destructive)",
   success: "var(--color-success)",
 };
 
 const deltaStyles = {
-  up: "text-foreground/70 bg-secondary ring-1 ring-inset ring-border",
-  down: "text-muted-foreground bg-secondary ring-1 ring-inset ring-border",
-  flat: "text-muted-foreground bg-secondary ring-1 ring-inset ring-border",
+  up: "text-foreground/80",
+  down: "text-muted-foreground",
+  flat: "text-muted-foreground",
 };
 
 function DashboardPage() {
@@ -163,22 +164,22 @@ function DashboardPage() {
             <div
               key={s.label}
               style={{ ["--kpi-accent" as never]: toneAccent[s.tone] }}
-              className="kpi-accent group relative overflow-hidden rounded-xl border border-border bg-card p-5 shadow-soft transition hover:shadow-card"
+              className="kpi-accent group relative overflow-hidden rounded-xl bg-surface py-5 px-6 shadow-card transition hover:shadow-elev"
             >
               <div className="relative flex items-start justify-between gap-2">
                 <span className="text-[10.5px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
                   {s.label}
                 </span>
-                <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneStyles[s.tone]}`}>
-                  <Icon className="h-[16px] w-[16px]" />
+                <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[s.tone]}`}>
+                  <Icon className="h-4 w-4" />
                 </div>
               </div>
               <div className="relative mt-4 flex items-end justify-between gap-2">
-                <div className="text-[34px] font-semibold leading-none tracking-tight font-mono-tab text-foreground">
+                <div className="text-[32px] font-medium leading-none tabular-nums text-foreground">
                   {s.value}
                 </div>
                 {s.delta && (
-                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-bold font-mono-tab ${deltaStyles[s.delta.dir]}`}>
+                  <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10.5px] font-bold tabular-nums ${deltaStyles[s.delta.dir]}`}>
                     {Trend && <Trend className="h-3 w-3" />}
                     {s.delta.value}
                   </span>
