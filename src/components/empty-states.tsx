@@ -76,10 +76,8 @@ export function EmptyState({
         <Icon strokeWidth={1.75} className={`h-7 w-7 ${t.icon}`} />
       </div>
       {badge && (
-        <span
-          className={`mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-medium tracking-wide ${t.chip}`}
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-current" />
+        <span className={`mb-3 ${t.chipClass}`}>
+          <span className="state-pill-dot" />
           {badge}
         </span>
       )}
