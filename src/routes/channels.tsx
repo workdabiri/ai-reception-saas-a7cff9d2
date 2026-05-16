@@ -54,7 +54,7 @@ const healthDot: Record<ChannelHealth, string> = {
 function StatusPill({ status }: { status: ChannelStatus }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium ${statusTone[status]}`}
+      className={`inline-flex items-center gap-2 rounded-full border px-2 py-1 text-[11px] font-medium ${statusTone[status]}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
       {status}
@@ -86,7 +86,7 @@ function ChannelCard({ c }: { c: ChannelOverview }) {
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-3 text-[11px] text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
+        <span className="inline-flex items-center gap-2">
           <span className={`h-1.5 w-1.5 rounded-full ${healthDot[c.health]}`} />
           {healthLabel[c.health]}
         </span>
@@ -122,7 +122,7 @@ function Stat({
   highlight?: boolean;
 }) {
   return (
-    <div className="rounded-lg bg-surface-muted/60 px-2 py-1.5">
+    <div className="rounded-lg bg-surface-muted/60 px-2 py-2">
       <div
         className={`text-base font-medium tabular-nums ${highlight ? "text-primary" : ""}`}
       >

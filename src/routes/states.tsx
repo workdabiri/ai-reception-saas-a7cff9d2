@@ -63,7 +63,7 @@ function StatesPage() {
                 <span className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
                   {it.name}
                 </span>
-                <span className="rounded-md border border-border bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                <span className="rounded-md border border-border bg-surface-muted px-2 py-1 text-[10px] font-medium text-muted-foreground">
                   Preview
                 </span>
               </div>

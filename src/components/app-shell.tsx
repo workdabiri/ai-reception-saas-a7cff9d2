@@ -199,19 +199,19 @@ export function AppShell({
                 placeholder="Search conversations, customers…"
                 className="h-9 w-full rounded-lg border border-input bg-surface pl-8 pr-16 text-[13px] placeholder:text-muted-foreground/80 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring/40 transition"
               />
-              <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 items-center rounded border border-border bg-surface-muted px-1.5 text-[10px] font-medium text-muted-foreground">
+              <kbd className="absolute right-2 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-5 items-center rounded border border-border bg-surface-muted px-2 text-[10px] font-medium text-muted-foreground">
                 ⌘K
               </kbd>
             </div>
             <div className="ml-auto flex items-center gap-2">
-              <span className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-warning/30 bg-warning/10 px-2.5 py-1 text-[11px] font-medium text-warning-foreground">
+              <span className="hidden lg:inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning/10 px-3 py-1 text-[11px] font-medium text-warning-foreground">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-warning opacity-60" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-warning" />
                 </span>
                 Mock data
               </span>
-              <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px">
+              <button className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px">
                 <Plus className="h-3.5 w-3.5" />
                 New conversation
               </button>
@@ -232,7 +232,7 @@ export function AppShell({
         </div>
 
         {/* Mobile bottom nav */}
-        <nav className="fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-1 rounded-2xl glass-surface p-1.5 shadow-pop md:hidden" style={{ paddingBottom: "max(0.375rem, env(safe-area-inset-bottom))" }}>
+        <nav className="fixed inset-x-3 bottom-3 z-30 flex items-center justify-between gap-1 rounded-2xl glass-surface p-2 shadow-pop md:hidden" style={{ paddingBottom: "max(0.375rem, env(safe-area-inset-bottom))" }}>
           {mobilePrimary.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.to, item.exact);
@@ -240,7 +240,7 @@ export function AppShell({
               <Link
                 key={item.id}
                 to={item.to as "/"}
-                className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1.5 text-[10px] font-medium transition ${
+                className={`relative flex flex-1 flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-medium transition ${
                   active
                     ? "bg-primary-soft text-primary"
                     : "text-muted-foreground hover:bg-secondary"
@@ -258,7 +258,7 @@ export function AppShell({
           })}
           <button
             onClick={() => setMoreOpen(true)}
-            className="relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1.5 text-[10px] font-medium text-muted-foreground transition hover:bg-secondary"
+            className="relative flex flex-1 flex-col items-center justify-center gap-1 rounded-xl py-2 text-[10px] font-medium text-muted-foreground transition hover:bg-secondary"
           >
             <MoreHorizontal className="h-[18px] w-[18px]" />
             More
@@ -291,7 +291,7 @@ export function AppShell({
                       key={it.id}
                       to={it.to as "/"}
                       onClick={() => setMoreOpen(false)}
-                      className="relative flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-2 py-3 text-[11px] font-medium text-foreground transition hover:bg-secondary"
+                      className="relative flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-[11px] font-medium text-foreground transition hover:bg-secondary"
                     >
                       <Icon className="h-4 w-4 text-muted-foreground" />
                       {it.label}
@@ -305,7 +305,7 @@ export function AppShell({
                 })}
               </div>
               <div className="mt-4 pb-6">
-                <div className="mb-1.5 px-1 text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
+                <div className="mb-2 px-1 text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
                   Theme
                 </div>
                 <ThemeToggle variant="full" />
@@ -337,7 +337,7 @@ function SharedSidebar({
       }`}
     >
       {/* Workspace area */}
-      <div className={`flex items-center gap-2.5 px-3 pt-4 pb-3 ${collapsed ? "justify-center" : ""}`}>
+      <div className={`flex items-center gap-3 px-3 pt-4 pb-3 ${collapsed ? "justify-center" : ""}`}>
         {collapsed ? (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -357,7 +357,7 @@ function SharedSidebar({
             </TooltipContent>
           </Tooltip>
         ) : (
-          <button className="flex w-full items-center gap-2.5 rounded-xl border border-sidebar-border bg-surface px-2.5 py-2 text-left transition hover:bg-sidebar-accent">
+          <button className="flex w-full items-center gap-3 rounded-xl border border-sidebar-border bg-surface px-3 py-2 text-left transition hover:bg-sidebar-accent">
             <div className="relative grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-primary to-[oklch(0.42_0.18_268)] text-primary-foreground font-medium text-sm shadow-soft">
               {ws.initials}
               <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success ring-2 ring-surface" />
@@ -366,7 +366,7 @@ function SharedSidebar({
               <div className="truncate text-[13px] font-medium leading-tight">
                 {ws.name}
               </div>
-              <div className="mt-0.5 flex items-center gap-1 text-[10.5px] text-muted-foreground">
+              <div className="mt-1 flex items-center gap-1 text-[10.5px] text-muted-foreground">
                 <Shield className="h-2.5 w-2.5" />
                 <span className={`rounded px-1 py-px text-[10px] font-medium ${roleTone[ws.role]}`}>
                   {ws.role}
@@ -387,13 +387,13 @@ function SharedSidebar({
         {MENU_CONFIG.sections.map((section, idx) => (
           <div key={section.id} className={idx > 0 ? "mt-3" : ""}>
             {!collapsed ? (
-              <div className="px-4 pb-1.5 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
+              <div className="px-4 pb-2 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/70">
                 {section.title}
               </div>
             ) : idx > 0 ? (
               <div className="mx-3 my-2 h-px bg-sidebar-border/60" />
             ) : null}
-            <nav className={`px-2 space-y-0.5 ${collapsed ? "flex flex-col items-center" : ""}`}>
+            <nav className={`px-2 space-y-1 ${collapsed ? "flex flex-col items-center" : ""}`}>
               {section.items.map((item) => (
                 <NavRow
                   key={item.to + item.label}
@@ -408,16 +408,16 @@ function SharedSidebar({
       </div>
 
       {/* Bottom area */}
-      <div className={`mt-auto border-t border-sidebar-border ${collapsed ? "flex flex-col items-center gap-1.5 py-3" : "p-3 space-y-2"}`}>
+      <div className={`mt-auto border-t border-sidebar-border ${collapsed ? "flex flex-col items-center gap-2 py-3" : "p-3 space-y-2"}`}>
         {!collapsed && (
-          <div className="sidebar-ai-card rounded-xl p-3.5">
-            <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.10em] text-white/85">
+          <div className="sidebar-ai-card rounded-xl p-4">
+            <div className="relative z-10 flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.10em] text-white/85">
               <span className="grid h-4 w-4 place-items-center rounded-md bg-white/15 ring-1 ring-white/25">
                 <Sparkles className="h-2.5 w-2.5" />
               </span>
               AI Active
             </div>
-            <div className="relative z-10 mt-1.5 text-[12.5px] font-medium leading-tight text-white">
+            <div className="relative z-10 mt-2 text-[12.5px] font-medium leading-tight text-white">
               Human-in-the-loop
             </div>
             <p className="relative z-10 mt-1 text-[11px] leading-snug text-white/75">
@@ -439,7 +439,7 @@ function SharedSidebar({
               return (
                 <button
                   key={it.id}
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-[12px] font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-2 text-[12px] font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
                 >
                   <Icon className="h-3.5 w-3.5" />
                   {it.label}
@@ -500,7 +500,7 @@ function NavRow({
     <Link
       to={item.to as "/"}
       className={[
-        "group relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium transition-all duration-200",
+        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-all duration-200",
         active
           ? "nav-active"
           : "text-sidebar-foreground/80 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground",
@@ -516,7 +516,7 @@ function NavRow({
       <span className="flex-1 truncate">{item.label}</span>
       {item.badge ? (
         <span
-          className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums shadow-soft ${
+          className={`rounded-md px-2 py-1 text-[10px] font-medium tabular-nums shadow-soft ${
             active
               ? "gradient-primary text-primary-foreground"
               : "bg-secondary text-secondary-foreground"

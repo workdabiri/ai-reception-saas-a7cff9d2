@@ -66,10 +66,10 @@ export function LoadingSkeleton({
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={i}
-            className="flex items-start gap-2.5 rounded-lg px-2.5 py-2.5"
+            className="flex items-start gap-3 rounded-lg px-3 py-3"
           >
             <div className="h-8 w-8 shrink-0 animate-pulse rounded-full bg-secondary/80" />
-            <div className="min-w-0 flex-1 space-y-1.5">
+            <div className="min-w-0 flex-1 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <Bone w="w-28" />
                 <Bone w="w-10" h="h-2.5" />

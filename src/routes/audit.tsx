@@ -81,7 +81,7 @@ function AuditPage() {
           title="Audit log"
           description="A trustworthy record of who did what, where, and what the server allowed."
           action={
-            <button className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-secondary">
+            <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary">
               <Download className="h-3.5 w-3.5" /> Export (mock)
             </button>
           }
@@ -125,13 +125,13 @@ function AuditPage() {
               <table className="w-full text-sm">
                 <thead className="bg-surface-muted text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                   <tr>
-                    <th className="px-4 py-2.5 font-medium">Time</th>
-                    <th className="px-4 py-2.5 font-medium">Actor</th>
-                    <th className="px-4 py-2.5 font-medium">Workspace</th>
-                    <th className="px-4 py-2.5 font-medium">Action</th>
-                    <th className="px-4 py-2.5 font-medium">Target</th>
-                    <th className="px-4 py-2.5 font-medium">Result</th>
-                    <th className="px-4 py-2.5 font-medium" />
+                    <th className="px-4 py-3 font-medium">Time</th>
+                    <th className="px-4 py-3 font-medium">Actor</th>
+                    <th className="px-4 py-3 font-medium">Workspace</th>
+                    <th className="px-4 py-3 font-medium">Action</th>
+                    <th className="px-4 py-3 font-medium">Target</th>
+                    <th className="px-4 py-3 font-medium">Result</th>
+                    <th className="px-4 py-3 font-medium" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -155,7 +155,7 @@ function AuditPage() {
                       </td>
                       <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{e.workspace}</td>
                       <td className="px-4 py-3">
-                        <span className="rounded-md border border-border bg-surface px-1.5 py-0.5 text-[11px] font-medium">
+                        <span className="rounded-md border border-border bg-surface px-2 py-1 text-[11px] font-medium">
                           {e.actionLabel}
                         </span>
                       </td>
@@ -185,7 +185,7 @@ function AuditPage() {
                 <li key={e.id}>
                   <button
                     onClick={() => setSelectedId(e.id)}
-                    className={`flex w-full items-start gap-3 px-4 py-3.5 text-left transition ${
+                    className={`flex w-full items-start gap-3 px-4 py-4 text-left transition ${
                       selected?.id === e.id ? "bg-primary-soft/30" : "hover:bg-surface-muted/60"
                     }`}
                   >
@@ -195,12 +195,12 @@ function AuditPage() {
                         <span className="truncate text-sm font-medium">{e.actor}</span>
                         <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">{e.time}</span>
                       </div>
-                      <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
+                      <div className="mt-1 truncate text-[12px] text-muted-foreground">
                         {e.actionLabel} · {e.target}
                       </div>
-                      <div className="mt-2 flex items-center gap-1.5">
+                      <div className="mt-2 flex items-center gap-2">
                         <ResultBadge result={e.result} />
-                        <span className="rounded-md border border-border bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                        <span className="rounded-md border border-border bg-surface px-2 py-1 text-[10px] font-medium text-muted-foreground">
                           {e.workspace}
                         </span>
                       </div>
@@ -248,7 +248,7 @@ function FilterSelect({
   options: readonly string[];
 }) {
   return (
-    <label className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1 text-xs">
+    <label className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1 text-xs">
       <span className="text-muted-foreground">{label}:</span>
       <select
         value={value}
@@ -285,7 +285,7 @@ function ResultBadge({ result }: { result: AuditResult }) {
   } as const;
   const { Icon, cls } = map[result];
   return (
-    <span className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${cls}`}>
+    <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium ${cls}`}>
       <Icon className="h-3 w-3" /> {result}
     </span>
   );
@@ -297,7 +297,7 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
       <div className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
         <div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Event</div>
-          <div className="mt-0.5 text-sm font-medium">{event.actionLabel}</div>
+          <div className="mt-1 text-sm font-medium">{event.actionLabel}</div>
         </div>
         <button
           onClick={onClose}
@@ -322,7 +322,7 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
           </div>
         </DetailRow>
         <DetailRow label="Workspace">
-          <div className="inline-flex items-center gap-1.5 text-sm">
+          <div className="inline-flex items-center gap-2 text-sm">
             <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
             {event.workspace}
           </div>
@@ -331,7 +331,7 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
           <div className="text-sm text-foreground/90">{event.target}</div>
         </DetailRow>
         <DetailRow label="Timestamp">
-          <div className="inline-flex items-center gap-1.5 text-sm tabular-nums text-muted-foreground">
+          <div className="inline-flex items-center gap-2 text-sm tabular-nums text-muted-foreground">
             <Clock className="h-3.5 w-3.5" /> <span className="tabular-nums">{event.time}</span>
             <span className="text-[11px] opacity-70">· {event.iso}</span>
           </div>
@@ -340,7 +340,7 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
           <p className="text-sm text-foreground/90">{event.details}</p>
         </DetailRow>
         <DetailRow label="Metadata">
-          <div className="rounded-lg border border-border bg-surface-muted/60 p-2.5">
+          <div className="rounded-lg border border-border bg-surface-muted/60 p-3">
             <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-[11px]">
               {Object.entries(event.metadata).map(([k, v]) => (
                 <div key={k} className="contents">
@@ -422,7 +422,7 @@ function SecurityStatesStrip() {
               key={s.title}
               className={`rounded-xl border p-3 ${toneCls[s.tone]}`}
             >
-              <div className="flex items-center gap-1.5 text-xs font-medium">
+              <div className="flex items-center gap-2 text-xs font-medium">
                 <Icon className="h-3.5 w-3.5" /> {s.title}
               </div>
               <p className="mt-1 text-[11px] text-foreground/80">{s.desc}</p>

@@ -123,7 +123,7 @@ function CustomersPage() {
           title="Customers"
           description="Reception directory — who's reaching out, from which channel, and what needs follow-up."
           action={
-            <button className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-secondary">
+            <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary">
               <Download className="h-3.5 w-3.5" /> Export (mock)
             </button>
           }
@@ -138,7 +138,7 @@ function CustomersPage() {
         </div>
 
         <div className="mt-4 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-warning-foreground">
-          <Shield className="mt-0.5 h-4 w-4 shrink-0" />
+          <Shield className="mt-1 h-4 w-4 shrink-0" />
           <div>
             <span className="font-medium">Workspace-scoped data.</span>{" "}
             Visible only to permitted members of this workspace. Server verifies membership. Mock data — no real PII.
@@ -204,15 +204,15 @@ function CustomersPage() {
                 <table className="w-full text-sm">
                   <thead className="bg-surface-muted text-left">
                     <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                      <th className="px-4 py-2.5 font-medium">Customer</th>
-                      <th className="px-3 py-2.5 font-medium">Primary channel</th>
-                      <th className="px-3 py-2.5 font-medium">Last inbound</th>
-                      <th className="px-3 py-2.5 font-medium text-center">Open</th>
-                      <th className="px-3 py-2.5 font-medium text-center">Unread</th>
-                      <th className="px-3 py-2.5 font-medium">Status</th>
-                      <th className="px-3 py-2.5 font-medium">Follow-up</th>
-                      <th className="px-3 py-2.5 font-medium">Assigned</th>
-                      <th className="px-4 py-2.5 font-medium text-right">Last seen</th>
+                      <th className="px-4 py-3 font-medium">Customer</th>
+                      <th className="px-3 py-3 font-medium">Primary channel</th>
+                      <th className="px-3 py-3 font-medium">Last inbound</th>
+                      <th className="px-3 py-3 font-medium text-center">Open</th>
+                      <th className="px-3 py-3 font-medium text-center">Unread</th>
+                      <th className="px-3 py-3 font-medium">Status</th>
+                      <th className="px-3 py-3 font-medium">Follow-up</th>
+                      <th className="px-3 py-3 font-medium">Assigned</th>
+                      <th className="px-4 py-3 font-medium text-right">Last seen</th>
                       <th className="w-8 px-2"></th>
                     </tr>
                   </thead>
@@ -244,7 +244,7 @@ function CustomersPage() {
                         <td className="px-3 py-3 text-center text-sm tabular-nums">{r.openConversations}</td>
                         <td className="px-3 py-3 text-center">
                           {r.unreadMessages > 0 ? (
-                            <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-1.5 py-0.5 text-[11px] font-medium tabular-nums text-primary-foreground">
+                            <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-2 py-1 text-[11px] font-medium tabular-nums text-primary-foreground">
                               {r.unreadMessages}
                             </span>
                           ) : (
@@ -253,7 +253,7 @@ function CustomersPage() {
                         </td>
                         <td className="px-3 py-3">
                           {r.status ? (
-                            <span className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${statusTone[r.status]}`}>
+                            <span className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[r.status]}`}>
                               <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
                               {statusLabel[r.status]}
                             </span>
@@ -263,7 +263,7 @@ function CustomersPage() {
                         </td>
                         <td className="px-3 py-3">
                           {r.needsFollowUp ? (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-1.5 py-0.5 text-[11px] font-medium text-warning-foreground">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[11px] font-medium text-warning-foreground">
                               <AlertTriangle className="h-3 w-3" /> Yes
                             </span>
                           ) : (
@@ -296,7 +296,7 @@ function CustomersPage() {
                     <Link
                       to="/customers/$customerId"
                       params={{ customerId: r.id }}
-                      className="flex items-start gap-3 px-4 py-3.5 hover:bg-surface-muted/60"
+                      className="flex items-start gap-3 px-4 py-4 hover:bg-surface-muted/60"
                     >
                       <Avatar initials={r.initials} />
                       <div className="min-w-0 flex-1">
@@ -304,22 +304,22 @@ function CustomersPage() {
                           <span className="truncate text-sm font-medium">{r.name}</span>
                           <span className="shrink-0 text-[11px] text-muted-foreground">{r.lastSeen}</span>
                         </div>
-                        <p className="mt-0.5 truncate text-xs text-muted-foreground">{r.lastSubject}</p>
-                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                        <p className="mt-1 truncate text-xs text-muted-foreground">{r.lastSubject}</p>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           <ChannelChip channel={r.primaryChannel} label={channelLabel[r.primaryChannel]} />
                           {r.status && (
-                            <span className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${statusTone[r.status]}`}>
+                            <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-medium ${statusTone[r.status]}`}>
                               {statusLabel[r.status]}
                             </span>
                           )}
                           {r.unreadMessages > 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-primary-foreground">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-[10px] font-medium tabular-nums text-primary-foreground">
                               <MessageCircle className="h-2.5 w-2.5" />
                               {r.unreadMessages}
                             </span>
                           )}
                           {r.needsFollowUp && (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-1.5 py-0.5 text-[10px] font-medium text-warning-foreground">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[10px] font-medium text-warning-foreground">
                               <AlertTriangle className="h-2.5 w-2.5" /> Follow-up
                             </span>
                           )}
@@ -347,7 +347,7 @@ function SummaryCard({ label, value, tone = "neutral" }: { label: string; value:
   return (
     <div className="rounded-xl border border-border bg-card p-4 shadow-soft">
       <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className={`mt-1.5 text-2xl font-medium tabular-nums tracking-tight ${toneCls}`}>{value}</div>
+      <div className={`mt-2 text-2xl font-medium tabular-nums tracking-tight ${toneCls}`}>{value}</div>
     </div>
   );
 }

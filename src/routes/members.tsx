@@ -136,7 +136,7 @@ function PermCell({ p }: { p: Perm }) {
     );
   if (p === "read")
     return (
-      <span className="inline-flex h-6 items-center gap-1 rounded-md bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
+      <span className="inline-flex h-6 items-center gap-1 rounded-md bg-muted px-2 text-[10px] font-medium text-muted-foreground">
         <Minus className="h-3 w-3" /> read
       </span>
     );
@@ -164,13 +164,13 @@ function MembersPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setAccessDenied(true)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-secondary"
               >
                 <ShieldOff className="h-3.5 w-3.5" /> Preview access denied
               </button>
               <button
                 onClick={() => setInvite(true)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
               >
                 <Plus className="h-3.5 w-3.5" /> Invite member
               </button>
@@ -181,13 +181,13 @@ function MembersPage() {
         {/* Safety strip */}
         <div className="mt-6 grid gap-3 md:grid-cols-2">
           <div className="flex items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3">
-            <Shield className="mt-0.5 h-4 w-4 text-primary" />
+            <Shield className="mt-1 h-4 w-4 text-primary" />
             <div className="text-[12px] leading-snug text-muted-foreground">
               <span className="font-medium text-foreground">Server verifies membership</span> on every tenant-scoped request. Client-side checks are UX only.
             </div>
           </div>
           <div className="flex items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3">
-            <Lock className="mt-0.5 h-4 w-4 text-warning-foreground" />
+            <Lock className="mt-1 h-4 w-4 text-warning-foreground" />
             <div className="text-[12px] leading-snug text-muted-foreground">
               <span className="font-medium text-foreground">The last Owner cannot be removed.</span> Removed members lose access immediately on next request.
             </div>
@@ -196,7 +196,7 @@ function MembersPage() {
 
         {/* Members — desktop table */}
         <div className="mt-6 hidden md:block overflow-hidden rounded-xl border border-border bg-card shadow-card">
-          <div className="grid grid-cols-[1.6fr_1fr_0.8fr_0.7fr_0.8fr_0.6fr] items-center gap-3 border-b border-border bg-surface px-4 py-2.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          <div className="grid grid-cols-[1.6fr_1fr_0.8fr_0.7fr_0.8fr_0.6fr] items-center gap-3 border-b border-border bg-surface px-4 py-3 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
             <div>Member</div>
             <div>Email</div>
             <div>Role</div>
@@ -220,14 +220,14 @@ function MembersPage() {
                 <div className="truncate text-muted-foreground">{m.email}</div>
                 <div>
                   <span
-                    className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium ${roleTone[m.role]}`}
+                    className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[m.role]}`}
                   >
                     {m.role}
                   </span>
                 </div>
                 <div>
                   <span
-                    className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${statusTone[m.status]}`}
+                    className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[m.status]}`}
                   >
                     <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
                     {m.status}
@@ -301,14 +301,14 @@ function MembersPage() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
                     <span
-                      className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium ${roleTone[m.role]}`}
+                      className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[m.role]}`}
                     >
                       {m.role}
                     </span>
                     <span
-                      className={`inline-flex items-center gap-1.5 rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${statusTone[m.status]}`}
+                      className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[m.status]}`}
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
                       {m.status}
@@ -332,7 +332,7 @@ function MembersPage() {
                 What each role can do inside a workspace. Visualization only — server is the source of truth.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-md border border-dashed border-border bg-surface-muted px-2 py-0.5 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-md border border-dashed border-border bg-surface-muted px-2 py-1 text-[11px] text-muted-foreground">
               <Info className="h-3 w-3" /> Planned capability
             </span>
           </div>
@@ -340,10 +340,10 @@ function MembersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-surface text-[11px] uppercase tracking-wide text-muted-foreground">
-                  <th className="px-4 py-2.5 text-left font-medium">Area</th>
+                  <th className="px-4 py-3 text-left font-medium">Area</th>
                   {roles.map((r) => (
-                    <th key={r} className="px-4 py-2.5 text-center font-medium">
-                      <span className={`inline-flex rounded-md border px-2 py-0.5 text-[11px] ${roleTone[r]}`}>
+                    <th key={r} className="px-4 py-3 text-center font-medium">
+                      <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] ${roleTone[r]}`}>
                         {r}
                       </span>
                     </th>
@@ -353,9 +353,9 @@ function MembersPage() {
               <tbody className="divide-y divide-border">
                 {matrix.map((row) => (
                   <tr key={row.area}>
-                    <td className="px-4 py-2.5 font-medium">{row.area}</td>
+                    <td className="px-4 py-3 font-medium">{row.area}</td>
                     {roles.map((r) => (
-                      <td key={r} className="px-4 py-2.5 text-center">
+                      <td key={r} className="px-4 py-3 text-center">
                         <PermCell p={row.perms[r]} />
                       </td>
                     ))}
@@ -373,11 +373,11 @@ function MembersPage() {
             ].map(([role, desc]) => (
               <div key={role} className="rounded-lg border border-border bg-card p-3">
                 <div className="flex items-center gap-2">
-                  <span className={`inline-flex rounded-md border px-2 py-0.5 text-[11px] font-medium ${roleTone[role as WorkspaceRole]}`}>
+                  <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[role as WorkspaceRole]}`}>
                     {role}
                   </span>
                 </div>
-                <p className="mt-1.5 text-xs text-muted-foreground">{desc}</p>
+                <p className="mt-2 text-xs text-muted-foreground">{desc}</p>
               </div>
             ))}
           </div>
@@ -390,12 +390,12 @@ function MembersPage() {
             <h3 className="text-sm font-medium">Safety &amp; access rules</h3>
           </div>
           <ul className="mt-3 grid gap-2 text-[12px] text-muted-foreground sm:grid-cols-2">
-            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Last Owner cannot be removed or demoted.</li>
-            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Removed members lose access immediately.</li>
-            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Server verifies membership on every tenant-scoped request.</li>
-            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Client-side checks are UX only — never trusted for authorization.</li>
-            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Suspended members keep records but cannot access the workspace. Auth planned.</li>
-            <li className="flex gap-2"><Check className="mt-0.5 h-3.5 w-3.5 text-success" /> Role changes are written to the audit log.</li>
+            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Last Owner cannot be removed or demoted.</li>
+            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Removed members lose access immediately.</li>
+            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Server verifies membership on every tenant-scoped request.</li>
+            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Client-side checks are UX only — never trusted for authorization.</li>
+            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Suspended members keep records but cannot access the workspace. Auth planned.</li>
+            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Role changes are written to the audit log.</li>
           </ul>
         </div>
       </div>
@@ -410,11 +410,11 @@ function MembersPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-2">
-            <div className="grid gap-1.5">
+            <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" placeholder="teammate@company.com" />
             </div>
-            <div className="grid gap-1.5">
+            <div className="grid gap-2">
               <Label>Role</Label>
               <Select defaultValue="Operator">
                 <SelectTrigger>
@@ -463,7 +463,7 @@ function MembersPage() {
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className={`inline-flex rounded-md border px-2 py-0.5 text-[11px] font-medium ${roleTone[r]}`}>
+                    <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[r]}`}>
                       {r}
                     </span>
                   </div>
@@ -500,7 +500,7 @@ function MembersPage() {
           </DialogHeader>
           <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-[12px] text-warning-foreground">
             <div className="flex items-start gap-2">
-              <ShieldAlert className="mt-0.5 h-4 w-4" />
+              <ShieldAlert className="mt-1 h-4 w-4" />
               <div>
                 Their assigned conversations will become unassigned. Audit history is preserved.
                 The last Owner cannot be removed.

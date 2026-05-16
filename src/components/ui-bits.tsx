@@ -47,7 +47,7 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "foll
   const key = (map[status as string] ?? (status as keyof typeof chipStyles));
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${chipStyles[key]}`}
+      className={`inline-flex items-center gap-2 rounded-full px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${chipStyles[key]}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {chipLabel[key]}
@@ -78,11 +78,11 @@ export function ChannelChip({ channel, label }: { channel: Channel; label: strin
   const planned = channel === "sms" || channel === "whatsapp" || channel === "voice";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${channelTone[channel]}`}
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${channelTone[channel]}`}
     >
       <span className={`h-1 w-1 rounded-full ${channelDot[channel]}`} />
       {label}
-      {planned && <span className="ml-0.5 text-[9px] uppercase tracking-wider opacity-60">planned</span>}
+      {planned && <span className="ml-1 text-[9px] uppercase tracking-wider opacity-60">planned</span>}
     </span>
   );
 }
@@ -126,13 +126,13 @@ export function PageHeader({
     <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
       <div className="min-w-0">
         {eyebrow && (
-          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
             {eyebrow}
           </p>
         )}
         <h1 className="text-[26px] font-medium tracking-tight leading-tight">{title}</h1>
         {description && (
-          <p className="mt-1.5 text-[13px] text-muted-foreground max-w-xl leading-relaxed">
+          <p className="mt-2 text-[13px] text-muted-foreground max-w-xl leading-relaxed">
             {description}
           </p>
         )}
@@ -145,7 +145,7 @@ export function PageHeader({
 export function MockBanner() {
   return (
     <div className="flex items-start gap-3 rounded-xl border border-warning/25 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent px-4 py-3 shadow-soft">
-      <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-warning/25 text-warning-foreground">
+      <span className="mt-1 grid h-5 w-5 place-items-center rounded-full bg-warning/25 text-warning-foreground">
         <Info className="h-3 w-3" />
       </span>
       <div className="text-[12.5px] leading-snug text-warning-foreground/90">

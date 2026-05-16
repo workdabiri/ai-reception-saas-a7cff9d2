@@ -86,7 +86,7 @@ export function AIDraftPanel({
           </p>
         </div>
         <span
-          className={`shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider ${stateTone[state]}`}
+          className={`shrink-0 rounded-md border px-2 py-1 text-[10px] font-medium uppercase tracking-wider ${stateTone[state]}`}
         >
           {stateLabel[state]}
         </span>
@@ -99,12 +99,12 @@ export function AIDraftPanel({
             Confidence
           </span>
           <span
-            className={`rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${confidenceTone[confidence]}`}
+            className={`rounded-md border px-2 py-1 text-[10px] font-medium ${confidenceTone[confidence]}`}
           >
             {confidence} · {confidencePct[confidence]}%
           </span>
         </div>
-        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
           <div
             className={`h-full rounded-full ${
               confidence === "High"
@@ -128,7 +128,7 @@ export function AIDraftPanel({
             className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring/40"
           />
         ) : (
-          <p className="rounded-lg border border-border bg-card px-3 py-2.5 text-sm leading-relaxed text-foreground/90">
+          <p className="rounded-lg border border-border bg-card px-3 py-3 text-sm leading-relaxed text-foreground/90">
             {text}
           </p>
         )}
@@ -136,19 +136,19 @@ export function AIDraftPanel({
 
       {/* Source / context */}
       <div className="mx-4 mb-3 rounded-lg border border-border bg-surface-muted/60 p-3">
-        <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
           <BookOpen className="h-3 w-3" />
           Sources & context
         </div>
-        <ul className="mt-1.5 space-y-1 text-[11px] text-foreground/80">
+        <ul className="mt-2 space-y-1 text-[11px] text-foreground/80">
           {sources.map((s) => (
-            <li key={s} className="flex items-start gap-1.5">
+            <li key={s} className="flex items-start gap-2">
               <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/60" />
               <span>{s}</span>
             </li>
           ))}
-          <li className="flex items-start gap-1.5 text-muted-foreground">
-            <Info className="mt-0.5 h-3 w-3 shrink-0" />
+          <li className="flex items-start gap-2 text-muted-foreground">
+            <Info className="mt-1 h-3 w-3 shrink-0" />
             <span>Source linking is a planned capability — placeholder for MVP.</span>
           </li>
         </ul>
@@ -157,7 +157,7 @@ export function AIDraftPanel({
       {/* Risk warning */}
       {showRisk && (
         <div className="mx-4 mb-3 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground">
-          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <ShieldAlert className="mt-1 h-3.5 w-3.5 shrink-0" />
           <div>
             <div className="font-medium">Verify before sending</div>
             <div className="leading-snug">{risk}</div>
@@ -166,7 +166,7 @@ export function AIDraftPanel({
       )}
 
       {/* No-autosend assurance */}
-      <div className="mx-4 mb-3 flex items-center gap-1.5 rounded-md bg-background/60 px-2.5 py-1.5 text-[10px] text-muted-foreground">
+      <div className="mx-4 mb-3 flex items-center gap-2 rounded-md bg-background/60 px-3 py-2 text-[10px] text-muted-foreground">
         <Lock className="h-3 w-3" />
         AI never sends. Operator review and approval is always required.
       </div>
@@ -180,14 +180,14 @@ export function AIDraftPanel({
                 setState("accepted");
                 onAccept(text);
               }}
-              className="inline-flex items-center gap-1.5 rounded-lg gradient-ai px-3.5 py-1.5 text-xs font-medium text-ai-foreground shadow-soft transition hover:opacity-95 active:translate-y-px"
+              className="inline-flex items-center gap-2 rounded-lg gradient-ai px-4 py-2 text-xs font-medium text-ai-foreground shadow-soft transition hover:opacity-95 active:translate-y-px"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Accept draft
             </button>
             <button
               onClick={() => setEditing(true)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:bg-secondary"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary"
             >
               <Pencil className="h-3.5 w-3.5" />
               Edit draft
@@ -197,13 +197,13 @@ export function AIDraftPanel({
                 setState("rejected");
                 onReject();
               }}
-              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary"
+              className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-secondary"
             >
               <X className="h-3.5 w-3.5" />
               Reject draft
             </button>
             <button
-              className="ml-auto inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary"
+              className="ml-auto inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-secondary"
               title="Mock — no real AI call"
             >
               <RefreshCw className="h-3.5 w-3.5" />
@@ -218,7 +218,7 @@ export function AIDraftPanel({
                 setState("edited");
                 onEdit(text);
               }}
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-95"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Save edit
@@ -228,7 +228,7 @@ export function AIDraftPanel({
                 setText(draft);
                 setEditing(false);
               }}
-              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-secondary"
+              className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-secondary"
             >
               Cancel
             </button>

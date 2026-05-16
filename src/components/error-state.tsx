@@ -57,7 +57,7 @@ export function ErrorState({
       </div>
       {badge && (
         <span
-          className={`mt-5 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium tracking-wide ${t.chip}`}
+          className={`mt-5 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-medium tracking-wide ${t.chip}`}
         >
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           {badge}
@@ -71,7 +71,7 @@ export function ErrorState({
         {onRetry && (
           <button
             onClick={onRetry}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:opacity-95"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-soft hover:opacity-95"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             Try again
