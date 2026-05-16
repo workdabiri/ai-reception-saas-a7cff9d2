@@ -244,7 +244,7 @@ function CustomersPage() {
                         <td className="px-3 py-3 text-center text-sm tabular-nums">{r.openConversations}</td>
                         <td className="px-3 py-3 text-center">
                           {r.unreadMessages > 0 ? (
-                            <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-1.5 py-0.5 text-[11px] font-medium text-primary-foreground">
+                            <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-1.5 py-0.5 text-[11px] font-medium tabular-nums text-primary-foreground">
                               {r.unreadMessages}
                             </span>
                           ) : (
@@ -313,7 +313,7 @@ function CustomersPage() {
                             </span>
                           )}
                           {r.unreadMessages > 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-primary-foreground">
                               <MessageCircle className="h-2.5 w-2.5" />
                               {r.unreadMessages}
                             </span>

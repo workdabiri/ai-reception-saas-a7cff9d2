@@ -286,7 +286,7 @@ function InboxPage() {
                           {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`} />}
                           <span className="min-w-0 flex-1 truncate">{row.label}</span>
                           {row.badge !== undefined && row.badge !== 0 && (
-                            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
+                            <span className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
                               {row.badge}
                             </span>
                           )}
