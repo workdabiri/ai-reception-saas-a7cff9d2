@@ -547,6 +547,24 @@
     background: var(--kpi-accent, var(--color-primary));
     opacity: 0.85;
   }
+  /* Workspace-scoped callout — amber accent on the border only;
+     title + body use neutral text tokens so they stay readable in dark mode. */
+  .workspace-scoped-callout {
+    background: color-mix(in oklab, var(--color-warning) 10%, transparent);
+    border-left: 3px solid var(--color-warning);
+    border-radius: 0 8px 8px 0;
+  }
+  .workspace-scoped-callout-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-foreground);
+    margin-bottom: 4px;
+  }
+  .workspace-scoped-callout-body {
+    font-size: 12px;
+    color: var(--color-muted-foreground);
+    line-height: 1.5;
+  }
   .nav-active {
     background-color: color-mix(in oklab, var(--color-primary) 8%, transparent);
     color: var(--color-primary);
