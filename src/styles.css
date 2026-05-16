@@ -76,14 +76,21 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Restrained, premium elevation — calm, not glowy */
+  /* Restrained, premium elevation — calm, not glowy.
+     Light-mode values tuned for depth contrast against off-white page bg
+     without heavy borders. Dark mode overrides below keep depth coming
+     from luminance, not shadow. */
   --shadow-xs:
-    0 1px 2px -1px oklch(0.20 0.07 268 / 0.04);
+    0 1px 2px rgba(15, 17, 36, 0.03);
   --shadow-soft:
-    0 1px 2px -1px oklch(0.20 0.07 268 / 0.06);
+    0 1px 3px rgba(15, 17, 36, 0.04),
+    0 1px 2px rgba(15, 17, 36, 0.03);
   --shadow-card:
-    0 1px 2px -1px oklch(0.20 0.07 268 / 0.05),
-    0 4px 12px -6px oklch(0.20 0.07 268 / 0.08);
+    0 1px 3px rgba(15, 17, 36, 0.06),
+    0 1px 2px rgba(15, 17, 36, 0.04);
+  --shadow-card-hover:
+    0 4px 8px rgba(15, 17, 36, 0.08),
+    0 2px 4px rgba(15, 17, 36, 0.04);
   --shadow-elev:
     0 1px 2px -1px oklch(0.20 0.07 268 / 0.06),
     0 8px 20px -10px oklch(0.20 0.07 268 / 0.12);
@@ -167,7 +174,8 @@
 :root {
   --radius: 0.85rem;
 
-  --background: var(--c-neutral-50);
+  /* #F6F7FB — slightly cool off-white so pure-white cards lift visibly */
+  --background: oklch(0.970 0.008 260);
   --foreground: oklch(0.205 0.040 264);
 
   --surface: oklch(1 0 0);
@@ -220,9 +228,10 @@
   --attention: oklch(0.640 0.205 38);
   --attention-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.910 0.014 252);
-  --border-strong: oklch(0.860 0.016 252);
-  --input: oklch(0.910 0.014 252);
+  /* Hairline borders — rely on shadow for primary depth, border just defines edge */
+  --border: rgba(15, 17, 36, 0.06);
+  --border-strong: rgba(15, 17, 36, 0.10);
+  --input: rgba(15, 17, 36, 0.10);
   --ring: oklch(0.515 0.225 277);
 
   /* Sidebar — deeper, slightly tinted */
@@ -286,6 +295,12 @@
   --sidebar-accent-foreground: #FFFFFF;
   --sidebar-border: rgba(255, 255, 255, 0.06);
   --sidebar-ring: #7E7EFF;
+  /* Dark mode relies on luminance contrast, not shadows. Keep them minimal
+     so card edges read from the bg→surface lift, not from black halos. */
+  --shadow-xs: 0 1px 2px -1px rgba(0, 0, 0, 0.25);
+  --shadow-soft: 0 1px 2px -1px rgba(0, 0, 0, 0.30);
+  --shadow-card: 0 1px 2px -1px rgba(0, 0, 0, 0.30);
+  --shadow-card-hover: 0 4px 12px -4px rgba(0, 0, 0, 0.40);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -411,11 +426,21 @@
     background-color: var(--color-card);
     border-radius: 0.875rem;
     box-shadow: var(--shadow-card);
-    transition: background-color 160ms ease, box-shadow 160ms ease;
+    transition: background-color 160ms ease, box-shadow 200ms ease-out,
+      transform 200ms ease-out;
   }
   .card-raised:hover,
   .hover\:card-hover:hover {
     background-color: var(--color-card-hover);
+  }
+  /* Light mode only: KPI/raised cards lift on hover for tactile depth.
+     Dark mode keeps depth from luminance and skips the translate. */
+  .card-raised:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-1px);
+  }
+  .dark .card-raised:hover {
+    transform: none;
   }
   .bg-card-hover { background-color: var(--color-card-hover); }
   .bg-surface-hover { background-color: var(--color-surface-hover); }
