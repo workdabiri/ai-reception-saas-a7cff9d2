@@ -349,7 +349,7 @@ function SharedSidebar({
   return (
     <aside
       data-collapsed={collapsed}
-      className={`hidden md:flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar/95 backdrop-blur transition-[width] duration-300 ease-in-out overflow-hidden sticky top-0 h-screen [height:100dvh] self-start ${
+      className={`hidden md:flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar/95 backdrop-blur sidebar-anim sticky top-0 h-screen [height:100dvh] self-start ${
         collapsed ? "w-16" : "w-[240px]"
       }`}
     >
