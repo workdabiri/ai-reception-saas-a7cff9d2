@@ -81,28 +81,52 @@ function ChannelCard({ c }: { c: ChannelOverview }) {
   const isActive = c.status === "Mock Active";
   return (
     <div
-      className={`group relative flex h-full min-w-[280px] flex-col rounded-2xl border bg-card p-5 shadow-soft transition hover:shadow-card ${
-        isActive ? "border-border" : "border-dashed border-border"
+      className={`group relative flex h-full min-w-[280px] flex-col p-5 transition ${
+        isActive
+          ? "rounded-2xl border border-border bg-card shadow-soft hover:shadow-card"
+          : "muted-card p-5"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <ChannelIcon channel={c.key} />
+        <ChannelIcon channel={c.key} inactive={!isActive} />
         <StatusPill status={c.status} />
       </div>
-      <h3 className="mt-4 text-base font-medium tracking-tight">{c.name}</h3>
-      <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+      <h3
+        className={`mt-4 text-base tracking-tight ${
+          isActive
+            ? "font-medium"
+            : "font-medium text-[color:var(--text-secondary)]"
+        }`}
+      >
+        {c.name}
+      </h3>
+      <p
+        className={`mt-1 line-clamp-2 text-xs ${
+          isActive ? "text-muted-foreground" : "text-[color:var(--text-tertiary)]"
+        }`}
+      >
         {c.description}
       </p>
 
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <Stat label="Unread" value={c.unread} highlight={c.unread > 0} />
-        <Stat label="Customers" value={c.customers} />
-        <Stat label="Waiting" value={c.waiting} highlight={c.waiting > 0} />
+        <Stat label="Unread" value={c.unread} highlight={c.unread > 0} muted={!isActive} />
+        <Stat label="Customers" value={c.customers} muted={!isActive} />
+        <Stat label="Waiting" value={c.waiting} highlight={c.waiting > 0} muted={!isActive} />
       </div>
 
-      <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-3 text-[11px] text-muted-foreground">
+      <div
+        className={`mt-4 flex items-center justify-between border-t pt-3 text-[11px] ${
+          isActive
+            ? "border-border/70 text-muted-foreground"
+            : "border-[color:var(--border-subtle)] text-[color:var(--text-tertiary)]"
+        }`}
+      >
         <span className="inline-flex items-center gap-2">
-          <span className={`h-1.5 w-1.5 rounded-full ${healthDot[c.health]}`} />
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              isActive ? healthDot[c.health] : "bg-[color:var(--text-disabled)]"
+            }`}
+          />
           {healthLabel[c.health]}
         </span>
         <span className="tabular-nums">{c.lastMessage}</span>
@@ -118,7 +142,7 @@ function ChannelCard({ c }: { c: ChannelOverview }) {
       ) : (
         <button
           disabled
-          className="mt-4 inline-flex cursor-not-allowed items-center justify-between rounded-lg border border-dashed border-border bg-surface-muted/50 px-3 py-2 text-xs font-medium text-muted-foreground"
+          className="muted-cta mt-4 inline-flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
         >
           Not enabled in MVP <Info className="h-3.5 w-3.5" />
         </button>
@@ -131,19 +155,35 @@ function Stat({
   label,
   value,
   highlight,
+  muted,
 }: {
   label: string;
   value: number;
   highlight?: boolean;
+  muted?: boolean;
 }) {
   return (
-    <div className="rounded-lg bg-surface-muted/60 px-2 py-2">
+    <div
+      className={`rounded-lg px-2 py-2 ${
+        muted ? "bg-[color:var(--bg-app)]" : "bg-surface-muted/60"
+      }`}
+    >
       <div
-        className={`text-base font-medium tabular-nums ${highlight ? "text-primary" : ""}`}
+        className={`text-base font-medium tabular-nums ${
+          muted
+            ? "text-[color:var(--text-tertiary)]"
+            : highlight
+              ? "text-primary"
+              : ""
+        }`}
       >
         {value}
       </div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+      <div
+        className={`text-[10px] uppercase tracking-wider ${
+          muted ? "text-[color:var(--text-disabled)]" : "text-muted-foreground"
+        }`}
+      >
         {label}
       </div>
     </div>
