@@ -126,6 +126,17 @@
   --c-orange-500:  oklch(0.640 0.205 38);
   --c-orange-400:  oklch(0.745 0.180 50);
 
+  /* Channel brand dots — used only as the colored dot inside neutral
+     channel chips. Pills stay neutral; dots carry identity. */
+  --channel-email:     #4A90E2;
+  --channel-webform:   #888780;
+  --channel-whatsapp:  #25D366;
+  --channel-instagram: #E1306C;
+  --channel-telegram:  #0088CC;
+  --channel-sms:       #6161FF;
+  --channel-messenger: #0084FF;
+  --channel-linkedin:  #0A66C2;
+  --channel-voice:     #FDAB3D;
   /* Neutrals — cool blue-gray scale (Light) */
   --c-neutral-0:   oklch(1 0 0);
   --c-neutral-25:  oklch(0.982 0.006 252);
