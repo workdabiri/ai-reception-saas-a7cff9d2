@@ -711,11 +711,13 @@ function CustomerContext({
       </div>
 
       {/* Visibility warning */}
-      <div className="mx-5 mt-4 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-[11px] text-warning-foreground">
-        <Shield className="mt-1 h-3.5 w-3.5 shrink-0" />
+      <div className="workspace-scoped-callout mx-5 mt-4 flex items-start gap-2 px-3 py-3">
+        <Shield className="mt-[2px] h-3.5 w-3.5 shrink-0 text-warning" />
         <div>
-          <div className="font-medium">Workspace-scoped</div>
-          Customer data is visible only to members of this workspace. Mock data — no real PII shown.
+          <div className="workspace-scoped-callout-title">Workspace-scoped</div>
+          <div className="workspace-scoped-callout-body">
+            Customer data is visible only to members of this workspace. Mock data — no real PII shown.
+          </div>
         </div>
       </div>
 
