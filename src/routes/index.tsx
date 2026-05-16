@@ -66,35 +66,36 @@ type Stat = {
 const stats: Stat[] = [
   { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "neutral", delta: { value: "+3", dir: "up" } },
   { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
-  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "warning", delta: { value: "+2", dir: "up" } },
+  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "attention", delta: { value: "+2", dir: "up" } },
   { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "ai", delta: { value: "+4", dir: "up" } },
   { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
 ];
 
-const toneStyles: Record<Tone, string> = {
-  neutral: "bg-secondary text-muted-foreground ring-border",
-  info: "bg-secondary text-muted-foreground ring-border",
-  warning: "bg-warning/12 text-warning-foreground ring-warning/25",
-  attention: "bg-warning/12 text-warning-foreground ring-warning/25",
-  ai: "bg-ai-soft text-ai ring-ai/20",
-  danger: "bg-destructive/10 text-destructive ring-destructive/20",
-  success: "bg-success/10 text-success ring-success/20",
+// Icon wrappers: soft variant tint, no rings or borders.
+const iconTone: Record<Tone, string> = {
+  neutral: "bg-secondary text-muted-foreground",
+  info: "bg-secondary text-muted-foreground",
+  warning: "bg-warning/10 text-warning-foreground",
+  attention: "bg-attention/10 text-attention",
+  ai: "bg-ai-soft text-ai",
+  danger: "bg-destructive/10 text-destructive",
+  success: "bg-success/10 text-success",
 };
 
 const toneAccent: Record<Tone, string> = {
   neutral: "transparent",
   info: "transparent",
   warning: "var(--color-warning)",
-  attention: "var(--color-warning)",
+  attention: "var(--color-attention)",
   ai: "var(--color-ai)",
   danger: "var(--color-destructive)",
   success: "var(--color-success)",
 };
 
 const deltaStyles = {
-  up: "text-foreground/70 bg-secondary ring-1 ring-inset ring-border",
-  down: "text-muted-foreground bg-secondary ring-1 ring-inset ring-border",
-  flat: "text-muted-foreground bg-secondary ring-1 ring-inset ring-border",
+  up: "text-foreground/80",
+  down: "text-muted-foreground",
+  flat: "text-muted-foreground",
 };
 
 function DashboardPage() {
