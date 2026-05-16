@@ -910,6 +910,40 @@
   .tag-not-enabled { background: var(--bg-app); color: var(--text-secondary); }
   .tag-planned     { background: var(--status-pending-soft); color: var(--status-pending-text); border-color: color-mix(in oklab, var(--status-pending) 25%, transparent); }
   .tag-future      { background: var(--status-info-soft);    color: var(--status-info-text);    border-color: color-mix(in oklab, var(--status-info) 25%, transparent); }
+
+  /* ─── Members page: role + status pills ──────────────────────── */
+  .member-role {
+    background: var(--status-neutral-soft);
+    color: var(--text-primary);
+    border-color: color-mix(in oklab, var(--status-neutral) 30%, transparent);
+  }
+  .member-role::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    margin-right: 6px;
+    background: var(--status-neutral);
+  }
+  .member-role--owner::before    { background: var(--primary); }
+  .member-role--admin::before    { background: var(--status-info); }
+  .member-role--operator::before { background: color-mix(in oklab, var(--status-info) 60%, var(--status-neutral)); }
+  .member-role--viewer::before   { background: var(--status-neutral); }
+
+  .member-status {
+    border-color: color-mix(in oklab, currentColor 25%, transparent) !important;
+  }
+  .member-status--active    { background: var(--status-success-soft); color: var(--status-success-text); }
+  .member-status--invited   { background: var(--status-warning-soft); color: var(--status-warning-text); }
+  .member-status--suspended { background: var(--status-danger-soft);  color: var(--status-danger-text); }
+  .member-status--removed {
+    background: var(--status-neutral-soft);
+    color: var(--status-neutral-text);
+    text-decoration: line-through;
+    text-decoration-color: var(--status-neutral);
+    text-decoration-thickness: 1px;
+  }
 }
 
 
