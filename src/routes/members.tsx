@@ -95,18 +95,20 @@ baseRows.push({
   workspace: currentWorkspace.name,
 });
 
+// Role pills: neutral surface + colored dot. Text always readable.
 const roleTone: Record<WorkspaceRole, string> = {
-  Owner: "bg-primary/10 text-primary border-primary/20",
-  Admin: "bg-info/10 text-info border-info/20",
-  Operator: "bg-success/10 text-success border-success/20",
-  Viewer: "bg-muted text-muted-foreground border-border",
+  Owner: "member-role member-role--owner",
+  Admin: "member-role member-role--admin",
+  Operator: "member-role member-role--operator",
+  Viewer: "member-role member-role--viewer",
 };
 
+// Status pills: soft background + text-tuned color.
 const statusTone: Record<MemberStatus, string> = {
-  Active: "bg-success/10 text-success border-success/20",
-  Invited: "bg-warning/15 text-warning-foreground border-warning/30",
-  Removed: "bg-muted text-muted-foreground border-border line-through",
-  Suspended: "bg-destructive/10 text-destructive border-destructive/20",
+  Active: "member-status member-status--active",
+  Invited: "member-status member-status--invited",
+  Removed: "member-status member-status--removed",
+  Suspended: "member-status member-status--suspended",
 };
 
 const roles: WorkspaceRole[] = ["Owner", "Admin", "Operator", "Viewer"];
