@@ -25,26 +25,26 @@ export type EmptyStateTone = "neutral" | "warning" | "destructive" | "primary";
 
 // Unified, calm icon-tile treatment. Default `neutral` matches the design
 // system's empty-state spec (56px tile, app-bg fill, tertiary icon).
-const toneStyles: Record<EmptyStateTone, { tile: string; icon: string; chip: string }> = {
+const toneStyles: Record<EmptyStateTone, { tile: string; icon: string; chipClass: string }> = {
   neutral: {
     tile: "bg-background dark:bg-white/[0.04]",
     icon: "text-muted-foreground/80",
-    chip: "border-border bg-surface text-muted-foreground",
+    chipClass: "state-pill",
   },
   primary: {
     tile: "bg-primary-soft",
     icon: "text-primary",
-    chip: "border-primary/20 bg-primary-soft text-primary",
+    chipClass: "state-pill",
   },
   warning: {
     tile: "bg-warning/12",
-    icon: "text-warning-foreground",
-    chip: "border-warning/30 bg-warning/10 text-warning-foreground",
+    icon: "text-warning-foreground dark:text-[var(--status-warning-text)]",
+    chipClass: "state-pill state-pill--warning",
   },
   destructive: {
     tile: "bg-destructive/10",
     icon: "text-destructive",
-    chip: "border-destructive/20 bg-destructive/5 text-destructive",
+    chipClass: "state-pill state-pill--danger",
   },
 };
 
