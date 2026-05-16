@@ -64,7 +64,7 @@ type Stat = {
 // tint. Operational counts (Open) stay fully neutral so the row reads as one
 // premium card family, not five colorful tiles.
 const stats: Stat[] = [
-  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "neutral", delta: { value: "+3", dir: "up" } },
+  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "info", delta: { value: "+3", dir: "up" } },
   { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
   { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "attention", delta: { value: "+2", dir: "up" } },
   { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "ai", delta: { value: "+4", dir: "up" } },
@@ -74,7 +74,7 @@ const stats: Stat[] = [
 // Icon wrappers: soft variant tint, no rings or borders.
 const iconTone: Record<Tone, string> = {
   neutral: "bg-secondary text-muted-foreground",
-  info: "bg-secondary text-muted-foreground",
+  info: "bg-info/10 text-info",
   warning: "bg-warning/10 text-warning-foreground",
   attention: "bg-attention/10 text-attention",
   ai: "bg-ai-soft text-ai",
@@ -84,7 +84,7 @@ const iconTone: Record<Tone, string> = {
 
 const toneAccent: Record<Tone, string> = {
   neutral: "transparent",
-  info: "transparent",
+  info: "var(--color-info)",
   warning: "var(--color-warning)",
   attention: "var(--color-attention)",
   ai: "var(--color-ai)",
