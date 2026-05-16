@@ -79,6 +79,7 @@ export function LoadingSkeleton({
       </div>
     );
   }
+  if (variant === "card") {
     return (
       <div className="rounded-xl border border-border bg-surface p-5 shadow-card">
         <Bone w="w-32" h="h-3.5" />
