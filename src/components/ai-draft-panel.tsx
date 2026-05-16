@@ -37,7 +37,7 @@ const confidencePct: Record<DraftConfidence, number> = {
 };
 
 const stateTone: Record<DraftState, string> = {
-  pending: "bg-ai-soft text-[oklch(0.40_0.18_290)] border-[oklch(0.55_0.20_295)]/25",
+  pending: "bg-primary/10 dark:bg-primary/[0.18] text-primary border-primary/30",
   accepted: "bg-success/12 text-success border-success/25",
   edited: "bg-info/12 text-info border-info/25",
   rejected: "bg-muted text-muted-foreground border-border",
