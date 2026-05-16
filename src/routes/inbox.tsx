@@ -408,8 +408,19 @@ function InboxPage() {
               );
             })}
             {filtered.length === 0 && (
-              <li className="px-4 py-10 text-center text-xs text-muted-foreground">
-                No conversations match.
+              <li className="px-2 py-2">
+                {conversations.length === 0 ? (
+                  <InboxOperatorFirstEmpty />
+                ) : (
+                  <FilterNoMatchState
+                    label="conversations"
+                    onReset={() => {
+                      setSearch("");
+                      setStatusFilter("all");
+                      setSection("all");
+                    }}
+                  />
+                )}
               </li>
             )}
           </ul>
