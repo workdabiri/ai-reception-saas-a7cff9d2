@@ -32,15 +32,25 @@ const toneMap: Record<ChannelKey, string> = {
 export function ChannelIcon({
   channel,
   size = 36,
+  inactive = false,
 }: {
   channel: ChannelKey;
   size?: number;
+  /** When true, render in a desaturated/neutral state to signal the channel is disabled or planned. */
+  inactive?: boolean;
 }) {
   const Icon = iconMap[channel];
+  const tone = inactive
+    ? "bg-muted/70 text-muted-foreground/80 ring-1 ring-inset ring-border/60"
+    : toneMap[channel];
   return (
     <div
-      className={`grid place-items-center rounded-xl ${toneMap[channel]}`}
-      style={{ width: size, height: size }}
+      className={`grid place-items-center rounded-xl ${tone}`}
+      style={{
+        width: size,
+        height: size,
+        filter: inactive ? "grayscale(1)" : undefined,
+      }}
     >
       <Icon style={{ width: size * 0.5, height: size * 0.5 }} />
     </div>
