@@ -78,12 +78,67 @@
     0 0 0 1px oklch(0.55 0.20 295 / 0.18);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   LAYER 1 — PRIMITIVES
+   Raw color values. Named by HUE, never by purpose.
+   Never used directly in components — only referenced by Layer 2.
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  /* Brand — Indigo (project identity) */
+  --c-indigo-400: oklch(0.665 0.195 277);
+  --c-indigo-500: oklch(0.515 0.235 277);
+  --c-indigo-600: oklch(0.475 0.205 268);
+  --c-indigo-700: oklch(0.42 0.18 280);
+  --c-indigo-50:  oklch(0.958 0.030 277);
+  --c-indigo-100: oklch(0.93 0.05 277);
+
+  /* AI — Violet */
+  --c-violet-400: oklch(0.745 0.165 295);
+  --c-violet-500: oklch(0.555 0.195 295);
+  --c-violet-600: oklch(0.530 0.235 295);
+  --c-violet-50:  oklch(0.968 0.025 295);
+
+  /* Status — Emerald / Amber / Rose / Blue / Orange */
+  --c-emerald-500: oklch(0.620 0.150 162);
+  --c-emerald-400: oklch(0.770 0.155 162);
+  --c-amber-500:   oklch(0.665 0.165 60);
+  --c-amber-400:   oklch(0.770 0.165 70);
+  --c-rose-500:    oklch(0.595 0.220 14);
+  --c-rose-400:    oklch(0.715 0.180 16);
+  --c-blue-500:    oklch(0.555 0.205 263);
+  --c-blue-400:    oklch(0.745 0.140 252);
+  --c-orange-500:  oklch(0.640 0.205 38);
+  --c-orange-400:  oklch(0.745 0.180 50);
+
+  /* Neutrals — cool blue-gray scale (Light) */
+  --c-neutral-0:   oklch(1 0 0);
+  --c-neutral-25:  oklch(0.982 0.006 252);
+  --c-neutral-50:  oklch(0.972 0.008 252);
+  --c-neutral-100: oklch(0.962 0.012 252);
+  --c-neutral-200: oklch(0.910 0.014 252);
+  --c-neutral-300: oklch(0.860 0.016 252);
+  --c-neutral-500: oklch(0.530 0.024 256);
+  --c-neutral-700: oklch(0.265 0.034 264);
+  --c-neutral-900: oklch(0.205 0.040 264);
+
+  /* Neutrals — deep blue-violet scale (Dark / Night surfaces) */
+  --c-ink-950: oklch(0.090 0.020 265);  /* Night app bg */
+  --c-ink-900: oklch(0.110 0.022 265);  /* Night surface */
+  --c-ink-850: oklch(0.130 0.024 265);  /* Dark app bg */
+  --c-ink-800: oklch(0.165 0.022 265);
+  --c-ink-750: oklch(0.190 0.022 265);  /* Dark surface */
+  --c-ink-700: oklch(0.225 0.024 265);
+  --c-ink-650: oklch(0.245 0.024 265);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LAYER 2 — SEMANTIC TOKENS (Light Mode)
+   Named by PURPOSE. This is what components consume.
+   ═══════════════════════════════════════════════════════════════════ */
 :root {
   --radius: 0.85rem;
 
-  /* Deeper warm-cool blue-gray app background — less generic white */
-  /* App bg #F4F7FB · text #0F172A · muted #64748B · border #D8E0EC */
-  --background: oklch(0.972 0.008 252);
+  --background: var(--c-neutral-50);
   --foreground: oklch(0.205 0.040 264);
 
   --surface: oklch(1 0 0);
@@ -203,6 +258,31 @@
   --sidebar-ring: oklch(0.66 0.175 268);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   LAYER 2 — Night Mode (deeper, OLED-friendly, max contrast)
+   Activated by adding `.night` alongside `.dark` on <html>.
+   Same semantic tokens — only canvas/borders deepen and primary
+   brightens slightly so CTAs stay visible on near-black surfaces.
+   ═══════════════════════════════════════════════════════════════════ */
+.dark.night {
+  --background: var(--c-ink-950);
+  --surface: var(--c-ink-900);
+  --surface-muted: var(--c-ink-850);
+  --card: var(--c-ink-900);
+  --popover: var(--c-ink-850);
+  --secondary: oklch(0.180 0.022 265);
+  --muted: oklch(0.180 0.022 265);
+  --border: oklch(1 0 0 / 7%);
+  --border-strong: oklch(1 0 0 / 13%);
+  --input: oklch(1 0 0 / 8%);
+  --sidebar: oklch(0.095 0.020 265);
+  --sidebar-accent: oklch(0.170 0.022 265);
+  --sidebar-border: oklch(1 0 0 / 5%);
+  /* Slightly brighter primary so CTAs pop on near-black canvas */
+  --primary: oklch(0.715 0.180 277);
+  --ring: oklch(0.715 0.180 277);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -259,6 +339,11 @@
     background-image:
       radial-gradient(1200px 600px at 100% -10%, oklch(0.55 0.20 268 / 0.10), transparent 65%),
       linear-gradient(180deg, oklch(0.125 0.022 265) 0%, oklch(0.110 0.020 265) 100%);
+  }
+  .dark.night .bg-app {
+    background-image:
+      radial-gradient(1200px 600px at 100% -10%, oklch(0.55 0.20 268 / 0.08), transparent 65%),
+      linear-gradient(180deg, oklch(0.085 0.020 265) 0%, oklch(0.070 0.018 265) 100%);
   }
   .bg-ai-soft {
     background-image: linear-gradient(135deg, oklch(0.555 0.195 295 / 0.12), oklch(0.475 0.195 268 / 0.10));
