@@ -867,7 +867,9 @@
     line-height: 1.5;
   }
 
-  /* ─── State preview badge (pill) ──────────────────────────────── */
+  /* ─── State preview badge (pill) ──────────────────────────────────
+     Golden Contrast Rule: soft bg + NEUTRAL text + colored leading dot.
+     Never put variant-colored text on a variant-colored background. */
   .state-pill {
     display: inline-flex;
     align-items: center;
@@ -876,20 +878,21 @@
     border-radius: 999px;
     font-size: 12px;
     font-weight: 500;
-    border: 0.5px solid color-mix(in oklab, currentColor 25%, transparent);
+    border: 0.5px solid var(--border-subtle);
     background: var(--status-neutral-soft);
-    color: var(--status-neutral-text);
+    color: var(--text-primary);
   }
-  .state-pill--info     { background: var(--status-info-soft);    color: var(--status-info-text); }
-  .state-pill--warning  { background: var(--status-warning-soft); color: var(--status-warning-text); }
-  .state-pill--danger   { background: var(--status-danger-soft);  color: var(--status-danger-text); }
-  .state-pill--success  { background: var(--status-success-soft); color: var(--status-success-text); }
-  .state-pill--pending  { background: var(--status-pending-soft); color: var(--status-pending-text); }
+  .state-pill--info     { background: var(--status-info-soft); }
+  .state-pill--warning  { background: var(--status-warning-soft); }
+  .state-pill--danger   { background: var(--status-danger-soft); }
+  .state-pill--success  { background: var(--status-success-soft); }
+  .state-pill--pending  { background: var(--status-pending-soft); }
   .state-pill-dot {
     width: 6px;
     height: 6px;
     border-radius: 9999px;
     background: var(--status-neutral);
+    flex-shrink: 0;
   }
   .state-pill--info    .state-pill-dot { background: var(--status-info); }
   .state-pill--warning .state-pill-dot { background: var(--status-warning); }
@@ -907,10 +910,21 @@
     font-size: 11px;
     font-weight: 500;
     border: 0.5px solid var(--border-subtle);
+    color: var(--text-primary);
+  }
+  .tag-base::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--status-neutral);
   }
   .tag-not-enabled { background: var(--bg-app); color: var(--text-secondary); }
-  .tag-planned     { background: var(--status-pending-soft); color: var(--status-pending-text); border-color: color-mix(in oklab, var(--status-pending) 25%, transparent); }
-  .tag-future      { background: var(--status-info-soft);    color: var(--status-info-text);    border-color: color-mix(in oklab, var(--status-info) 25%, transparent); }
+  .tag-planned     { background: var(--status-pending-soft); border-color: color-mix(in oklab, var(--status-pending) 25%, transparent); }
+  .tag-planned::before { background: var(--status-pending); }
+  .tag-future      { background: var(--status-info-soft);    border-color: color-mix(in oklab, var(--status-info) 25%, transparent); }
+  .tag-future::before  { background: var(--status-info); }
 
   /* ─── Members page: role + status pills ──────────────────────── */
   .member-role {
@@ -933,14 +947,29 @@
   .member-role--viewer::before   { background: var(--status-neutral); }
 
   .member-status {
-    border-color: color-mix(in oklab, currentColor 25%, transparent) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
-  .member-status--active    { background: var(--status-success-soft); color: var(--status-success-text); }
-  .member-status--invited   { background: var(--status-warning-soft); color: var(--status-warning-text); }
-  .member-status--suspended { background: var(--status-danger-soft);  color: var(--status-danger-text); }
+  .member-status::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--status-neutral);
+    flex-shrink: 0;
+  }
+  .member-status--active    { background: var(--status-success-soft); }
+  .member-status--active::before    { background: var(--status-success); }
+  .member-status--invited   { background: var(--status-warning-soft); }
+  .member-status--invited::before   { background: var(--status-warning); }
+  .member-status--suspended { background: var(--status-danger-soft); }
+  .member-status--suspended::before { background: var(--status-danger); }
   .member-status--removed {
     background: var(--status-neutral-soft);
-    color: var(--status-neutral-text);
     text-decoration: line-through;
     text-decoration-color: var(--status-neutral);
     text-decoration-thickness: 1px;

@@ -75,8 +75,8 @@ const stats: Stat[] = [
 const iconTone: Record<Tone, string> = {
   neutral: "bg-secondary text-muted-foreground",
   info: "bg-info/10 text-info",
-  warning: "bg-warning/10 text-warning-foreground",
-  attention: "bg-attention/10 text-attention",
+  warning: "bg-warning/10 text-foreground",
+  attention: "bg-attention/10 text-foreground",
   ai: "bg-ai-soft text-ai",
   danger: "bg-destructive/10 text-destructive",
   success: "bg-success/10 text-success",
@@ -244,7 +244,7 @@ function DashboardPage() {
                     <td className="px-3 py-3"><StatusChip status={q.status} /></td>
                     <td className="px-3 py-3 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
                     <td className="px-5 py-3 text-muted-foreground">
-                      {q.assignee ?? <span className="italic text-warning-foreground/80">Unassigned</span>}
+                      {q.assignee ?? <span className="italic text-foreground/80">Unassigned</span>}
                     </td>
                   </tr>
                 ))}
@@ -340,7 +340,7 @@ function DashboardPage() {
                           <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">Custs</div>
                         </div>
                         <div>
-                          <div className={`text-[12px] font-medium tabular-nums ${c.waiting > 0 ? "text-warning-foreground" : ""}`}>{c.waiting}</div>
+                          <div className={`text-[12px] font-medium tabular-nums ${c.waiting > 0 ? "text-foreground" : ""}`}>{c.waiting}</div>
                           <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">Wait</div>
                         </div>
                         <div>

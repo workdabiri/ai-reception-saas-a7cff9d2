@@ -69,8 +69,8 @@ const statusLabel: Record<InboxStatus, string> = {
 const statusTone: Record<InboxStatus, string> = {
   new: "bg-secondary text-secondary-foreground border-border",
   open: "bg-info/10 text-info border-info/25",
-  waiting: "bg-warning/12 text-warning-foreground border-warning/30",
-  "needs-followup": "bg-attention/12 text-attention border-attention/30",
+  waiting: "bg-warning/12 text-foreground border-warning/30",
+  "needs-followup": "bg-attention/12 text-foreground border-attention/30",
   closed: "bg-success/8 text-success/85 border-success/20",
 };
 
@@ -146,7 +146,7 @@ function CustomerProfilePage() {
         </div>
 
         {/* Visibility warning */}
-        <div className="mt-5 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-warning-foreground">
+        <div className="mt-5 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-foreground">
           <Shield className="mt-1 h-4 w-4 shrink-0" />
           <div>
             <span className="font-medium">Visible only inside this workspace.</span>{" "}
@@ -211,7 +211,7 @@ function CustomerProfilePage() {
                 {notes.map((n) => (
                   <li
                     key={n.id}
-                    className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-warning-foreground"
+                    className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-foreground"
                   >
                     <div className="mb-1 flex items-center justify-between text-[11px]">
                       <span className="inline-flex items-center gap-2 font-medium">

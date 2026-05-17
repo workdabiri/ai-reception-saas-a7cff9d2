@@ -25,7 +25,7 @@ const toneMap: Record<ChannelKey, string> = {
   instagram: "bg-destructive/10 text-destructive",
   whatsapp: "bg-success/10 text-success",
   telegram: "bg-info/10 text-info",
-  sms: "bg-warning/15 text-warning-foreground",
+  sms: "bg-warning/15 text-warning",
   voice: "bg-secondary text-secondary-foreground",
 };
 

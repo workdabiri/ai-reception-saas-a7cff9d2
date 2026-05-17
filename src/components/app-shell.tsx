@@ -206,7 +206,7 @@ export function AppShell({
                 className="hidden lg:inline-flex items-center gap-1.5 rounded-md border-[0.5px] px-2 py-[3px] text-[11px] font-medium"
                 style={{
                   background: "rgba(253, 171, 61, 0.10)",
-                  color: "var(--status-pending-text)",
+                  color: "var(--foreground)",
                   borderColor: "rgba(253, 171, 61, 0.30)",
                 }}
               >

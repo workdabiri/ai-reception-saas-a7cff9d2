@@ -32,7 +32,7 @@ export const Route = createFileRoute("/channels")({
 
 const statusTone: Record<ChannelStatus, string> = {
   "Mock Active": "bg-success/10 text-success border-success/20",
-  Planned: "bg-warning/15 text-warning-foreground dark:text-[var(--status-warning-text)] border-warning/30",
+  Planned: "bg-warning/15 text-foreground border-warning/30",
   Future: "bg-muted text-muted-foreground border-border",
   "Not enabled in MVP": "bg-muted text-muted-foreground border-border",
 };
@@ -251,7 +251,7 @@ function Totals({
     neutral: "bg-secondary text-secondary-foreground",
     info: "bg-info/10 text-info",
     primary: "bg-primary-soft text-primary",
-    warning: "bg-warning/15 text-warning-foreground dark:text-[var(--status-warning-text)] dark:text-[var(--status-warning-text)]",
+    warning: "bg-warning/15 text-warning",
     success: "bg-success/10 text-success",
   }[tone];
   const accent = {

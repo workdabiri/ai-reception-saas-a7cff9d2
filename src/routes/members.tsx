@@ -506,7 +506,7 @@ function MembersPage() {
               )}
             </DialogDescription>
           </DialogHeader>
-          <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-[12px] text-warning-foreground">
+          <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-[12px] text-foreground">
             <div className="flex items-start gap-2">
               <ShieldAlert className="mt-1 h-4 w-4" />
               <div>

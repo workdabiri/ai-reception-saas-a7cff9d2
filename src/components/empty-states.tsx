@@ -38,7 +38,7 @@ const toneStyles: Record<EmptyStateTone, { tile: string; icon: string; chipClass
   },
   warning: {
     tile: "bg-warning/12",
-    icon: "text-warning-foreground dark:text-[var(--status-warning-text)]",
+    icon: "text-warning",
     chipClass: "state-pill state-pill--warning",
   },
   destructive: {

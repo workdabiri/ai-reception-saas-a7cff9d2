@@ -16,8 +16,8 @@ const toneStyles: Record<
   },
   warning: {
     tile: "bg-warning/15",
-    icon: "text-warning-foreground",
-    chip: "border-warning/30 bg-warning/10 text-warning-foreground",
+    icon: "text-foreground",
+    chip: "border-warning/30 bg-warning/10 text-foreground",
   },
 };
 

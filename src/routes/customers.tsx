@@ -37,8 +37,8 @@ const statusLabel: Record<InboxStatus, string> = {
 const statusTone: Record<InboxStatus, string> = {
   new: "bg-secondary text-secondary-foreground border-border",
   open: "bg-info/10 text-info border-info/25",
-  waiting: "bg-warning/12 text-warning-foreground dark:text-[var(--status-warning-text)] border-warning/30",
-  "needs-followup": "bg-attention/12 text-attention dark:text-[var(--status-pending-text)] border-attention/30",
+  waiting: "bg-warning/12 text-foreground border-warning/30",
+  "needs-followup": "bg-attention/12 text-foreground border-attention/30",
   closed: "bg-success/8 text-success/85 border-success/20",
 };
 
@@ -266,7 +266,7 @@ function CustomersPage() {
                         </td>
                         <td className="px-3 py-3">
                           {r.needsFollowUp ? (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[11px] font-medium text-warning-foreground dark:text-[var(--status-warning-text)]">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[11px] font-medium text-foreground">
                               <AlertTriangle className="h-3 w-3" /> Yes
                             </span>
                           ) : (
@@ -322,7 +322,7 @@ function CustomersPage() {
                             </span>
                           )}
                           {r.needsFollowUp && (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[10px] font-medium text-warning-foreground dark:text-[var(--status-warning-text)]">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[10px] font-medium text-foreground">
                               <AlertTriangle className="h-2.5 w-2.5" /> Follow-up
                             </span>
                           )}
