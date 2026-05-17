@@ -251,7 +251,7 @@ function Totals({
     neutral: "bg-secondary text-secondary-foreground",
     info: "bg-info/10 text-info",
     primary: "bg-primary-soft text-primary",
-    warning: "bg-warning/15 text-foreground",
+    warning: "bg-warning/15 text-warning",
     success: "bg-success/10 text-success",
   }[tone];
   const accent = {
