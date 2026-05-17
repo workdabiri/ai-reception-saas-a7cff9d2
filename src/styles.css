@@ -1060,7 +1060,10 @@
   .muted-icon-tile[data-channel="sms"]       { box-shadow: 0 0 0 1.5px rgba(97, 97, 255, 0.20); }
   .muted-icon-tile[data-channel="voice"]     { box-shadow: 0 0 0 1.5px rgba(253, 171, 61, 0.20); }
   .muted-icon-tile[data-channel="email"]     { box-shadow: 0 0 0 1.5px rgba(74, 144, 226, 0.20); }
+  .muted-icon-tile[data-channel="web_chat"]  { box-shadow: 0 0 0 1.5px rgba(124, 124, 255, 0.20); }
   .muted-icon-tile[data-channel="webchat"]   { box-shadow: 0 0 0 1.5px rgba(124, 124, 255, 0.20); }
+  .muted-icon-tile[data-channel="facebook"]  { box-shadow: 0 0 0 1.5px rgba(0, 132, 255, 0.20); }
+  .muted-icon-tile[data-channel="call"]      { box-shadow: 0 0 0 1.5px rgba(253, 171, 61, 0.20); }
 
   /* Filter chip with channel dot + SOON tag */
   .muted-filter-chip {
