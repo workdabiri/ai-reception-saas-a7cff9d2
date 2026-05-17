@@ -25,9 +25,9 @@ type Props = {
 };
 
 const confidenceTone: Record<DraftConfidence, string> = {
-  High: "bg-success/12 text-success border-success/25",
+  High:   "bg-success/12 text-foreground border-success/25",
   Medium: "bg-warning/20 text-foreground border-warning/35",
-  Low: "bg-destructive/12 text-destructive border-destructive/25",
+  Low:    "bg-destructive/12 text-foreground border-destructive/25",
 };
 
 const confidencePct: Record<DraftConfidence, number> = {
@@ -37,9 +37,9 @@ const confidencePct: Record<DraftConfidence, number> = {
 };
 
 const stateTone: Record<DraftState, string> = {
-  pending: "bg-primary/10 dark:bg-primary/[0.18] text-primary border-primary/30",
-  accepted: "bg-success/12 text-success border-success/25",
-  edited: "bg-info/12 text-info border-info/25",
+  pending:  "bg-primary/10 dark:bg-primary/[0.18] text-foreground border-primary/30",
+  accepted: "bg-success/12 text-foreground border-success/25",
+  edited:   "bg-info/12 text-foreground border-info/25",
   rejected: "bg-muted text-muted-foreground border-border",
 };
 
