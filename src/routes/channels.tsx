@@ -60,23 +60,17 @@ const healthDot: Record<ChannelHealth, string> = {
   "n/a": "bg-muted-foreground/40",
 };
 
-function StatusPill({ status }: { status: ChannelStatus }) {
-  // Inactive (not-yet) statuses use the unified muted tag.
-  if (status !== "Mock Active") {
-    return (
-      <span className={`muted-status-tag ${mutedTagVariant[status] ?? ""}`}>
-        {status}
-      </span>
-    );
+function statusToState(status: ChannelStatus): ChannelState {
+  switch (status) {
+    case "Mock Active":
+      return "active";
+    case "Planned":
+      return "planned";
+    case "Future":
+    case "Not enabled in MVP":
+    default:
+      return "not_connected";
   }
-  return (
-    <span
-      className={`inline-flex items-center gap-2 rounded-full border px-2 py-1 text-[11px] font-medium ${statusTone[status]}`}
-    >
-      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-      {status}
-    </span>
-  );
 }
 
 function ChannelCard({ c }: { c: ChannelOverview }) {
