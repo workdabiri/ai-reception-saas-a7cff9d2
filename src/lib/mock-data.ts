@@ -119,6 +119,17 @@ export const channelOverview: ChannelOverview[] = [
     description: "Inbound SMS via provider. Planned.",
   },
   {
+    key: "facebook",
+    name: "Facebook",
+    status: "Planned",
+    unread: 0,
+    customers: 0,
+    waiting: 0,
+    lastMessage: "—",
+    health: "n/a",
+    description: "Facebook Messenger inbound messages. Planned.",
+  },
+  {
     key: "voice",
     name: "Voice",
     status: "Future",
