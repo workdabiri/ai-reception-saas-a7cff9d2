@@ -13,7 +13,7 @@ import { useState } from "react";
 //   closed     → success, de-emphasized (done)
 //   future     → neutral muted (planned)
 const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
-  new: "bg-secondary text-secondary-foreground ring-border",
+  new: "bg-info/12 text-foreground ring-info/30",
   open: "bg-info/10 text-info ring-info/25",
   waiting: "bg-warning/12 text-foreground ring-warning/30",
   closed: "bg-success/8 text-success/85 ring-success/20",

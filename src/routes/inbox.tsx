@@ -87,7 +87,7 @@ const inboxStatusLabel: Record<InboxStatus, string> = {
 //   followup   → attention/orange (we're overdue — escalation)
 //   closed     → success/green, de-emphasized (done)
 const inboxStatusTone: Record<InboxStatus, string> = {
-  new: "bg-secondary text-secondary-foreground border-border",
+  new: "bg-info/12 text-foreground border-info/30",
   open: "bg-info/10 text-info border-info/25",
   waiting: "bg-warning/12 text-foreground border-warning/30",
   "needs-followup": "bg-attention/12 text-foreground border-attention/30",
@@ -97,7 +97,7 @@ const inboxStatusTone: Record<InboxStatus, string> = {
 const priorityTone: Record<Priority, { dot: string; label: string; text: string }> = {
   low: { dot: "bg-muted-foreground/35", label: "Low", text: "text-muted-foreground" },
   normal: { dot: "bg-muted-foreground/55", label: "Normal", text: "text-muted-foreground" },
-  high: { dot: "bg-attention", label: "High", text: "text-foreground" },
+  high: { dot: "bg-destructive", label: "High", text: "text-foreground" },
   urgent: { dot: "bg-destructive", label: "Urgent", text: "text-destructive" },
 };
 

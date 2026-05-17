@@ -40,17 +40,12 @@ export function ChannelIcon({
   inactive?: boolean;
 }) {
   const Icon = iconMap[channel];
-  const tone = inactive
-    ? "bg-muted/70 text-muted-foreground/80 ring-1 ring-inset ring-border/60"
-    : toneMap[channel];
+  const tone = inactive ? "muted-icon-tile" : toneMap[channel];
   return (
     <div
       className={`grid place-items-center rounded-xl ${tone}`}
-      style={{
-        width: size,
-        height: size,
-        filter: inactive ? "grayscale(1)" : undefined,
-      }}
+      data-channel={inactive ? channel : undefined}
+      style={{ width: size, height: size }}
     >
       <Icon style={{ width: size * 0.5, height: size * 0.5 }} />
     </div>
