@@ -32,19 +32,6 @@ export const Route = createFileRoute("/channels")({
   component: ChannelsPage,
 });
 
-const statusTone: Record<ChannelStatus, string> = {
-  "Mock Active": "bg-success/10 text-success border-success/20",
-  Planned: "bg-warning/15 text-foreground border-warning/30",
-  Future: "bg-muted text-muted-foreground border-border",
-  "Not enabled in MVP": "bg-muted text-muted-foreground border-border",
-};
-
-/** Map a ChannelStatus → muted-status-tag variant for inactive (not-yet) features. */
-const mutedTagVariant: Partial<Record<ChannelStatus, string>> = {
-  Planned: "muted-status-tag--planned",
-  Future: "muted-status-tag--future",
-  "Not enabled in MVP": "muted-status-tag--not-enabled",
-};
 
 const healthLabel: Record<ChannelHealth, string> = {
   healthy: "Healthy (mock)",
