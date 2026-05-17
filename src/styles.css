@@ -984,13 +984,15 @@
      Access denied, Expired session, Waiting, Closed). Those keep
      their full status color. */
   .muted-card {
-    background: rgba(0, 0, 0, 0.02);
-    border: 0.5px solid var(--border-subtle);
+    background: var(--card);
+    border: 0.5px solid var(--border);
     border-radius: 12px;
     opacity: 0.78;
+    box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 4%, transparent);
   }
   .dark .muted-card {
-    background: rgba(255, 255, 255, 0.025);
+    background: color-mix(in oklab, var(--card) 92%, transparent);
+    box-shadow: none;
   }
   .muted-card:hover { opacity: 0.92; }
 
@@ -1033,8 +1035,8 @@
 
   /* Muted icon container — neutral fill with a faint identity ring */
   .muted-icon-tile {
-    background: var(--bg-app);
-    color: var(--text-tertiary);
+    background: var(--muted);
+    color: var(--muted-foreground);
   }
   .muted-icon-tile[data-channel="whatsapp"]  { box-shadow: 0 0 0 1.5px rgba(37, 211, 102, 0.20); }
   .muted-icon-tile[data-channel="instagram"] { box-shadow: 0 0 0 1.5px rgba(225, 48, 108, 0.20); }
