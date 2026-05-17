@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MockBanner, PageHeader } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
+import { ChannelStateTag } from "@/components/channel-state-tag";
+import type { ChannelState } from "@/lib/channels";
 import {
   channelOverview,
   type ChannelStatus,
