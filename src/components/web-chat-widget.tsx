@@ -59,7 +59,7 @@ export function WebChatWidget({
   };
 
   const initial =
-    businessInitial ?? businessName.trim().charAt(0).toUpperCase() || "B";
+    businessInitial ?? (businessName.trim().charAt(0).toUpperCase() || "B");
   const isOffline = state === "offline";
   const isProviderDown = state === "provider-unavailable";
 
