@@ -224,13 +224,8 @@ export function AppShell({
                 New conversation
               </button>
               <ThemeToggle />
-              <button className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-surface text-muted-foreground transition hover:text-foreground hover:bg-secondary">
-                <Bell className="h-4 w-4" />
-                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-destructive ring-2 ring-surface" />
-              </button>
-              <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-foreground to-foreground/80 text-background text-[11px] font-medium ring-2 ring-background shadow-soft">
-                AH
-              </div>
+              <NotificationCenter />
+              <ProfileMenu />
             </div>
           </header>
 
