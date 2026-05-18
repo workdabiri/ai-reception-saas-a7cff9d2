@@ -60,8 +60,20 @@ function statusToState(status: ChannelStatus): ChannelState {
   }
 }
 
+const ROUTE_ID: Record<string, string> = {
+  webchat: "web-chat",
+  email: "email",
+  instagram: "instagram",
+  whatsapp: "whatsapp",
+  telegram: "telegram",
+  sms: "sms",
+  facebook: "facebook",
+  voice: "voice",
+};
+
 function ChannelCard({ c }: { c: ChannelOverview }) {
   const isActive = c.status === "Mock Active";
+  const detailId = ROUTE_ID[c.key] ?? c.key;
   return (
     <div
       className={`group relative flex h-full min-w-[280px] flex-col p-5 transition ${
