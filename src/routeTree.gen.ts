@@ -16,8 +16,6 @@ import { Route as StatesRouteImport } from './routes/states'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SessionExpiredRouteImport } from './routes/session-expired'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
@@ -74,16 +72,6 @@ const SettingsRoute = SettingsRouteImport.update({
 const SessionExpiredRoute = SessionExpiredRouteImport.update({
   id: '/session-expired',
   path: '/session-expired',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembersRoute = MembersRouteImport.update({
@@ -208,8 +196,6 @@ export interface FileRoutesByFullPath {
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
-  '/notifications': typeof NotificationsRoute
-  '/profile': typeof ProfileRoute
   '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
@@ -241,8 +227,6 @@ export interface FileRoutesByTo {
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
-  '/notifications': typeof NotificationsRoute
-  '/profile': typeof ProfileRoute
   '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
@@ -275,8 +259,6 @@ export interface FileRoutesById {
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
-  '/notifications': typeof NotificationsRoute
-  '/profile': typeof ProfileRoute
   '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
@@ -310,8 +292,6 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/login'
     | '/members'
-    | '/notifications'
-    | '/profile'
     | '/session-expired'
     | '/settings'
     | '/signup'
@@ -343,8 +323,6 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/login'
     | '/members'
-    | '/notifications'
-    | '/profile'
     | '/session-expired'
     | '/settings'
     | '/signup'
@@ -376,8 +354,6 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/login'
     | '/members'
-    | '/notifications'
-    | '/profile'
     | '/session-expired'
     | '/settings'
     | '/signup'
@@ -410,8 +386,6 @@ export interface RootRouteChildren {
   KnowledgeRoute: typeof KnowledgeRoute
   LoginRoute: typeof LoginRoute
   MembersRoute: typeof MembersRoute
-  NotificationsRoute: typeof NotificationsRoute
-  ProfileRoute: typeof ProfileRoute
   SessionExpiredRoute: typeof SessionExpiredRoute
   SettingsRoute: typeof SettingsRouteWithChildren
   SignupRoute: typeof SignupRoute
@@ -479,20 +453,6 @@ declare module '@tanstack/react-router' {
       path: '/session-expired'
       fullPath: '/session-expired'
       preLoaderRoute: typeof SessionExpiredRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/members': {
@@ -699,8 +659,6 @@ const rootRouteChildren: RootRouteChildren = {
   KnowledgeRoute: KnowledgeRoute,
   LoginRoute: LoginRoute,
   MembersRoute: MembersRoute,
-  NotificationsRoute: NotificationsRoute,
-  ProfileRoute: ProfileRoute,
   SessionExpiredRoute: SessionExpiredRoute,
   SettingsRoute: SettingsRouteWithChildren,
   SignupRoute: SignupRoute,

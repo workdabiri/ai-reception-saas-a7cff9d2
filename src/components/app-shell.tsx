@@ -10,7 +10,7 @@ import {
   AlertCircle,
   Search,
   Sparkles,
-  
+  Bell,
   Plus,
   Radio,
   PanelLeftClose,
@@ -23,8 +23,6 @@ import {
   X,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { NotificationCenter } from "@/components/notification-center";
-import { ProfileMenu } from "@/components/profile-menu";
 import { workspaces, type WorkspaceRole } from "@/lib/mock-data";
 import {
   Tooltip,
@@ -224,8 +222,13 @@ export function AppShell({
                 New conversation
               </button>
               <ThemeToggle />
-              <NotificationCenter />
-              <ProfileMenu />
+              <button className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-surface text-muted-foreground transition hover:text-foreground hover:bg-secondary">
+                <Bell className="h-4 w-4" />
+                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-destructive ring-2 ring-surface" />
+              </button>
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-foreground to-foreground/80 text-background text-[11px] font-medium ring-2 ring-background shadow-soft">
+                AH
+              </div>
             </div>
           </header>
 
