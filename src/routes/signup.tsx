@@ -47,11 +47,11 @@ function SignupPage() {
               </div>
             </div>
             <Button asChild className="w-full">
-              <Link to="/login">
+              <Link to="/onboarding/workspace">
                 Continue to workspace setup <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <MockNotice>Prototype only — onboarding route is planned.</MockNotice>
+            <MockNotice>Prototype only — onboarding is mocked.</MockNotice>
           </div>
         ) : (
           <form
