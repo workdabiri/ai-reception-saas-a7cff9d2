@@ -12,7 +12,7 @@ const toneStyles: Record<
   destructive: {
     tile: "bg-destructive/10",
     icon: "text-destructive",
-    chip: "border-destructive/25 bg-destructive/5 text-destructive",
+    chip: "border-destructive/25 bg-destructive/10 text-foreground",
   },
   warning: {
     tile: "bg-warning/15",
