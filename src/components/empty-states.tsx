@@ -289,10 +289,13 @@ function FlowStep({
   body: string;
   tone: "info" | "ai" | "primary";
 }) {
+  // Icon-only tiles — the variant color drives the icon's currentColor.
+  // eslint-disable-next-line local/no-pill-contrast-violation
   const toneCls =
     tone === "ai"
       ? "bg-ai-soft text-ai ring-ai/25"
       : tone === "info"
+        // eslint-disable-next-line local/no-pill-contrast-violation
         ? "bg-info/10 text-info ring-info/25"
         : "bg-primary-soft text-primary ring-primary/25";
   return (

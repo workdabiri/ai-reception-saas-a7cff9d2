@@ -230,6 +230,9 @@ function Totals({
   value: number;
   tone?: "neutral" | "info" | "primary" | "warning" | "success";
 }) {
+  // Icon-only tiles (h-8 w-8 holding a single <Icon/>): variant text-* sets
+  // the icon's currentColor, not body text. Exempt from the contrast rule.
+  /* eslint-disable local/no-pill-contrast-violation */
   const iconCls = {
     neutral: "bg-secondary text-secondary-foreground",
     info: "bg-info/10 text-info",
@@ -237,6 +240,7 @@ function Totals({
     warning: "bg-warning/15 text-warning",
     success: "bg-success/10 text-success",
   }[tone];
+  /* eslint-enable local/no-pill-contrast-violation */
   const accent = {
     neutral: "transparent",
     info: "var(--color-info)",

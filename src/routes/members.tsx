@@ -132,6 +132,7 @@ const matrix: PermissionRow[] = [
 function PermCell({ p }: { p: Perm }) {
   if (p === "full")
     return (
+      // eslint-disable-next-line local/no-pill-contrast-violation -- icon-only tile; text-success colors the Check icon
       <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-success/15 text-success">
         <Check className="h-3.5 w-3.5" />
       </span>

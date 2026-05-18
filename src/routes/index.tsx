@@ -71,7 +71,10 @@ const stats: Stat[] = [
   { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
 ];
 
-// Icon wrappers: soft variant tint, no rings or borders.
+// Icon-only wrappers: the variant text-* sets the icon's currentColor on a
+// soft tinted tile; no body text is rendered inside. Exempt from the
+// Golden Contrast Rule (which targets text-bearing pills).
+/* eslint-disable local/no-pill-contrast-violation */
 const iconTone: Record<Tone, string> = {
   neutral: "bg-secondary text-muted-foreground",
   info: "bg-info/10 text-info",
@@ -81,6 +84,7 @@ const iconTone: Record<Tone, string> = {
   danger: "bg-destructive/10 text-destructive",
   success: "bg-success/10 text-success",
 };
+/* eslint-enable local/no-pill-contrast-violation */
 
 const toneAccent: Record<Tone, string> = {
   neutral: "transparent",
