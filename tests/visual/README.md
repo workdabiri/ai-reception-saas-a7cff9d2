@@ -1,25 +1,40 @@
 # Visual regression — pills & badges
 
-Lightweight, dependency-free snapshot guard for the project's pill / badge
-family (`Pill`, `StatusChip`, `ChannelBadge`, `ChannelStateTag`).
+Two complementary guards. Both fail non-zero on drift; CI should run both.
 
-Runs three checks per sample, across **mobile / tablet / desktop**:
+## 1. Markup snapshot (`snapshot:pills`)
 
-1. **Universal Responsive Consistency** — semantic markup must be byte-identical
-   across breakpoints. Any drift fails the run.
-2. **Golden Contrast Rule** — flags any `bg-{c}/N` paired with `text-{c}`
-   (soft pills must use `text-foreground`).
-3. **Snapshot drift** — diffs current render against the committed golden in
-   `__snapshots__/pills.snap.json`.
+Dependency-free SSR snapshot of every variant rendered three times (mobile /
+tablet / desktop wrappers). Enforces:
 
-## Commands
+- **Universal Responsive Consistency** — markup byte-identical across BPs.
+- **Golden Contrast Rule** — flags `bg-{c}/N` + `text-{c}` (must be `text-foreground`).
+- **Snapshot drift** vs `__snapshots__/pills.snap.json`.
 
 ```bash
 bun run snapshot:pills          # verify
-bun run snapshot:pills:update   # accept intentional changes
+bun run snapshot:pills:update   # accept
+```
+
+## 2. Pixel-diff (`snapshot:pixels`)
+
+Real browser screenshots via Playwright + pixelmatch. Boots vite, navigates
+to `/dev/pill-gallery` at 375 / 820 / 1280 viewports, captures each
+`[data-pill-id]` anchor, and diffs against goldens in `__screenshots__/{bp}/`.
+
+- Animations and transitions are forcibly disabled for determinism.
+- Per-pixel tolerance `0.1`, slack `5px` per crop (anti-aliasing).
+- Mismatches write `actual` + `diff` PNGs to `__diffs__/{bp}/` for review.
+- Set `GALLERY_URL=...` to reuse an already-running dev server.
+- Set `CHROMIUM_PATH=...` to override the chromium binary (defaults to `/bin/chromium`).
+
+```bash
+bun run snapshot:pixels          # verify, exits 1 on mismatch
+bun run snapshot:pixels:update   # accept / seed goldens
 ```
 
 ## Adding samples
 
-Edit `buildSamples()` in `pills.snapshot.tsx` and run `:update`. Review the
-diff in `__snapshots__/pills.snap.json` before committing.
+Edit `src/routes/dev.pill-gallery.tsx` (pixel) and `buildSamples()` in
+`pills.snapshot.tsx` (markup). Run both `:update` commands, review the diff,
+commit goldens.
