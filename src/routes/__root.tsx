@@ -144,7 +144,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {isAuth ? <Outlet /> : <AppShell><Outlet /></AppShell>}
+      <TooltipProvider delayDuration={150}>
+        {isAuth ? <Outlet /> : <AppShell><Outlet /></AppShell>}
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
