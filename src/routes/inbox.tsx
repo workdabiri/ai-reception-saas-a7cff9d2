@@ -88,17 +88,17 @@ const inboxStatusLabel: Record<InboxStatus, string> = {
 //   closed     → success/green, de-emphasized (done)
 const inboxStatusTone: Record<InboxStatus, string> = {
   new: "bg-info/12 text-foreground border-info/30",
-  open: "bg-info/10 text-info border-info/25",
+  open: "bg-info/10 text-foreground border-info/25",
   waiting: "bg-warning/12 text-foreground border-warning/30",
   "needs-followup": "bg-attention/12 text-foreground border-attention/30",
-  closed: "bg-success/8 text-success/85 border-success/20",
+  closed: "bg-success/8 text-foreground border-success/25",
 };
 
 const priorityTone: Record<Priority, { dot: string; label: string; text: string }> = {
   low: { dot: "bg-muted-foreground/35", label: "Low", text: "text-muted-foreground" },
   normal: { dot: "bg-muted-foreground/55", label: "Normal", text: "text-muted-foreground" },
   high: { dot: "bg-destructive", label: "High", text: "text-foreground" },
-  urgent: { dot: "bg-destructive", label: "Urgent", text: "text-destructive" },
+  urgent: { dot: "bg-destructive", label: "Urgent", text: "text-foreground" },
 };
 
 function InboxStatusChip({ status }: { status: InboxStatus }) {
@@ -900,10 +900,10 @@ function ThreadItem({
   ) {
     const tone =
       message.author === "system-assignment"
-        ? "border-info/30 text-info"
+        ? "border-info/30 text-foreground"
         : message.author === "system-status"
           ? "border-warning/30 text-foreground"
-          : "border-primary/30 text-primary";
+          : "border-primary/30 text-foreground";
     return (
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
@@ -1050,11 +1050,11 @@ const inboxSectionGroups: SectionGroup[] = [
 ];
 
 const badgeToneClass: Record<NonNullable<SectionRow["badgeTone"]>, string> = {
-  primary: "bg-primary-soft text-primary",
+  primary: "bg-primary-soft text-foreground",
   muted: "bg-secondary text-muted-foreground",
   warning: "bg-warning/20 text-foreground",
-  success: "bg-success/10 text-success",
-  info: "bg-info/10 text-info",
+  success: "bg-success/10 text-foreground",
+  info: "bg-info/10 text-foreground",
 };
 
 function isSameFilter(a: SectionFilter, b: SectionFilter) {
