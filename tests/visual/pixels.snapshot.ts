@@ -96,9 +96,7 @@ async function captureBreakpoint(
 
   const out = new Map<string, Buffer>();
   for (const id of ids) {
-    const handle = await page.$(`[data-pill-id="${CSS.escape(id)}"]`).catch(() => null);
-    // Fallback for environments without CSS.escape available in node-context
-    const locator = handle ?? (await page.$(`[data-pill-id="${id}"]`));
+    const locator = await page.$(`[data-pill-id="${id.replace(/"/g, '\\"')}"]`);
     if (!locator) continue;
     const buf = await locator.screenshot({ omitBackground: false });
     out.set(id, buf);
