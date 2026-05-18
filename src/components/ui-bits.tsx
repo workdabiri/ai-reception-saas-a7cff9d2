@@ -14,14 +14,14 @@ import { useState } from "react";
 //   future     → neutral muted (planned)
 const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
   new: "bg-info/12 text-foreground ring-info/30",
-  open: "bg-info/10 text-info ring-info/25",
+  open: "bg-info/10 text-foreground ring-info/25",
   waiting: "bg-warning/12 text-foreground ring-warning/30",
-  closed: "bg-success/8 text-success/85 ring-success/20",
-  "needs-review": "bg-ai-soft text-ai ring-ai/25",
+  closed: "bg-success/8 text-foreground ring-success/25",
+  "needs-review": "bg-ai-soft text-foreground ring-ai/25",
   "follow-up": "bg-attention/12 text-foreground ring-attention/30",
-  urgent: "bg-destructive/10 text-destructive ring-destructive/25",
-  active: "bg-success/10 text-success ring-success/25",
-  "access-denied": "bg-destructive/10 text-destructive ring-destructive/25",
+  urgent: "bg-destructive/10 text-foreground ring-destructive/30",
+  active: "bg-success/10 text-foreground ring-success/30",
+  "access-denied": "bg-destructive/10 text-foreground ring-destructive/30",
   future: "bg-secondary text-muted-foreground ring-border",
 };
 
