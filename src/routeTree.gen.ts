@@ -24,6 +24,12 @@ import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingWorkspaceRouteImport } from './routes/onboarding.workspace'
+import { Route as OnboardingTeamRouteImport } from './routes/onboarding.team'
+import { Route as OnboardingProfileRouteImport } from './routes/onboarding.profile'
+import { Route as OnboardingDoneRouteImport } from './routes/onboarding.done'
+import { Route as OnboardingChannelRouteImport } from './routes/onboarding.channel'
+import { Route as OnboardingAiRouteImport } from './routes/onboarding.ai'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as DevPillGalleryRouteImport } from './routes/dev.pill-gallery'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
@@ -103,6 +109,36 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingWorkspaceRoute = OnboardingWorkspaceRouteImport.update({
+  id: '/onboarding/workspace',
+  path: '/onboarding/workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingTeamRoute = OnboardingTeamRouteImport.update({
+  id: '/onboarding/team',
+  path: '/onboarding/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingProfileRoute = OnboardingProfileRouteImport.update({
+  id: '/onboarding/profile',
+  path: '/onboarding/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingDoneRoute = OnboardingDoneRouteImport.update({
+  id: '/onboarding/done',
+  path: '/onboarding/done',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingChannelRoute = OnboardingChannelRouteImport.update({
+  id: '/onboarding/channel',
+  path: '/onboarding/channel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingAiRoute = OnboardingAiRouteImport.update({
+  id: '/onboarding/ai',
+  path: '/onboarding/ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InviteTokenRoute = InviteTokenRouteImport.update({
   id: '/invite/$token',
   path: '/invite/$token',
@@ -138,6 +174,12 @@ export interface FileRoutesByFullPath {
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/onboarding/ai': typeof OnboardingAiRoute
+  '/onboarding/channel': typeof OnboardingChannelRoute
+  '/onboarding/done': typeof OnboardingDoneRoute
+  '/onboarding/profile': typeof OnboardingProfileRoute
+  '/onboarding/team': typeof OnboardingTeamRoute
+  '/onboarding/workspace': typeof OnboardingWorkspaceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -158,6 +200,12 @@ export interface FileRoutesByTo {
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/onboarding/ai': typeof OnboardingAiRoute
+  '/onboarding/channel': typeof OnboardingChannelRoute
+  '/onboarding/done': typeof OnboardingDoneRoute
+  '/onboarding/profile': typeof OnboardingProfileRoute
+  '/onboarding/team': typeof OnboardingTeamRoute
+  '/onboarding/workspace': typeof OnboardingWorkspaceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -179,6 +227,12 @@ export interface FileRoutesById {
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/onboarding/ai': typeof OnboardingAiRoute
+  '/onboarding/channel': typeof OnboardingChannelRoute
+  '/onboarding/done': typeof OnboardingDoneRoute
+  '/onboarding/profile': typeof OnboardingProfileRoute
+  '/onboarding/team': typeof OnboardingTeamRoute
+  '/onboarding/workspace': typeof OnboardingWorkspaceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -201,6 +255,12 @@ export interface FileRouteTypes {
     | '/customers/$customerId'
     | '/dev/pill-gallery'
     | '/invite/$token'
+    | '/onboarding/ai'
+    | '/onboarding/channel'
+    | '/onboarding/done'
+    | '/onboarding/profile'
+    | '/onboarding/team'
+    | '/onboarding/workspace'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -221,6 +281,12 @@ export interface FileRouteTypes {
     | '/customers/$customerId'
     | '/dev/pill-gallery'
     | '/invite/$token'
+    | '/onboarding/ai'
+    | '/onboarding/channel'
+    | '/onboarding/done'
+    | '/onboarding/profile'
+    | '/onboarding/team'
+    | '/onboarding/workspace'
   id:
     | '__root__'
     | '/'
@@ -241,6 +307,12 @@ export interface FileRouteTypes {
     | '/customers/$customerId'
     | '/dev/pill-gallery'
     | '/invite/$token'
+    | '/onboarding/ai'
+    | '/onboarding/channel'
+    | '/onboarding/done'
+    | '/onboarding/profile'
+    | '/onboarding/team'
+    | '/onboarding/workspace'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -261,6 +333,12 @@ export interface RootRouteChildren {
   VerifyEmailRoute: typeof VerifyEmailRoute
   DevPillGalleryRoute: typeof DevPillGalleryRoute
   InviteTokenRoute: typeof InviteTokenRoute
+  OnboardingAiRoute: typeof OnboardingAiRoute
+  OnboardingChannelRoute: typeof OnboardingChannelRoute
+  OnboardingDoneRoute: typeof OnboardingDoneRoute
+  OnboardingProfileRoute: typeof OnboardingProfileRoute
+  OnboardingTeamRoute: typeof OnboardingTeamRoute
+  OnboardingWorkspaceRoute: typeof OnboardingWorkspaceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -370,6 +448,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/workspace': {
+      id: '/onboarding/workspace'
+      path: '/onboarding/workspace'
+      fullPath: '/onboarding/workspace'
+      preLoaderRoute: typeof OnboardingWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/team': {
+      id: '/onboarding/team'
+      path: '/onboarding/team'
+      fullPath: '/onboarding/team'
+      preLoaderRoute: typeof OnboardingTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/profile': {
+      id: '/onboarding/profile'
+      path: '/onboarding/profile'
+      fullPath: '/onboarding/profile'
+      preLoaderRoute: typeof OnboardingProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/done': {
+      id: '/onboarding/done'
+      path: '/onboarding/done'
+      fullPath: '/onboarding/done'
+      preLoaderRoute: typeof OnboardingDoneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/channel': {
+      id: '/onboarding/channel'
+      path: '/onboarding/channel'
+      fullPath: '/onboarding/channel'
+      preLoaderRoute: typeof OnboardingChannelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/ai': {
+      id: '/onboarding/ai'
+      path: '/onboarding/ai'
+      fullPath: '/onboarding/ai'
+      preLoaderRoute: typeof OnboardingAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/invite/$token': {
       id: '/invite/$token'
       path: '/invite/$token'
@@ -424,7 +544,23 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyEmailRoute: VerifyEmailRoute,
   DevPillGalleryRoute: DevPillGalleryRoute,
   InviteTokenRoute: InviteTokenRoute,
+  OnboardingAiRoute: OnboardingAiRoute,
+  OnboardingChannelRoute: OnboardingChannelRoute,
+  OnboardingDoneRoute: OnboardingDoneRoute,
+  OnboardingProfileRoute: OnboardingProfileRoute,
+  OnboardingTeamRoute: OnboardingTeamRoute,
+  OnboardingWorkspaceRoute: OnboardingWorkspaceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
