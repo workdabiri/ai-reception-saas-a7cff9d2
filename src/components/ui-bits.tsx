@@ -2,16 +2,10 @@ import type { ConvStatus, Channel, ChipStatus } from "@/lib/mock-data";
 import { Info, X } from "lucide-react";
 import { useState } from "react";
 
-// Monday-style strict semantics. Each chip color carries a distinct meaning:
-//   new        → neutral (untouched)
-//   open       → info/blue (being actioned)
-//   waiting    → warning/amber (on customer)
-//   follow-up  → attention/orange (we're overdue)
-//   urgent     → destructive/rose
-//   needs-review → ai/violet (AI awaits operator)
-//   active     → success/emerald
-//   closed     → success, de-emphasized (done)
-//   future     → neutral muted (planned)
+// Soft-variant pills. Per the Golden Contrast Rule, text is always
+// foreground; accent color appears only on the dot/border. The "new"
+// state is intentionally neutral (no dot color), and "future" reads as
+// fully muted (planned/inactive).
 const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
   new: "bg-info/12 text-foreground ring-info/30",
   open: "bg-info/10 text-foreground ring-info/25",
@@ -23,6 +17,19 @@ const chipStyles: Record<ChipStatus | "follow-up" | "urgent" | "active", string>
   active: "bg-success/10 text-foreground ring-success/30",
   "access-denied": "bg-destructive/10 text-foreground ring-destructive/30",
   future: "bg-secondary text-muted-foreground ring-border",
+};
+
+const chipDot: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
+  new: "bg-info",
+  open: "bg-info",
+  waiting: "bg-warning",
+  closed: "bg-success",
+  "needs-review": "bg-ai",
+  "follow-up": "bg-attention",
+  urgent: "bg-destructive",
+  active: "bg-success",
+  "access-denied": "bg-destructive",
+  future: "bg-muted-foreground/50",
 };
 
 const chipLabel: Record<ChipStatus | "follow-up" | "urgent" | "active", string> = {
@@ -50,7 +57,7 @@ export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "foll
     <span
       className={`inline-flex items-center gap-2 rounded-full px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${chipStyles[key]}`}
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+      <span className={`h-1.5 w-1.5 rounded-full ${chipDot[key]}`} />
       {chipLabel[key]}
     </span>
   );
