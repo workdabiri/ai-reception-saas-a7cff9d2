@@ -22,6 +22,7 @@ import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as DevPillGalleryRouteImport } from './routes/dev.pill-gallery'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
 
@@ -90,6 +91,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevPillGalleryRoute = DevPillGalleryRouteImport.update({
   id: '/dev/pill-gallery',
   path: '/dev/pill-gallery',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof VerifyEmailRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
+  '/invite/$token': typeof InviteTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/verify-email': typeof VerifyEmailRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
+  '/invite/$token': typeof InviteTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/verify-email': typeof VerifyEmailRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
+  '/invite/$token': typeof InviteTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
+    | '/invite/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
+    | '/invite/$token'
   id:
     | '__root__'
     | '/'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
+    | '/invite/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -222,6 +234,7 @@ export interface RootRouteChildren {
   StudioRoute: typeof StudioRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   DevPillGalleryRoute: typeof DevPillGalleryRoute
+  InviteTokenRoute: typeof InviteTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/pill-gallery': {
       id: '/dev/pill-gallery'
       path: '/dev/pill-gallery'
@@ -361,6 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudioRoute: StudioRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   DevPillGalleryRoute: DevPillGalleryRoute,
+  InviteTokenRoute: InviteTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
