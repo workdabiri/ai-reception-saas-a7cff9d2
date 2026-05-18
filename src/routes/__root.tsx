@@ -135,6 +135,7 @@ const AUTH_ROUTE_PREFIXES = [
   "/invite",
   "/access-denied",
   "/session-expired",
+  "/onboarding",
 ];
 
 function RootComponent() {
