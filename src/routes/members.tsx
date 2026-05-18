@@ -203,6 +203,19 @@ function MembersPage() {
           </div>
         </div>
 
+        <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-2 text-[12px]">
+          <span className="text-muted-foreground">
+            Preview role permissions across Owner, Admin, Operator, and Viewer.
+          </span>
+          <Link
+            to="/role-preview"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 font-medium text-foreground hover:bg-secondary"
+          >
+            <Shield className="h-3.5 w-3.5" /> Role preview
+          </Link>
+        </div>
+
+
         {/* Members — desktop table */}
         <div className="mt-6 hidden md:block overflow-hidden rounded-xl border border-border bg-card shadow-card">
           <div className="grid grid-cols-[1.6fr_1fr_0.8fr_0.7fr_0.8fr_0.6fr] items-center gap-3 border-b border-border bg-surface px-4 py-3 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
