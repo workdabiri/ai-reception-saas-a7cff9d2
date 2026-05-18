@@ -12,6 +12,7 @@ import {
   ArrowLeftRight,
   Shield,
   Palette,
+  Users,
 } from "lucide-react";
 import {
   Popover,
@@ -172,6 +173,17 @@ function ProfileBody({ onClose }: { onClose: () => void }) {
         <MenuRow icon={Settings} label="Account settings" to="/profile" onClick={onClose} />
         <MenuRow icon={Bell} label="Notification preferences" to="/profile" onClick={onClose} />
         <MenuRow icon={Palette} label="Theme" to="/profile" onClick={onClose} />
+        <MenuRow
+          icon={Users}
+          label="Role preview"
+          to="/role-preview"
+          onClick={onClose}
+          trailing={
+            <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wider text-muted-foreground ring-1 ring-inset ring-border">
+              Demo
+            </span>
+          }
+        />
         <MenuRow icon={HelpCircle} label="Help" to="/settings" onClick={onClose} />
       </div>
 

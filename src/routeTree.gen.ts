@@ -16,6 +16,7 @@ import { Route as StatesRouteImport } from './routes/states'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SessionExpiredRouteImport } from './routes/session-expired'
+import { Route as RolePreviewRouteImport } from './routes/role-preview'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MembersRouteImport } from './routes/members'
@@ -74,6 +75,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const SessionExpiredRoute = SessionExpiredRouteImport.update({
   id: '/session-expired',
   path: '/session-expired',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RolePreviewRoute = RolePreviewRouteImport.update({
+  id: '/role-preview',
+  path: '/role-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -210,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/members': typeof MembersRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/role-preview': typeof RolePreviewRoute
   '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByTo {
   '/members': typeof MembersRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/role-preview': typeof RolePreviewRoute
   '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/members': typeof MembersRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/role-preview': typeof RolePreviewRoute
   '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
@@ -312,6 +321,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/notifications'
     | '/profile'
+    | '/role-preview'
     | '/session-expired'
     | '/settings'
     | '/signup'
@@ -345,6 +355,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/notifications'
     | '/profile'
+    | '/role-preview'
     | '/session-expired'
     | '/settings'
     | '/signup'
@@ -378,6 +389,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/notifications'
     | '/profile'
+    | '/role-preview'
     | '/session-expired'
     | '/settings'
     | '/signup'
@@ -412,6 +424,7 @@ export interface RootRouteChildren {
   MembersRoute: typeof MembersRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
+  RolePreviewRoute: typeof RolePreviewRoute
   SessionExpiredRoute: typeof SessionExpiredRoute
   SettingsRoute: typeof SettingsRouteWithChildren
   SignupRoute: typeof SignupRoute
@@ -479,6 +492,13 @@ declare module '@tanstack/react-router' {
       path: '/session-expired'
       fullPath: '/session-expired'
       preLoaderRoute: typeof SessionExpiredRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/role-preview': {
+      id: '/role-preview'
+      path: '/role-preview'
+      fullPath: '/role-preview'
+      preLoaderRoute: typeof RolePreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -701,6 +721,7 @@ const rootRouteChildren: RootRouteChildren = {
   MembersRoute: MembersRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
+  RolePreviewRoute: RolePreviewRoute,
   SessionExpiredRoute: SessionExpiredRoute,
   SettingsRoute: SettingsRouteWithChildren,
   SignupRoute: SignupRoute,

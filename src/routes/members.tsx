@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Avatar, PageHeader } from "@/components/ui-bits";
 import { members, currentWorkspace, type WorkspaceRole } from "@/lib/mock-data";
@@ -202,6 +202,19 @@ function MembersPage() {
             </p>
           </div>
         </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-2 text-[12px]">
+          <span className="text-muted-foreground">
+            Preview role permissions across Owner, Admin, Operator, and Viewer.
+          </span>
+          <Link
+            to="/role-preview"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 font-medium text-foreground hover:bg-secondary"
+          >
+            <Shield className="h-3.5 w-3.5" /> Role preview
+          </Link>
+        </div>
+
 
         {/* Members — desktop table */}
         <div className="mt-6 hidden md:block overflow-hidden rounded-xl border border-border bg-card shadow-card">
