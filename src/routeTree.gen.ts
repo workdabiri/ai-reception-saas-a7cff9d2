@@ -14,6 +14,7 @@ import { Route as StudioRouteImport } from './routes/studio'
 import { Route as StatesRouteImport } from './routes/states'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SessionExpiredRouteImport } from './routes/session-expired'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InboxRouteImport } from './routes/inbox'
@@ -50,6 +51,11 @@ const SignupRoute = SignupRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SessionExpiredRoute = SessionExpiredRouteImport.update({
+  id: '/session-expired',
+  path: '/session-expired',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembersRoute = MembersRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
+  '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/states': typeof StatesRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
+  '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/states': typeof StatesRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
+  '/session-expired': typeof SessionExpiredRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/states': typeof StatesRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/login'
     | '/members'
+    | '/session-expired'
     | '/settings'
     | '/signup'
     | '/states'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/login'
     | '/members'
+    | '/session-expired'
     | '/settings'
     | '/signup'
     | '/states'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/login'
     | '/members'
+    | '/session-expired'
     | '/settings'
     | '/signup'
     | '/states'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   InboxRoute: typeof InboxRoute
   LoginRoute: typeof LoginRoute
   MembersRoute: typeof MembersRoute
+  SessionExpiredRoute: typeof SessionExpiredRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   StatesRoute: typeof StatesRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/session-expired': {
+      id: '/session-expired'
+      path: '/session-expired'
+      fullPath: '/session-expired'
+      preLoaderRoute: typeof SessionExpiredRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/members': {
@@ -396,6 +416,7 @@ const rootRouteChildren: RootRouteChildren = {
   InboxRoute: InboxRoute,
   LoginRoute: LoginRoute,
   MembersRoute: MembersRoute,
+  SessionExpiredRoute: SessionExpiredRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   StatesRoute: StatesRoute,
