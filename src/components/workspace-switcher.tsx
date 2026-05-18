@@ -3,9 +3,9 @@ import { Check, ChevronsUpDown, Shield, Layers } from "lucide-react";
 import { workspaces, type Workspace, type WorkspaceRole } from "@/lib/mock-data";
 
 const roleTone: Record<WorkspaceRole, string> = {
-  Owner: "bg-primary-soft text-primary border-primary/20",
-  Admin: "bg-info/10 text-info border-info/20",
-  Operator: "bg-success/10 text-success border-success/20",
+  Owner: "bg-primary-soft text-foreground border-primary/25",
+  Admin: "bg-info/10 text-foreground border-info/25",
+  Operator: "bg-success/10 text-foreground border-success/25",
   Viewer: "bg-muted text-muted-foreground border-border",
 };
 

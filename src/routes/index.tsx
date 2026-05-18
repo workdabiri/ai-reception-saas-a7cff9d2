@@ -110,7 +110,7 @@ function DashboardPage() {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
-                <span className="inline-flex items-center gap-2 rounded-full bg-success/10 px-2 py-1 text-success ring-1 ring-inset ring-success/20">
+                <span className="inline-flex items-center gap-2 rounded-full bg-success/10 px-2 py-1 text-foreground ring-1 ring-inset ring-success/25">
                   <span className="live-indicator-dot !h-1.5 !w-1.5" />
                   Live
                 </span>
@@ -318,7 +318,7 @@ function DashboardPage() {
                         <ChannelIcon channel={c.key} size={20} />
                       </div>
                       {active ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider text-success ring-1 ring-success/20">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider text-foreground ring-1 ring-success/25">
                           <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} /> Active
                         </span>
                       ) : (

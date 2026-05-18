@@ -90,8 +90,8 @@ function SettingsPage() {
               <div className="grid gap-2 mb-1 sm:grid-cols-[180px_1fr] sm:items-center">
                 <label className="text-xs font-medium text-muted-foreground">Status</label>
                 <div>
-                  <span className="inline-flex items-center gap-2 rounded-md border border-success/20 bg-success/10 px-2 py-1 text-[11px] font-medium text-success">
-                    <span className="h-1.5 w-1.5 rounded-full bg-current" /> Active
+                  <span className="inline-flex items-center gap-2 rounded-md border border-success/25 bg-success/10 px-2 py-1 text-[11px] font-medium text-foreground">
+                    <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
                   </span>
                 </div>
               </div>

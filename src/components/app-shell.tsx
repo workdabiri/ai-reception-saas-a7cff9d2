@@ -100,9 +100,9 @@ const STORAGE_KEY = "app.sidebar.collapsed";
 // Role tones follow the strict monday-style semantics — Owner=brand, Admin=info,
 // Operator=success, Viewer=neutral. Subtle ring-inset for premium chip feel.
 const roleTone: Record<WorkspaceRole, string> = {
-  Owner: "bg-primary-soft text-primary ring-1 ring-inset ring-primary/20",
-  Admin: "bg-info/10 text-info ring-1 ring-inset ring-info/20",
-  Operator: "bg-success/10 text-success ring-1 ring-inset ring-success/20",
+  Owner: "bg-primary-soft text-foreground ring-1 ring-inset ring-primary/25",
+  Admin: "bg-info/10 text-foreground ring-1 ring-inset ring-info/25",
+  Operator: "bg-success/10 text-foreground ring-1 ring-inset ring-success/25",
   Viewer: "bg-secondary text-muted-foreground ring-1 ring-inset ring-border",
 };
 
