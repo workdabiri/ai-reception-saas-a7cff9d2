@@ -57,6 +57,48 @@ function SettingsPage() {
         />
         <MockBanner />
 
+        {/* AI & Knowledge quick links */}
+        <section className="grid gap-3 sm:grid-cols-2">
+          <Link
+            to="/settings/ai"
+            className="group flex items-start justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-soft transition hover:border-primary/40 hover:bg-secondary/40"
+          >
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-medium">AI Assistance Settings</div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Control draft tone, confidence handling, escalation and forbidden AI behavior. AI drafts only — operators send.
+                </p>
+                <span className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-primary">
+                  Open <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            </div>
+          </Link>
+          <Link
+            to="/knowledge"
+            className="group flex items-start justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-soft transition hover:border-primary/40 hover:bg-secondary/40"
+          >
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary">
+                <BookOpen className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-medium">Knowledge Base</div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  FAQ, business rules, services, hours and source readiness — references operators and future AI drafts can rely on.
+                </p>
+                <span className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-primary">
+                  Open <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            </div>
+          </Link>
+        </section>
+
         <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
           {/* Side nav */}
           <aside className="lg:sticky lg:top-6 lg:self-start">
