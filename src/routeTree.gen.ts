@@ -35,6 +35,7 @@ import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as DevPillGalleryRouteImport } from './routes/dev.pill-gallery'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
 import { Route as ChatBusinessIdRouteImport } from './routes/chat.$businessId'
+import { Route as ChannelsChannelIdRouteImport } from './routes/channels.$channelId'
 
 const WidgetPreviewRoute = WidgetPreviewRouteImport.update({
   id: '/widget-preview',
@@ -166,12 +167,17 @@ const ChatBusinessIdRoute = ChatBusinessIdRouteImport.update({
   path: '/chat/$businessId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChannelsChannelIdRoute = ChannelsChannelIdRouteImport.update({
+  id: '/$channelId',
+  path: '/$channelId',
+  getParentRoute: () => ChannelsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/audit': typeof AuditRoute
-  '/channels': typeof ChannelsRoute
+  '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/studio': typeof StudioRoute
   '/verify-email': typeof VerifyEmailRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/channels/$channelId': typeof ChannelsChannelIdRoute
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
@@ -199,7 +206,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/audit': typeof AuditRoute
-  '/channels': typeof ChannelsRoute
+  '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/studio': typeof StudioRoute
   '/verify-email': typeof VerifyEmailRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/channels/$channelId': typeof ChannelsChannelIdRoute
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
@@ -228,7 +236,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/audit': typeof AuditRoute
-  '/channels': typeof ChannelsRoute
+  '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/studio': typeof StudioRoute
   '/verify-email': typeof VerifyEmailRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/channels/$channelId': typeof ChannelsChannelIdRoute
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/studio'
     | '/verify-email'
     | '/widget-preview'
+    | '/channels/$channelId'
     | '/chat/$businessId'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/studio'
     | '/verify-email'
     | '/widget-preview'
+    | '/channels/$channelId'
     | '/chat/$businessId'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/studio'
     | '/verify-email'
     | '/widget-preview'
+    | '/channels/$channelId'
     | '/chat/$businessId'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
@@ -343,7 +355,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccessDeniedRoute: typeof AccessDeniedRoute
   AuditRoute: typeof AuditRoute
-  ChannelsRoute: typeof ChannelsRoute
+  ChannelsRoute: typeof ChannelsRouteWithChildren
   CustomersRoute: typeof CustomersRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InboxRoute: typeof InboxRoute
@@ -551,8 +563,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatBusinessIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/channels/$channelId': {
+      id: '/channels/$channelId'
+      path: '/$channelId'
+      fullPath: '/channels/$channelId'
+      preLoaderRoute: typeof ChannelsChannelIdRouteImport
+      parentRoute: typeof ChannelsRoute
+    }
   }
 }
+
+interface ChannelsRouteChildren {
+  ChannelsChannelIdRoute: typeof ChannelsChannelIdRoute
+}
+
+const ChannelsRouteChildren: ChannelsRouteChildren = {
+  ChannelsChannelIdRoute: ChannelsChannelIdRoute,
+}
+
+const ChannelsRouteWithChildren = ChannelsRoute._addFileChildren(
+  ChannelsRouteChildren,
+)
 
 interface CustomersRouteChildren {
   CustomersCustomerIdRoute: typeof CustomersCustomerIdRoute
@@ -570,7 +601,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccessDeniedRoute: AccessDeniedRoute,
   AuditRoute: AuditRoute,
-  ChannelsRoute: ChannelsRoute,
+  ChannelsRoute: ChannelsRouteWithChildren,
   CustomersRoute: CustomersRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InboxRoute: InboxRoute,
@@ -596,3 +627,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
