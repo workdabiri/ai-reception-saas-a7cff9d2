@@ -1,6 +1,7 @@
-"use strict";
-module.exports = {
+import rule from "./no-pill-contrast-violation.js";
+
+export default {
   rules: {
-    "no-pill-contrast-violation": require("./no-pill-contrast-violation.js"),
+    "no-pill-contrast-violation": rule,
   },
 };

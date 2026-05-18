@@ -6,16 +6,14 @@
  * background with matching-color text. Accent color belongs on the
  * dot, icon, or border — not on the text.
  *
- * Flags any string literal / template that contains BOTH:
+ * Flags any string / template that contains BOTH:
  *   bg-{variant}[ -soft | /<n> ]   AND   text-{variant}
  * for variant in: info, success, warning, warn, destructive, primary,
  * ai, attention, operator.
  *
- * The solid pattern `bg-{variant} text-{variant}-foreground` is allowed
+ * The solid pattern `bg-{v} text-{v}-foreground` is allowed
  * (the `-foreground` suffix is the inverse token).
  */
-"use strict";
-
 const VARIANTS = [
   "info",
   "success",
@@ -28,21 +26,17 @@ const VARIANTS = [
   "operator",
 ];
 
-function check(value) {
+function findViolation(value) {
   if (typeof value !== "string" || value.length === 0) return null;
   for (const v of VARIANTS) {
-    // bg-<v>, bg-<v>/<n>, bg-<v>-soft  (token boundary on both sides)
     const bgRe = new RegExp(`(?:^|\\s)bg-${v}(?:-soft|\\/[\\d.]+)?(?=\\s|$)`);
-    // text-<v> but NOT text-<v>-foreground (the legitimate solid pair)
     const txtRe = new RegExp(`(?:^|\\s)text-${v}(?:\\/[\\d.]+)?(?!-foreground)(?=\\s|$|/)`);
-    if (bgRe.test(value) && txtRe.test(value)) {
-      return v;
-    }
+    if (bgRe.test(value) && txtRe.test(value)) return v;
   }
   return null;
 }
 
-module.exports = {
+export default {
   meta: {
     type: "problem",
     docs: {
@@ -56,17 +50,16 @@ module.exports = {
     },
   },
   create(context) {
-    function report(node, variant) {
+    const report = (node, variant) =>
       context.report({ node, messageId: "violation", data: { variant } });
-    }
     return {
       Literal(node) {
-        const v = check(node.value);
+        const v = findViolation(node.value);
         if (v) report(node, v);
       },
       TemplateElement(node) {
         const raw = node.value && (node.value.cooked ?? node.value.raw);
-        const v = check(raw);
+        const v = findViolation(raw);
         if (v) report(node, v);
       },
     };
