@@ -13,6 +13,7 @@ import { Route as StudioRouteImport } from './routes/studio'
 import { Route as StatesRouteImport } from './routes/states'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MembersRouteImport } from './routes/members'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ChannelsRouteImport } from './routes/channels'
@@ -39,6 +40,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const MembersRoute = MembersRouteImport.update({
   id: '/members',
   path: '/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InboxRoute = InboxRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
   '/inbox': typeof InboxRoute
+  '/login': typeof LoginRoute
   '/members': typeof MembersRoute
   '/settings': typeof SettingsRoute
   '/states': typeof StatesRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
   '/inbox': typeof InboxRoute
+  '/login': typeof LoginRoute
   '/members': typeof MembersRoute
   '/settings': typeof SettingsRoute
   '/states': typeof StatesRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
   '/inbox': typeof InboxRoute
+  '/login': typeof LoginRoute
   '/members': typeof MembersRoute
   '/settings': typeof SettingsRoute
   '/states': typeof StatesRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/channels'
     | '/customers'
     | '/inbox'
+    | '/login'
     | '/members'
     | '/settings'
     | '/states'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/channels'
     | '/customers'
     | '/inbox'
+    | '/login'
     | '/members'
     | '/settings'
     | '/states'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/channels'
     | '/customers'
     | '/inbox'
+    | '/login'
     | '/members'
     | '/settings'
     | '/states'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   ChannelsRoute: typeof ChannelsRoute
   CustomersRoute: typeof CustomersRouteWithChildren
   InboxRoute: typeof InboxRoute
+  LoginRoute: typeof LoginRoute
   MembersRoute: typeof MembersRoute
   SettingsRoute: typeof SettingsRoute
   StatesRoute: typeof StatesRoute
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       path: '/members'
       fullPath: '/members'
       preLoaderRoute: typeof MembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inbox': {
@@ -272,6 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChannelsRoute: ChannelsRoute,
   CustomersRoute: CustomersRouteWithChildren,
   InboxRoute: InboxRoute,
+  LoginRoute: LoginRoute,
   MembersRoute: MembersRoute,
   SettingsRoute: SettingsRoute,
   StatesRoute: StatesRoute,
@@ -281,3 +302,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
