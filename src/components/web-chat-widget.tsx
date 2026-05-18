@@ -319,7 +319,7 @@ function WelcomeBody({ businessName }: { businessName: string }) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Pill state="active">Mock Active</Pill>
+        <Pill variant="success">Mock Active</Pill>
         <h2 className="text-lg font-medium tracking-tight text-foreground">
           Hi, how can we help you today?
         </h2>
