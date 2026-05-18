@@ -29,7 +29,7 @@ function ChatPage() {
     BUSINESSES[businessId] ??
     businessId
       .split("-")
-      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+      .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1))
       .join(" ");
 
   const [state, setState] = useState<WidgetState>("welcome");
