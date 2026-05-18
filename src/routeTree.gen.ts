@@ -16,6 +16,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InboxRouteImport } from './routes/inbox'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -58,6 +59,11 @@ const InboxRoute = InboxRouteImport.update({
   path: '/inbox',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CustomersRoute = CustomersRouteImport.update({
   id: '/customers',
   path: '/customers',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/channels': typeof ChannelsRoute
   '/customers': typeof CustomersRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/channels'
     | '/customers'
+    | '/forgot-password'
     | '/inbox'
     | '/login'
     | '/members'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/channels'
     | '/customers'
+    | '/forgot-password'
     | '/inbox'
     | '/login'
     | '/members'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/channels'
     | '/customers'
+    | '/forgot-password'
     | '/inbox'
     | '/login'
     | '/members'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   ChannelsRoute: typeof ChannelsRoute
   CustomersRoute: typeof CustomersRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   InboxRoute: typeof InboxRoute
   LoginRoute: typeof LoginRoute
   MembersRoute: typeof MembersRoute
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/inbox'
       fullPath: '/inbox'
       preLoaderRoute: typeof InboxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/customers': {
@@ -311,6 +331,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   ChannelsRoute: ChannelsRoute,
   CustomersRoute: CustomersRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   InboxRoute: InboxRoute,
   LoginRoute: LoginRoute,
   MembersRoute: MembersRoute,
