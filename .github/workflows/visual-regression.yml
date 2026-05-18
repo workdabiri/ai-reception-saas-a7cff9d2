@@ -9,9 +9,11 @@ on:
       - "src/components/channel-state-tag.tsx"
       - "src/components/channel-icon.tsx"
       - "src/components/ui-bits.tsx"
+      - "src/components/theme-toggle.tsx"
       - "src/lib/channels.ts"
       - "src/routes/dev.pill-gallery.tsx"
       - "src/styles.css"
+      - "components.json"
       - "tests/visual/**"
       - ".github/workflows/visual-regression.yml"
   push:
@@ -22,9 +24,11 @@ on:
       - "src/components/channel-state-tag.tsx"
       - "src/components/channel-icon.tsx"
       - "src/components/ui-bits.tsx"
+      - "src/components/theme-toggle.tsx"
       - "src/lib/channels.ts"
       - "src/routes/dev.pill-gallery.tsx"
       - "src/styles.css"
+      - "components.json"
       - "tests/visual/**"
       - ".github/workflows/visual-regression.yml"
 
