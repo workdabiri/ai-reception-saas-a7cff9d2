@@ -18,6 +18,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SessionExpiredRouteImport } from './routes/session-expired'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as CustomersRouteImport } from './routes/customers'
@@ -25,6 +26,7 @@ import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SettingsAiRouteImport } from './routes/settings.ai'
 import { Route as OnboardingWorkspaceRouteImport } from './routes/onboarding.workspace'
 import { Route as OnboardingTeamRouteImport } from './routes/onboarding.team'
 import { Route as OnboardingProfileRouteImport } from './routes/onboarding.profile'
@@ -82,6 +84,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KnowledgeRoute = KnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InboxRoute = InboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
@@ -116,6 +123,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsAiRoute = SettingsAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => SettingsRoute,
 } as any)
 const OnboardingWorkspaceRoute = OnboardingWorkspaceRouteImport.update({
   id: '/onboarding/workspace',
@@ -181,10 +193,11 @@ export interface FileRoutesByFullPath {
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
+  '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
   '/session-expired': typeof SessionExpiredRoute
-  '/settings': typeof SettingsRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
   '/states': typeof StatesRoute
   '/studio': typeof StudioRoute
@@ -201,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/profile': typeof OnboardingProfileRoute
   '/onboarding/team': typeof OnboardingTeamRoute
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
+  '/settings/ai': typeof SettingsAiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -210,10 +224,11 @@ export interface FileRoutesByTo {
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
+  '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
   '/session-expired': typeof SessionExpiredRoute
-  '/settings': typeof SettingsRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
   '/states': typeof StatesRoute
   '/studio': typeof StudioRoute
@@ -230,6 +245,7 @@ export interface FileRoutesByTo {
   '/onboarding/profile': typeof OnboardingProfileRoute
   '/onboarding/team': typeof OnboardingTeamRoute
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
+  '/settings/ai': typeof SettingsAiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -240,10 +256,11 @@ export interface FileRoutesById {
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/inbox': typeof InboxRoute
+  '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
   '/session-expired': typeof SessionExpiredRoute
-  '/settings': typeof SettingsRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/signup': typeof SignupRoute
   '/states': typeof StatesRoute
   '/studio': typeof StudioRoute
@@ -260,6 +277,7 @@ export interface FileRoutesById {
   '/onboarding/profile': typeof OnboardingProfileRoute
   '/onboarding/team': typeof OnboardingTeamRoute
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
+  '/settings/ai': typeof SettingsAiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -271,6 +289,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/forgot-password'
     | '/inbox'
+    | '/knowledge'
     | '/login'
     | '/members'
     | '/session-expired'
@@ -291,6 +310,7 @@ export interface FileRouteTypes {
     | '/onboarding/profile'
     | '/onboarding/team'
     | '/onboarding/workspace'
+    | '/settings/ai'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -300,6 +320,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/forgot-password'
     | '/inbox'
+    | '/knowledge'
     | '/login'
     | '/members'
     | '/session-expired'
@@ -320,6 +341,7 @@ export interface FileRouteTypes {
     | '/onboarding/profile'
     | '/onboarding/team'
     | '/onboarding/workspace'
+    | '/settings/ai'
   id:
     | '__root__'
     | '/'
@@ -329,6 +351,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/forgot-password'
     | '/inbox'
+    | '/knowledge'
     | '/login'
     | '/members'
     | '/session-expired'
@@ -349,6 +372,7 @@ export interface FileRouteTypes {
     | '/onboarding/profile'
     | '/onboarding/team'
     | '/onboarding/workspace'
+    | '/settings/ai'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -359,10 +383,11 @@ export interface RootRouteChildren {
   CustomersRoute: typeof CustomersRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InboxRoute: typeof InboxRoute
+  KnowledgeRoute: typeof KnowledgeRoute
   LoginRoute: typeof LoginRoute
   MembersRoute: typeof MembersRoute
   SessionExpiredRoute: typeof SessionExpiredRoute
-  SettingsRoute: typeof SettingsRoute
+  SettingsRoute: typeof SettingsRouteWithChildren
   SignupRoute: typeof SignupRoute
   StatesRoute: typeof StatesRoute
   StudioRoute: typeof StudioRoute
@@ -444,6 +469,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/knowledge': {
+      id: '/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inbox': {
       id: '/inbox'
       path: '/inbox'
@@ -492,6 +524,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/settings/ai': {
+      id: '/settings/ai'
+      path: '/ai'
+      fullPath: '/settings/ai'
+      preLoaderRoute: typeof SettingsAiRouteImport
+      parentRoute: typeof SettingsRoute
     }
     '/onboarding/workspace': {
       id: '/onboarding/workspace'
@@ -597,6 +636,18 @@ const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
   CustomersRouteChildren,
 )
 
+interface SettingsRouteChildren {
+  SettingsAiRoute: typeof SettingsAiRoute
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsAiRoute: SettingsAiRoute,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccessDeniedRoute: AccessDeniedRoute,
@@ -605,10 +656,11 @@ const rootRouteChildren: RootRouteChildren = {
   CustomersRoute: CustomersRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InboxRoute: InboxRoute,
+  KnowledgeRoute: KnowledgeRoute,
   LoginRoute: LoginRoute,
   MembersRoute: MembersRoute,
   SessionExpiredRoute: SessionExpiredRoute,
-  SettingsRoute: SettingsRoute,
+  SettingsRoute: SettingsRouteWithChildren,
   SignupRoute: SignupRoute,
   StatesRoute: StatesRoute,
   StudioRoute: StudioRoute,

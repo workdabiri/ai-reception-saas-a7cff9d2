@@ -14,7 +14,7 @@ import {
   Plus,
   Radio,
   PanelLeftClose,
-  
+  BookOpen,
   HelpCircle,
   ChevronsUpDown,
   Shield,
@@ -58,6 +58,7 @@ const MENU_CONFIG: { sections: NavSection[]; bottomItems: NavItem[] } = {
         { id: "inbox", to: "/inbox", label: "Inbox", icon: Inbox, badge: 4 },
         { id: "channels", to: "/channels", label: "Channels", icon: Radio, badge: 8 },
         { id: "customers", to: "/customers", label: "Customers", icon: Users },
+        { id: "knowledge", to: "/knowledge", label: "Knowledge", icon: BookOpen },
       ],
     },
     {
