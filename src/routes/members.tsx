@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Avatar, PageHeader } from "@/components/ui-bits";
 import { members, currentWorkspace, type WorkspaceRole } from "@/lib/mock-data";
