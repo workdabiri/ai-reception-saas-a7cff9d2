@@ -136,6 +136,8 @@ const AUTH_ROUTE_PREFIXES = [
   "/access-denied",
   "/session-expired",
   "/onboarding",
+  "/chat",
+  "/widget-preview",
 ];
 
 function RootComponent() {
