@@ -60,8 +60,20 @@ function statusToState(status: ChannelStatus): ChannelState {
   }
 }
 
+const ROUTE_ID: Record<string, string> = {
+  webchat: "web-chat",
+  email: "email",
+  instagram: "instagram",
+  whatsapp: "whatsapp",
+  telegram: "telegram",
+  sms: "sms",
+  facebook: "facebook",
+  voice: "voice",
+};
+
 function ChannelCard({ c }: { c: ChannelOverview }) {
   const isActive = c.status === "Mock Active";
+  const detailId = ROUTE_ID[c.key] ?? c.key;
   return (
     <div
       className={`group relative flex h-full min-w-[280px] flex-col p-5 transition ${
@@ -115,21 +127,30 @@ function ChannelCard({ c }: { c: ChannelOverview }) {
         <span className="tabular-nums">{c.lastMessage}</span>
       </div>
 
-      {isActive ? (
+      <div className="mt-4 flex flex-col gap-2">
+        {isActive ? (
+          <Link
+            to="/inbox"
+            className="inline-flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-muted"
+          >
+            Open in inbox <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+        ) : (
+          <button
+            disabled
+            className="muted-cta inline-flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
+          >
+            Not enabled in MVP <Info className="h-3.5 w-3.5" />
+          </button>
+        )}
         <Link
-          to="/inbox"
-          className="mt-4 inline-flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-foreground hover:bg-surface-muted"
+          to="/channels/$channelId"
+          params={{ channelId: detailId }}
+          className="inline-flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-muted"
         >
-          Open in inbox <ArrowUpRight className="h-3.5 w-3.5" />
+          {isActive ? "View setup" : "Configure"} <ArrowUpRight className="h-3.5 w-3.5" />
         </Link>
-      ) : (
-        <button
-          disabled
-          className="muted-cta mt-4 inline-flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium"
-        >
-          Not enabled in MVP <Info className="h-3.5 w-3.5" />
-        </button>
-      )}
+      </div>
     </div>
   );
 }
