@@ -132,7 +132,10 @@ async function main() {
   const { url, stop } = await ensureGallery();
   console.log(`→ gallery ${url}`);
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    executablePath: process.env.CHROMIUM_PATH || "/bin/chromium",
+    args: ["--no-sandbox"],
+  });
   const failures: string[] = [];
   let captured = 0;
   let matched = 0;
