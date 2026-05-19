@@ -190,7 +190,7 @@ function ProfilePage() {
               </div>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-1.5 text-[12px] font-medium text-destructive transition hover:bg-destructive/15"
+                className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-1.5 text-[12px] font-medium text-foreground transition hover:bg-destructive/15"
               >
                 <LogOut className="h-3.5 w-3.5" />
                 Sign out
