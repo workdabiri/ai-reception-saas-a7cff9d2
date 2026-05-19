@@ -44,8 +44,7 @@ export default {
   meta: {
     type: "problem",
     docs: {
-      description:
-        "Disallow pairing bg-{variant} with text-{variant} (Golden Contrast Rule).",
+      description: "Disallow pairing bg-{variant} with text-{variant} (Golden Contrast Rule).",
     },
     schema: [],
     messages: {

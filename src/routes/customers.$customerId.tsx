@@ -75,13 +75,31 @@ const statusTone: Record<InboxStatus, string> = {
 };
 
 // Mock internal notes per customer (kept here to stay UI-only)
-const mockNotesByCustomer: Record<string, { id: string; author: string; time: string; body: string }[]> = {
+const mockNotesByCustomer: Record<
+  string,
+  { id: string; author: string; time: string; body: string }[]
+> = {
   c1: [
-    { id: "n1", author: "Priya Raman", time: "Today · 10:46", body: "Prefers morning appointments. Sensitive about scheduling changes." },
-    { id: "n2", author: "Daniel Cho", time: "Last week", body: "VIP — long-time patient, family of four also booked here." },
+    {
+      id: "n1",
+      author: "Priya Raman",
+      time: "Today · 10:46",
+      body: "Prefers morning appointments. Sensitive about scheduling changes.",
+    },
+    {
+      id: "n2",
+      author: "Daniel Cho",
+      time: "Last week",
+      body: "VIP — long-time patient, family of four also booked here.",
+    },
   ],
   c3: [
-    { id: "n1", author: "Priya Raman", time: "Today · 09:18", body: "Billing dispute — pinged Daniel for ledger review." },
+    {
+      id: "n1",
+      author: "Priya Raman",
+      time: "Today · 09:18",
+      body: "Billing dispute — pinged Daniel for ledger review.",
+    },
   ],
 };
 
@@ -149,9 +167,8 @@ function CustomerProfilePage() {
         <div className="mt-5 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-foreground">
           <Shield className="mt-1 h-4 w-4 shrink-0" />
           <div>
-            <span className="font-medium">Visible only inside this workspace.</span>{" "}
-            Customer data and notes are workspace-scoped to permitted members. Mock data —
-            no real PII shown.
+            <span className="font-medium">Visible only inside this workspace.</span> Customer data
+            and notes are workspace-scoped to permitted members. Mock data — no real PII shown.
           </div>
         </div>
 
@@ -247,9 +264,7 @@ function CustomerProfilePage() {
               ) : (
                 <ul className="mt-3 divide-y divide-border overflow-hidden rounded-lg border border-border">
                   {linked.map((c) => {
-                    const a = c.assignee
-                      ? members.find((m) => m.id === c.assignee)?.name
-                      : null;
+                    const a = c.assignee ? members.find((m) => m.id === c.assignee)?.name : null;
                     return (
                       <li key={c.id}>
                         <Link
@@ -361,9 +376,7 @@ function MessageBadge({ author }: { author: Message["author"] }) {
 }
 
 function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-5 shadow-card">{children}</div>
-  );
+  return <div className="rounded-xl border border-border bg-card p-5 shadow-card">{children}</div>;
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {

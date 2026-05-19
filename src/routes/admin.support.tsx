@@ -15,10 +15,7 @@ import { EmptyState } from "@/components/empty-states";
 
 export const Route = createFileRoute("/admin/support")({
   head: () => ({
-    meta: [
-      { title: "Support — Platform Admin" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Support — Platform Admin" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: AdminSupportPage,
 });
@@ -36,7 +33,8 @@ function AdminSupportPage() {
     if (filter === "Open") r = r.filter((s) => s.status === "open");
     else if (filter === "Waiting") r = r.filter((s) => s.status === "waiting");
     else if (filter === "Resolved") r = r.filter((s) => s.status === "resolved");
-    else if (filter === "High priority") r = r.filter((s) => s.priority === "high" || s.priority === "urgent");
+    else if (filter === "High priority")
+      r = r.filter((s) => s.priority === "high" || s.priority === "urgent");
     return r;
   }, [filter]);
 
@@ -112,7 +110,9 @@ function AdminSupportPage() {
                       ].join(" ")}
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-[12.5px] font-medium text-foreground truncate">{s.business}</span>
+                        <span className="text-[12.5px] font-medium text-foreground truncate">
+                          {s.business}
+                        </span>
                         <SupportPriorityPill priority={s.priority} />
                       </div>
                       <div className="mt-0.5 text-[11px] text-muted-foreground">{s.category}</div>
@@ -143,7 +143,9 @@ function AdminSupportPage() {
               <p className="text-[12.5px] text-foreground">{selected.summary}</p>
 
               <div className="mt-4 flex flex-wrap items-center gap-3 text-[11.5px] text-muted-foreground">
-                <span>Owner: <span className="text-foreground">{selected.owner}</span></span>
+                <span>
+                  Owner: <span className="text-foreground">{selected.owner}</span>
+                </span>
                 <span>Created: {selected.createdAt}</span>
                 <Link
                   to="/admin/businesses/$businessId"
@@ -158,8 +160,14 @@ function AdminSupportPage() {
                 <h3 className="text-[12px] font-medium text-foreground">Timeline</h3>
                 <ul className="mt-2 space-y-2">
                   {selected.timeline.map((t, i) => (
-                    <li key={i} className="rounded-md border border-border bg-surface px-3 py-2 text-[11.5px]">
-                      <div className="font-medium text-foreground">{t.actor} <span className="text-muted-foreground font-normal">· {t.at}</span></div>
+                    <li
+                      key={i}
+                      className="rounded-md border border-border bg-surface px-3 py-2 text-[11.5px]"
+                    >
+                      <div className="font-medium text-foreground">
+                        {t.actor}{" "}
+                        <span className="text-muted-foreground font-normal">· {t.at}</span>
+                      </div>
                       <div className="text-muted-foreground">{t.note}</div>
                     </li>
                   ))}

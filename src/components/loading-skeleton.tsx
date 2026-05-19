@@ -13,9 +13,7 @@ function Bone({
   h?: string;
   rounded?: string;
 }) {
-  return (
-    <div className={`skeleton ${rounded} ${h} ${w ?? "w-full"} ${className}`} />
-  );
+  return <div className={`skeleton ${rounded} ${h} ${w ?? "w-full"} ${className}`} />;
 }
 
 export function LoadingSkeleton({

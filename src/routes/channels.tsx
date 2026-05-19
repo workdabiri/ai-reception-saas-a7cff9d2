@@ -9,14 +9,7 @@ import {
   type ChannelHealth,
   type ChannelOverview,
 } from "@/lib/mock-data";
-import {
-  ArrowUpRight,
-  Inbox,
-  Users,
-  Clock,
-  Activity,
-  Info,
-} from "lucide-react";
+import { ArrowUpRight, Inbox, Users, Clock, Activity, Info } from "lucide-react";
 import {
   useStateParam,
   presets as statePresets,
@@ -30,14 +23,12 @@ export const Route = createFileRoute("/channels")({
       { title: "Channels — AI Reception" },
       {
         name: "description",
-        content:
-          "Channel overview: web chat, email, Instagram, WhatsApp, Telegram, SMS, voice.",
+        content: "Channel overview: web chat, email, Instagram, WhatsApp, Telegram, SMS, voice.",
       },
     ],
   }),
   component: ChannelsPage,
 });
-
 
 const healthLabel: Record<ChannelHealth, string> = {
   healthy: "Healthy (mock)",
@@ -94,9 +85,7 @@ function ChannelCard({ c }: { c: ChannelOverview }) {
       </div>
       <h3
         className={`mt-4 text-base tracking-tight ${
-          isActive
-            ? "font-medium"
-            : "font-medium text-[color:var(--text-secondary)]"
+          isActive ? "font-medium" : "font-medium text-[color:var(--text-secondary)]"
         }`}
       >
         {c.name}
@@ -180,11 +169,7 @@ function Stat({
     >
       <div
         className={`text-base font-medium tabular-nums ${
-          muted
-            ? "text-[color:var(--text-tertiary)]"
-            : highlight
-              ? "text-primary"
-              : ""
+          muted ? "text-[color:var(--text-tertiary)]" : highlight ? "text-primary" : ""
         }`}
       >
         {value}
@@ -243,9 +228,19 @@ function ChannelsPage() {
         {/* Totals */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Totals icon={Inbox} label="Total unread" value={totals.unread} tone="info" />
-          <Totals icon={Users} label="Customers across channels" value={totals.customers} tone="primary" />
+          <Totals
+            icon={Users}
+            label="Customers across channels"
+            value={totals.customers}
+            tone="primary"
+          />
           <Totals icon={Clock} label="Waiting for operator" value={totals.waiting} tone="warning" />
-          <Totals icon={Activity} label="Active sources" value={channelOverview.filter(c => c.status === "Mock Active").length} tone="success" />
+          <Totals
+            icon={Activity}
+            label="Active sources"
+            value={channelOverview.filter((c) => c.status === "Mock Active").length}
+            tone="success"
+          />
         </div>
 
         {/* Cards — swipeable on mobile, grid on larger */}
@@ -302,12 +297,17 @@ function Totals({
       className="kpi-accent relative overflow-hidden rounded-xl bg-surface px-6 py-5 shadow-card dark:shadow-none"
     >
       <div className="flex items-start justify-between gap-2">
-        <span className="text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">{label}</span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+          {label}
+        </span>
         <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconCls}`}>
           <Icon className="h-3.5 w-3.5" />
         </div>
       </div>
-      <div className="mt-3 text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground" style={{ fontFeatureSettings: '"tnum" 1' }}>
+      <div
+        className="mt-3 text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground"
+        style={{ fontFeatureSettings: '"tnum" 1' }}
+      >
         {value}
       </div>
     </div>

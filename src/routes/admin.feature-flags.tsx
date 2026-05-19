@@ -14,13 +14,7 @@ export const Route = createFileRoute("/admin/feature-flags")({
   component: AdminFeatureFlagsPage,
 });
 
-function MockToggle({
-  enabled,
-  onToggle,
-}: {
-  enabled: boolean;
-  onToggle: () => void;
-}) {
+function MockToggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) {
   return (
     <button
       type="button"
@@ -49,11 +43,14 @@ function FlagRow({ flag }: { flag: AdminFeatureFlag }) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-[13px] font-medium text-foreground">{flag.label}</span>
-          <Pill variant="neutral" size="sm">{flag.scope}</Pill>
+          <Pill variant="neutral" size="sm">
+            {flag.scope}
+          </Pill>
         </div>
         <p className="mt-1 text-[11.5px] text-muted-foreground">{flag.description}</p>
         <p className="mt-1 text-[10.5px] text-muted-foreground">
-          Owner: {flag.owner} · last changed {flag.lastChanged} · affects {flag.affectedWorkspaces} workspaces
+          Owner: {flag.owner} · last changed {flag.lastChanged} · affects {flag.affectedWorkspaces}{" "}
+          workspaces
         </p>
       </div>
       <div className="flex items-center gap-2">

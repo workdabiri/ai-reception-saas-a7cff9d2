@@ -47,8 +47,7 @@ export function AdminMockNotice() {
         Internal mock admin surface — read-only prototype.
       </p>
       <p className="mt-0.5 text-[11.5px] leading-snug text-muted-foreground">
-        No real customer data. Admin actions are mock-only — no tenant data is
-        changed.
+        No real customer data. Admin actions are mock-only — no tenant data is changed.
       </p>
     </div>
   );
@@ -74,18 +73,14 @@ export function KpiCard({
           ? "ring-success/25"
           : "ring-border";
   return (
-    <div
-      className={`rounded-xl bg-surface px-4 py-4 shadow-soft ring-1 ring-inset ${ring}`}
-    >
+    <div className={`rounded-xl bg-surface px-4 py-4 shadow-soft ring-1 ring-inset ${ring}`}>
       <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
         {label}
       </div>
       <div className="mt-2 text-[22px] font-medium leading-tight text-foreground tracking-tight">
         {value}
       </div>
-      {hint && (
-        <div className="mt-1 text-[11.5px] text-muted-foreground">{hint}</div>
-      )}
+      {hint && <div className="mt-1 text-[11.5px] text-muted-foreground">{hint}</div>}
     </div>
   );
 }
@@ -107,9 +102,7 @@ export function SectionCard({
         <div>
           <h2 className="text-[14px] font-medium text-foreground">{title}</h2>
           {description && (
-            <p className="mt-0.5 text-[11.5px] text-muted-foreground">
-              {description}
-            </p>
+            <p className="mt-0.5 text-[11.5px] text-muted-foreground">{description}</p>
           )}
         </div>
         {action}
@@ -222,7 +215,13 @@ export function DisabledMockButton({
   );
 }
 
-export function ProgressBar({ pct, tone }: { pct: number; tone?: "warn" | "destructive" | "success" }) {
+export function ProgressBar({
+  pct,
+  tone,
+}: {
+  pct: number;
+  tone?: "warn" | "destructive" | "success";
+}) {
   const clamped = Math.min(150, Math.max(0, pct));
   const width = Math.min(100, clamped);
   const bar =

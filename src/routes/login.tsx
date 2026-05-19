@@ -38,7 +38,13 @@ function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email">Work email</Label>
-            <Input id="email" type="email" placeholder="you@clinic.com" autoComplete="email" required />
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@clinic.com"
+              autoComplete="email"
+              required
+            />
           </div>
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">

@@ -98,9 +98,7 @@ export const Pill = React.forwardRef<HTMLSpanElement, PillProps>(function Pill(
         border: "0.5px solid transparent",
       }
     : {
-        background: muted
-          ? "var(--muted)"
-          : `color-mix(in oklab, ${accent} 13%, transparent)`,
+        background: muted ? "var(--muted)" : `color-mix(in oklab, ${accent} 13%, transparent)`,
         color: muted ? "var(--muted-foreground)" : "var(--foreground)",
         border: `0.5px solid color-mix(in oklab, ${accent} 28%, transparent)`,
       };

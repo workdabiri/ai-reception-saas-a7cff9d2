@@ -15,18 +15,8 @@ import {
   Palette,
   Users,
 } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { workspaces } from "@/lib/mock-data";
 import { currentUser } from "@/lib/notifications";
@@ -55,17 +45,13 @@ function MenuRow({
 }) {
   const className = [
     "flex w-full items-center gap-3 rounded-md px-2.5 py-2 text-[13px] transition-colors",
-    destructive
-      ? "text-destructive hover:bg-destructive/10"
-      : "text-foreground hover:bg-secondary",
+    destructive ? "text-destructive hover:bg-destructive/10" : "text-foreground hover:bg-secondary",
   ].join(" ");
 
   const content = (
     <>
       <Icon
-        className={`h-4 w-4 shrink-0 ${
-          destructive ? "text-destructive" : "text-muted-foreground"
-        }`}
+        className={`h-4 w-4 shrink-0 ${destructive ? "text-destructive" : "text-muted-foreground"}`}
       />
       <span className="flex-1 text-left truncate">{label}</span>
       {trailing}
@@ -101,9 +87,7 @@ function ProfileBody({ onClose }: { onClose: () => void }) {
             <div className="truncate text-[14px] font-medium text-foreground">
               {currentUser.name}
             </div>
-            <div className="truncate text-[12px] text-muted-foreground">
-              {currentUser.email}
-            </div>
+            <div className="truncate text-[12px] text-muted-foreground">{currentUser.email}</div>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2 text-[11px]">
@@ -208,13 +192,7 @@ function ProfileBody({ onClose }: { onClose: () => void }) {
 
       {/* Session */}
       <div className="px-2 py-2">
-        <MenuRow
-          icon={LogOut}
-          label="Sign out"
-          to="/login"
-          onClick={onClose}
-          destructive
-        />
+        <MenuRow icon={LogOut} label="Sign out" to="/login" onClick={onClose} destructive />
         <p className="mt-1 px-2 text-[10.5px] text-muted-foreground">
           Prototype only — no real session is ended.
         </p>

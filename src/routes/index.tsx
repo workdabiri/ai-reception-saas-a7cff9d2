@@ -17,12 +17,7 @@ import {
   TrendingUp,
   TrendingDown,
 } from "lucide-react";
-import {
-  Avatar,
-  ChannelChip,
-  MockBanner,
-  StatusChip,
-} from "@/components/ui-bits";
+import { Avatar, ChannelChip, MockBanner, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
 import {
   channelLabel,
@@ -64,11 +59,46 @@ type Stat = {
 // tint. Operational counts (Open) stay fully neutral so the row reads as one
 // premium card family, not five colorful tiles.
 const stats: Stat[] = [
-  { label: "Open conversations", value: "12", hint: "Across email & web chat", icon: Inbox, tone: "info", delta: { value: "+3", dir: "up" } },
-  { label: "Waiting for operator", value: "4", hint: "Median wait 18m", icon: Timer, tone: "warning", delta: { value: "-1", dir: "down" } },
-  { label: "Needs follow-up", value: "6", hint: "Older than 24h", icon: Repeat2, tone: "attention", delta: { value: "+2", dir: "up" } },
-  { label: "Drafts pending review", value: "7", hint: "Human review required", icon: Sparkles, tone: "ai", delta: { value: "+4", dir: "up" } },
-  { label: "Access alerts", value: "1", hint: "Blocked Viewer export", icon: ShieldAlert, tone: "danger", delta: { value: "0", dir: "flat" } },
+  {
+    label: "Open conversations",
+    value: "12",
+    hint: "Across email & web chat",
+    icon: Inbox,
+    tone: "info",
+    delta: { value: "+3", dir: "up" },
+  },
+  {
+    label: "Waiting for operator",
+    value: "4",
+    hint: "Median wait 18m",
+    icon: Timer,
+    tone: "warning",
+    delta: { value: "-1", dir: "down" },
+  },
+  {
+    label: "Needs follow-up",
+    value: "6",
+    hint: "Older than 24h",
+    icon: Repeat2,
+    tone: "attention",
+    delta: { value: "+2", dir: "up" },
+  },
+  {
+    label: "Drafts pending review",
+    value: "7",
+    hint: "Human review required",
+    icon: Sparkles,
+    tone: "ai",
+    delta: { value: "+4", dir: "up" },
+  },
+  {
+    label: "Access alerts",
+    value: "1",
+    hint: "Blocked Viewer export",
+    icon: ShieldAlert,
+    tone: "danger",
+    delta: { value: "0", dir: "flat" },
+  },
 ];
 
 // Icon-only wrappers: the variant text-* sets the icon's currentColor on a
@@ -118,15 +148,20 @@ function DashboardPage() {
                   <span className="live-indicator-dot !h-1.5 !w-1.5" />
                   Live
                 </span>
-                <span className="truncate text-foreground/80 font-medium">{currentWorkspace.name}</span>
-                <span aria-hidden className="opacity-50">·</span>
+                <span className="truncate text-foreground/80 font-medium">
+                  {currentWorkspace.name}
+                </span>
+                <span aria-hidden className="opacity-50">
+                  ·
+                </span>
                 <span>{currentWorkspace.role}</span>
               </div>
               <h1 className="mt-1 truncate text-[20px] font-medium tracking-tight leading-tight text-foreground">
                 Operations <span className="text-muted-foreground">Command Center</span>
               </h1>
               <p className="mt-1 hidden sm:block text-[13px] text-muted-foreground max-w-[480px] leading-relaxed">
-                Triage AI-prepared drafts, monitor channel health, and keep every customer reply human-reviewed.
+                Triage AI-prepared drafts, monitor channel health, and keep every customer reply
+                human-reviewed.
               </p>
             </div>
           </div>
@@ -139,7 +174,9 @@ function DashboardPage() {
             <button className="hidden lg:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 h-9 text-[12px] font-medium text-muted-foreground hover:bg-secondary">
               <Search className="h-3.5 w-3.5" />
               <span>Search…</span>
-              <kbd className="ml-2 rounded border border-border bg-secondary px-1 py-1 text-[10px]">⌘K</kbd>
+              <kbd className="ml-2 rounded border border-border bg-secondary px-1 py-1 text-[10px]">
+                ⌘K
+              </kbd>
             </button>
             <Link
               to="/channels"
@@ -163,7 +200,8 @@ function DashboardPage() {
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => {
           const Icon = s.icon;
-          const Trend = s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
+          const Trend =
+            s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
           return (
             <div
               key={s.label}
@@ -174,7 +212,9 @@ function DashboardPage() {
                 <span className="text-[10.5px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
                   {s.label}
                 </span>
-                <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[s.tone]}`}>
+                <div
+                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[s.tone]}`}
+                >
                   <Icon className="h-4 w-4" />
                 </div>
               </div>
@@ -183,7 +223,9 @@ function DashboardPage() {
                   {s.value}
                 </div>
                 {s.delta && (
-                  <span className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10.5px] font-medium tabular-nums ${deltaStyles[s.delta.dir]}`}>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10.5px] font-medium tabular-nums ${deltaStyles[s.delta.dir]}`}
+                  >
                     {Trend && <Trend className="h-3 w-3" />}
                     {s.delta.value}
                   </span>
@@ -208,7 +250,9 @@ function DashboardPage() {
                   {todaysQueue.length} items
                 </span>
               </div>
-              <p className="text-[11.5px] text-muted-foreground">Triage in order — oldest waiting first.</p>
+              <p className="text-[11.5px] text-muted-foreground">
+                Triage in order — oldest waiting first.
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <button className="hidden sm:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[11.5px] font-medium text-foreground/80 hover:bg-secondary">
@@ -243,10 +287,18 @@ function DashboardPage() {
                         <span className="font-medium">{q.customer}</span>
                       </div>
                     </td>
-                    <td className="px-3 py-3 text-foreground/80 max-w-[220px] truncate">{q.subject}</td>
-                    <td className="px-3 py-3"><ChannelChip channel={q.channel} label={channelLabel[q.channel]} /></td>
-                    <td className="px-3 py-3"><StatusChip status={q.status} /></td>
-                    <td className="px-3 py-3 text-muted-foreground font-mono-tab text-[12px]">{q.waiting}</td>
+                    <td className="px-3 py-3 text-foreground/80 max-w-[220px] truncate">
+                      {q.subject}
+                    </td>
+                    <td className="px-3 py-3">
+                      <ChannelChip channel={q.channel} label={channelLabel[q.channel]} />
+                    </td>
+                    <td className="px-3 py-3">
+                      <StatusChip status={q.status} />
+                    </td>
+                    <td className="px-3 py-3 text-muted-foreground font-mono-tab text-[12px]">
+                      {q.waiting}
+                    </td>
                     <td className="px-5 py-3 text-muted-foreground">
                       {q.assignee ?? <span className="italic text-foreground/80">Unassigned</span>}
                     </td>
@@ -263,20 +315,32 @@ function DashboardPage() {
               <h2 className="text-[14px] font-medium">Recent messages</h2>
               <p className="text-[11.5px] text-muted-foreground">Latest inbound activity.</p>
             </div>
-            <Link to="/inbox" className="text-[12px] font-medium text-primary hover:underline inline-flex items-center gap-1">
+            <Link
+              to="/inbox"
+              className="text-[12px] font-medium text-primary hover:underline inline-flex items-center gap-1"
+            >
               All <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
           <ul className="flex-1">
             {recentMessages.map((m) => (
-              <li key={m.id} className="flex gap-3 px-4 py-3 border-b-[0.5px] border-border last:border-b-0 transition hover:bg-surface-hover cursor-pointer">
+              <li
+                key={m.id}
+                className="flex gap-3 px-4 py-3 border-b-[0.5px] border-border last:border-b-0 transition hover:bg-surface-hover cursor-pointer"
+              >
                 <Avatar initials={m.initials} size="md" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="truncate text-[13px] font-medium text-foreground">{m.customer}</span>
-                    <span className="shrink-0 text-[11px] text-muted-foreground font-mono-tab">{m.time}</span>
+                    <span className="truncate text-[13px] font-medium text-foreground">
+                      {m.customer}
+                    </span>
+                    <span className="shrink-0 text-[11px] text-muted-foreground font-mono-tab">
+                      {m.time}
+                    </span>
                   </div>
-                  <p className="mt-0.5 truncate text-[12px] text-muted-foreground leading-[1.4]">{m.snippet}</p>
+                  <p className="mt-0.5 truncate text-[12px] text-muted-foreground leading-[1.4]">
+                    {m.snippet}
+                  </p>
                   <div className="mt-1.5 inline-flex [&>span]:h-[18px] [&>span]:px-1.5 [&>span]:py-0 [&>span]:text-[10px] [&>span]:leading-[18px]">
                     <ChannelChip channel={m.channel} label={channelLabel[m.channel]} />
                   </div>
@@ -292,10 +356,17 @@ function DashboardPage() {
         <div className="lg:col-span-7 rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-primary">Channel command center</p>
-              <h2 className="mt-1 text-[13px] font-medium tracking-tight">Where customers reach you</h2>
+              <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-primary">
+                Channel command center
+              </p>
+              <h2 className="mt-1 text-[13px] font-medium tracking-tight">
+                Where customers reach you
+              </h2>
             </div>
-            <Link to="/channels" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
+            <Link
+              to="/channels"
+              className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1"
+            >
               All sources <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
@@ -308,9 +379,13 @@ function DashboardPage() {
                 const active = c.status === "Mock Active";
                 const planned = c.status === "Planned";
                 const healthDot =
-                  c.health === "healthy" ? "bg-success" :
-                  c.health === "degraded" ? "bg-warning" :
-                  c.health === "offline" ? "bg-destructive" : "bg-muted-foreground/40";
+                  c.health === "healthy"
+                    ? "bg-success"
+                    : c.health === "degraded"
+                      ? "bg-warning"
+                      : c.health === "offline"
+                        ? "bg-destructive"
+                        : "bg-muted-foreground/40";
                 return (
                   <Link
                     key={c.key}
@@ -318,7 +393,9 @@ function DashboardPage() {
                     className={`group relative flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card ${active ? "border-border hover:border-primary/30" : "border-dashed border-border/80 bg-surface-muted/40"}`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className={`grid h-9 w-9 place-items-center rounded-lg ring-1 ring-inset ${active ? "bg-primary-soft ring-primary/15" : "bg-secondary ring-border"}`}>
+                      <div
+                        className={`grid h-9 w-9 place-items-center rounded-lg ring-1 ring-inset ${active ? "bg-primary-soft ring-primary/15" : "bg-secondary ring-border"}`}
+                      >
                         <ChannelIcon channel={c.key} size={20} />
                       </div>
                       {active ? (
@@ -326,30 +403,51 @@ function DashboardPage() {
                           <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} /> Active
                         </span>
                       ) : (
-                        <span className={`rounded-full px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider ring-1 ring-inset ${planned ? "bg-secondary text-muted-foreground ring-border" : "bg-surface-muted text-muted-foreground/70 ring-border"}`}>
+                        <span
+                          className={`rounded-full px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider ring-1 ring-inset ${planned ? "bg-secondary text-muted-foreground ring-border" : "bg-surface-muted text-muted-foreground/70 ring-border"}`}
+                        >
                           {c.status === "Future" ? "Future" : "Planned"}
                         </span>
                       )}
                     </div>
                     <div className="flex items-center justify-between gap-2">
-                      <div className="text-[13px] font-medium tracking-tight truncate">{c.name}</div>
+                      <div className="text-[13px] font-medium tracking-tight truncate">
+                        {c.name}
+                      </div>
                       {c.unread > 0 && (
-                        <span className="rounded-full bg-primary px-2 py-1 text-[10px] font-medium text-primary-foreground tabular-nums shadow-soft">{c.unread}</span>
+                        <span className="rounded-full bg-primary px-2 py-1 text-[10px] font-medium text-primary-foreground tabular-nums shadow-soft">
+                          {c.unread}
+                        </span>
                       )}
                     </div>
                     {active ? (
                       <div className="grid grid-cols-3 gap-1 border-t border-border/70 pt-2 text-center">
                         <div>
                           <div className="text-[12px] font-medium tabular-nums">{c.customers}</div>
-                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">Custs</div>
+                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">
+                            Custs
+                          </div>
                         </div>
                         <div>
-                          <div className={`text-[12px] font-medium tabular-nums ${c.waiting > 0 ? "text-foreground" : ""}`}>{c.waiting}</div>
-                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">Wait</div>
+                          <div
+                            className={`text-[12px] font-medium tabular-nums ${c.waiting > 0 ? "text-foreground" : ""}`}
+                          >
+                            {c.waiting}
+                          </div>
+                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">
+                            Wait
+                          </div>
                         </div>
                         <div>
-                          <div className="text-[10.5px] font-medium tabular-nums truncate" title={c.lastMessage}>{c.lastMessage}</div>
-                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">Last</div>
+                          <div
+                            className="text-[10.5px] font-medium tabular-nums truncate"
+                            title={c.lastMessage}
+                          >
+                            {c.lastMessage}
+                          </div>
+                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">
+                            Last
+                          </div>
                         </div>
                       </div>
                     ) : (
@@ -387,7 +485,9 @@ function DashboardPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[13px] font-medium truncate">{d.customer}</span>
-                      <span className="text-[10.5px] text-muted-foreground tabular-nums shrink-0">{d.prepared}</span>
+                      <span className="text-[10.5px] text-muted-foreground tabular-nums shrink-0">
+                        {d.prepared}
+                      </span>
                     </div>
                     <div className="text-[11.5px] text-muted-foreground truncate">{d.subject}</div>
                     <div className="mt-2 rounded-lg border border-dashed border-primary/25 bg-primary-soft/40 p-3 text-[12px] leading-snug text-foreground/90 line-clamp-2">
@@ -395,9 +495,13 @@ function DashboardPage() {
                     </div>
                     <div className="mt-2 flex items-center justify-between text-[10.5px]">
                       <span className="text-muted-foreground">
-                        Confidence: <span className="font-medium text-foreground/80">{d.confidence}</span>
+                        Confidence:{" "}
+                        <span className="font-medium text-foreground/80">{d.confidence}</span>
                       </span>
-                      <Link to="/inbox" className="font-medium text-primary hover:underline inline-flex items-center gap-1">
+                      <Link
+                        to="/inbox"
+                        className="font-medium text-primary hover:underline inline-flex items-center gap-1"
+                      >
                         Review & send <ArrowUpRight className="h-3 w-3" />
                       </Link>
                     </div>
@@ -439,9 +543,21 @@ function DashboardPage() {
                         <div className="bg-success" style={{ width: `${resPct}%` }} />
                       </div>
                       <div className="mt-2 flex items-center gap-3 text-[10.5px] text-muted-foreground tabular-nums">
-                        <span className="inline-flex items-center gap-1"><Clock3 className="h-2.5 w-2.5" /><span className="font-medium text-foreground">{op.open}</span> open</span>
-                        <span className="inline-flex items-center gap-1"><Sparkles className="h-2.5 w-2.5" /><span className="font-medium text-foreground">{op.drafts}</span> drafts</span>
-                        <span className="inline-flex items-center gap-1"><CheckCircle2 className="h-2.5 w-2.5" /><span className="font-medium text-foreground">{op.resolvedToday}</span> done</span>
+                        <span className="inline-flex items-center gap-1">
+                          <Clock3 className="h-2.5 w-2.5" />
+                          <span className="font-medium text-foreground">{op.open}</span> open
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <Sparkles className="h-2.5 w-2.5" />
+                          <span className="font-medium text-foreground">{op.drafts}</span> drafts
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <CheckCircle2 className="h-2.5 w-2.5" />
+                          <span className="font-medium text-foreground">
+                            {op.resolvedToday}
+                          </span>{" "}
+                          done
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -457,7 +573,10 @@ function DashboardPage() {
               <h2 className="text-[13px] font-medium tracking-tight">Trust & access</h2>
               <p className="text-[11.5px] text-muted-foreground">Recent audit activity.</p>
             </div>
-            <Link to="/audit" className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1">
+            <Link
+              to="/audit"
+              className="text-[11.5px] font-medium text-primary hover:underline inline-flex items-center gap-1"
+            >
               Full log <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
@@ -465,7 +584,11 @@ function DashboardPage() {
             {auditEvents.slice(0, 5).map((e) => (
               <li key={e.id} className="flex items-center gap-3 px-5 py-3">
                 <div className="grid h-7 w-7 place-items-center rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground ring-1 ring-border">
-                  {e.actor.split(" ").map((p) => p[0]).slice(0, 2).join("")}
+                  {e.actor
+                    .split(" ")
+                    .map((p) => p[0])
+                    .slice(0, 2)
+                    .join("")}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[12px] truncate">
@@ -475,7 +598,9 @@ function DashboardPage() {
                   </div>
                   <div className="text-[10.5px] text-muted-foreground tabular-nums">{e.time}</div>
                 </div>
-                <StatusChip status={e.result === "Denied" || e.result === "Failed" ? "access-denied" : "open"} />
+                <StatusChip
+                  status={e.result === "Denied" || e.result === "Failed" ? "access-denied" : "open"}
+                />
               </li>
             ))}
           </ul>

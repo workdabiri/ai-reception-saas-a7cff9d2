@@ -295,12 +295,14 @@ function FlowStep({
     tone === "ai"
       ? "bg-ai-soft text-ai ring-ai/25"
       : tone === "info"
-        // eslint-disable-next-line local/no-pill-contrast-violation
-        ? "bg-info/10 text-info ring-info/25"
+        ? // eslint-disable-next-line local/no-pill-contrast-violation
+          "bg-info/10 text-info ring-info/25"
         : "bg-primary-soft text-primary ring-primary/25";
   return (
     <div className="relative flex items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-left shadow-soft">
-      <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneCls}`}>
+      <div
+        className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ring-1 ring-inset ${toneCls}`}
+      >
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0">
@@ -335,14 +337,32 @@ export function InboxOperatorFirstEmpty() {
         AI drafts. <span className="text-muted-foreground">You</span> send.
       </h3>
       <p className="mt-2 max-w-md text-[13px] leading-relaxed text-muted-foreground">
-        New messages will land here. The assistant prepares a draft reply — but every message
-        leaves your workspace only when an operator reviews and approves it.
+        New messages will land here. The assistant prepares a draft reply — but every message leaves
+        your workspace only when an operator reviews and approves it.
       </p>
 
       <div className="mt-6 grid w-full gap-3 sm:grid-cols-3">
-        <FlowStep n={1} icon={ArrowDownToLine} tone="info" title="Message arrives" body="Customer writes via email, web form or a connected channel." />
-        <FlowStep n={2} icon={Sparkles} tone="ai" title="AI drafts a reply" body="A grounded draft with citations appears in the side panel." />
-        <FlowStep n={3} icon={Send} tone="primary" title="Operator sends" body="You edit, approve, and send. Nothing auto-sends — ever." />
+        <FlowStep
+          n={1}
+          icon={ArrowDownToLine}
+          tone="info"
+          title="Message arrives"
+          body="Customer writes via email, web form or a connected channel."
+        />
+        <FlowStep
+          n={2}
+          icon={Sparkles}
+          tone="ai"
+          title="AI drafts a reply"
+          body="A grounded draft with citations appears in the side panel."
+        />
+        <FlowStep
+          n={3}
+          icon={Send}
+          tone="primary"
+          title="Operator sends"
+          body="You edit, approve, and send. Nothing auto-sends — ever."
+        />
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
@@ -360,7 +380,8 @@ export function InboxOperatorFirstEmpty() {
         </Link>
       </div>
       <p className="mt-4 max-w-md text-[11px] leading-relaxed text-muted-foreground/80">
-        Prototype with mock data — no channels are actually connected. The workflow stays the same when they are.
+        Prototype with mock data — no channels are actually connected. The workflow stays the same
+        when they are.
       </p>
     </div>
   );
@@ -417,9 +438,27 @@ export function CustomersOperatorFirstEmpty() {
       </p>
 
       <div className="mt-6 grid w-full gap-3 sm:grid-cols-3">
-        <FlowStep n={1} icon={ArrowDownToLine} tone="info" title="First message" body="A new sender is captured with channel, contact and history." />
-        <FlowStep n={2} icon={Sparkles} tone="ai" title="Profile enriched" body="AI suggests tags from past threads — operator confirms." />
-        <FlowStep n={3} icon={Eye} tone="primary" title="You stay in control" body="Every status, tag and follow-up is an operator decision." />
+        <FlowStep
+          n={1}
+          icon={ArrowDownToLine}
+          tone="info"
+          title="First message"
+          body="A new sender is captured with channel, contact and history."
+        />
+        <FlowStep
+          n={2}
+          icon={Sparkles}
+          tone="ai"
+          title="Profile enriched"
+          body="AI suggests tags from past threads — operator confirms."
+        />
+        <FlowStep
+          n={3}
+          icon={Eye}
+          tone="primary"
+          title="You stay in control"
+          body="Every status, tag and follow-up is an operator decision."
+        />
       </div>
 
       <div className="mt-6">

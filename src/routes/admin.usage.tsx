@@ -7,17 +7,11 @@ import {
   UsageStatusPill,
   ProgressBar,
 } from "@/components/admin-bits";
-import {
-  adminBusinesses,
-  adminPlatformKPIs,
-} from "@/lib/admin-mock-data";
+import { adminBusinesses, adminPlatformKPIs } from "@/lib/admin-mock-data";
 
 export const Route = createFileRoute("/admin/usage")({
   head: () => ({
-    meta: [
-      { title: "Usage — Platform Admin" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Usage — Platform Admin" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: AdminUsagePage,
 });
@@ -42,11 +36,28 @@ function AdminUsagePage() {
       <AdminMockNotice />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <KpiCard label="Total messages" value={k.messagesThisMonth.toLocaleString()} hint="This month" />
-        <KpiCard label="AI drafts" value={k.aiDraftsThisMonth.toLocaleString()} hint="Operator-reviewed" />
-        <KpiCard label="Mock tokens" value={k.tokensThisMonth.toLocaleString()} hint="Sum across tenants" />
+        <KpiCard
+          label="Total messages"
+          value={k.messagesThisMonth.toLocaleString()}
+          hint="This month"
+        />
+        <KpiCard
+          label="AI drafts"
+          value={k.aiDraftsThisMonth.toLocaleString()}
+          hint="Operator-reviewed"
+        />
+        <KpiCard
+          label="Mock tokens"
+          value={k.tokensThisMonth.toLocaleString()}
+          hint="Sum across tenants"
+        />
         <KpiCard label="Active businesses" value={k.activeBusinesses} hint="Mock tenants" />
-        <KpiCard label="Quota warnings" value={k.quotaWarnings} hint="Approaching / over" tone={k.quotaWarnings > 0 ? "warn" : "neutral"} />
+        <KpiCard
+          label="Quota warnings"
+          value={k.quotaWarnings}
+          hint="Approaching / over"
+          tone={k.quotaWarnings > 0 ? "warn" : "neutral"}
+        />
       </div>
 
       <SectionCard title="Usage by business" description="Sorted by mock token usage.">
@@ -60,15 +71,21 @@ function AdminUsagePage() {
                   <div className="min-w-0">
                     <div className="text-[13px] font-medium text-foreground">{b.name}</div>
                     <div className="text-[11px] text-muted-foreground">
-                      {b.conversationsThisMonth.toLocaleString()} messages · {b.aiDraftsThisMonth.toLocaleString()} drafts · {b.tokensThisMonth.toLocaleString()} tokens
+                      {b.conversationsThisMonth.toLocaleString()} messages ·{" "}
+                      {b.aiDraftsThisMonth.toLocaleString()} drafts ·{" "}
+                      {b.tokensThisMonth.toLocaleString()} tokens
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[12px] font-medium text-foreground">{b.quotaUsedPct}%</span>
+                    <span className="text-[12px] font-medium text-foreground">
+                      {b.quotaUsedPct}%
+                    </span>
                     <UsageStatusPill status={b.usageStatus} />
                   </div>
                 </div>
-                <div className="mt-2"><ProgressBar pct={b.quotaUsedPct} tone={tone} /></div>
+                <div className="mt-2">
+                  <ProgressBar pct={b.quotaUsedPct} tone={tone} />
+                </div>
               </li>
             );
           })}
@@ -84,7 +101,9 @@ function AdminUsagePage() {
                   <span className="text-foreground">{c.name}</span>
                   <span className="text-muted-foreground">{c.value.toLocaleString()} messages</span>
                 </div>
-                <div className="mt-1"><ProgressBar pct={(c.value / channelMax) * 100} /></div>
+                <div className="mt-1">
+                  <ProgressBar pct={(c.value / channelMax) * 100} />
+                </div>
               </li>
             ))}
           </ul>
@@ -101,7 +120,9 @@ function AdminUsagePage() {
                   <li key={b.id} className="flex items-center justify-between gap-2 py-2.5">
                     <div className="min-w-0">
                       <div className="text-[12.5px] font-medium text-foreground">{b.name}</div>
-                      <div className="text-[11px] text-muted-foreground">{b.quotaUsedPct}% of quota</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {b.quotaUsedPct}% of quota
+                      </div>
                     </div>
                     <UsageStatusPill status={b.usageStatus} />
                   </li>

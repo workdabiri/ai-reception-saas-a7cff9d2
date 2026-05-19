@@ -37,9 +37,7 @@ function AdminBusinessesPage() {
     let r = adminBusinesses;
     if (query.trim()) {
       const q = query.toLowerCase();
-      r = r.filter(
-        (b) => b.name.toLowerCase().includes(q) || b.owner.toLowerCase().includes(q),
-      );
+      r = r.filter((b) => b.name.toLowerCase().includes(q) || b.owner.toLowerCase().includes(q));
     }
     if (filter === "Active") r = r.filter((b) => b.status === "active");
     else if (filter === "Trial") r = r.filter((b) => b.status === "trial");
@@ -126,12 +124,22 @@ function AdminBusinessesPage() {
                         <div className="text-[11px] text-muted-foreground">{b.owner}</div>
                       </td>
                       <td className="py-3 pr-3 text-foreground">{b.plan}</td>
-                      <td className="py-3 pr-3"><BusinessStatusPill status={b.status} /></td>
+                      <td className="py-3 pr-3">
+                        <BusinessStatusPill status={b.status} />
+                      </td>
                       <td className="py-3 pr-3 text-right text-foreground">{b.membersCount}</td>
-                      <td className="py-3 pr-3 text-right text-foreground">{b.conversationsThisMonth}</td>
-                      <td className="py-3 pr-3 text-right text-foreground">{b.aiDraftsThisMonth}</td>
-                      <td className="py-3 pr-3"><UsageStatusPill status={b.usageStatus} /></td>
-                      <td className="py-3 pr-3"><RiskPill level={b.riskLevel} /></td>
+                      <td className="py-3 pr-3 text-right text-foreground">
+                        {b.conversationsThisMonth}
+                      </td>
+                      <td className="py-3 pr-3 text-right text-foreground">
+                        {b.aiDraftsThisMonth}
+                      </td>
+                      <td className="py-3 pr-3">
+                        <UsageStatusPill status={b.usageStatus} />
+                      </td>
+                      <td className="py-3 pr-3">
+                        <RiskPill level={b.riskLevel} />
+                      </td>
                       <td className="py-3 pr-3 text-muted-foreground">{b.lastActivity}</td>
                       <td className="py-3 pr-1 text-right">
                         <Link
@@ -200,7 +208,10 @@ function AdminBusinessesPage() {
             </ul>
           </SectionCard>
 
-          <SectionCard title="Admin actions" description="Admin actions are mock-only. No tenant data is changed.">
+          <SectionCard
+            title="Admin actions"
+            description="Admin actions are mock-only. No tenant data is changed."
+          >
             <div className="flex flex-wrap gap-2">
               <DisabledMockButton destructive>
                 <Ban className="h-3.5 w-3.5" /> Suspend selected

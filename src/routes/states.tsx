@@ -46,9 +46,9 @@ function StatesPage() {
             Empty &amp; error states
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Every state across the prototype — calm, helpful, trust-building. Each one
-            includes a clear icon, a status badge, a primary action where relevant, and a
-            short hint to guide the operator.
+            Every state across the prototype — calm, helpful, trust-building. Each one includes a
+            clear icon, a status badge, a primary action where relevant, and a short hint to guide
+            the operator.
           </p>
         </div>
         <MockBanner />
@@ -75,7 +75,8 @@ function StatesPage() {
         <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
           <h2 className="text-sm font-medium text-foreground">Route state previews</h2>
           <p className="mt-1 text-[12px] text-muted-foreground">
-            Append <code className="rounded bg-surface-muted px-1">?state=…</code> to a real route to preview a mock state.
+            Append <code className="rounded bg-surface-muted px-1">?state=…</code> to a real route
+            to preview a mock state.
           </p>
           <ul className="mt-3 grid gap-1.5 text-[12.5px] sm:grid-cols-2">
             {[
@@ -103,13 +104,14 @@ function StatesPage() {
               ["/profile?state=session-expired", "Profile — session expired"],
             ].map(([href, label]) => (
               <li key={href}>
-                <a href={href} className="text-primary hover:underline">{label}</a>
+                <a href={href} className="text-primary hover:underline">
+                  {label}
+                </a>
               </li>
             ))}
           </ul>
         </section>
       </div>
     </>
-
   );
 }

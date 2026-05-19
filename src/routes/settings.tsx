@@ -46,11 +46,36 @@ const sectionNav = [
 ];
 
 const futureIntegrations = [
-  { name: "WhatsApp", icon: MessageSquare, label: "Planned", desc: "Receive customer messages from WhatsApp into the inbox." },
-  { name: "Twilio", icon: Phone, label: "Planned", desc: "Provider for SMS and voice reception capabilities." },
-  { name: "Email", icon: Mail, label: "Planned", desc: "Inbound email parsing and threaded replies." },
-  { name: "SMS", icon: Smartphone, label: "Planned", desc: "Two-way SMS conversations through a verified number." },
-  { name: "Voice", icon: Phone, label: "Future", desc: "AI-assisted voice reception with operator handoff." },
+  {
+    name: "WhatsApp",
+    icon: MessageSquare,
+    label: "Planned",
+    desc: "Receive customer messages from WhatsApp into the inbox.",
+  },
+  {
+    name: "Twilio",
+    icon: Phone,
+    label: "Planned",
+    desc: "Provider for SMS and voice reception capabilities.",
+  },
+  {
+    name: "Email",
+    icon: Mail,
+    label: "Planned",
+    desc: "Inbound email parsing and threaded replies.",
+  },
+  {
+    name: "SMS",
+    icon: Smartphone,
+    label: "Planned",
+    desc: "Two-way SMS conversations through a verified number.",
+  },
+  {
+    name: "Voice",
+    icon: Phone,
+    label: "Future",
+    desc: "AI-assisted voice reception with operator handoff.",
+  },
 ];
 
 function SettingsPage() {
@@ -87,7 +112,8 @@ function SettingsPage() {
               <div className="min-w-0">
                 <div className="text-sm font-medium">AI Assistance Settings</div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Control draft tone, confidence handling, escalation and forbidden AI behavior. AI drafts only — operators send.
+                  Control draft tone, confidence handling, escalation and forbidden AI behavior. AI
+                  drafts only — operators send.
                 </p>
                 <span className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-primary">
                   Open <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
@@ -106,7 +132,8 @@ function SettingsPage() {
               <div className="min-w-0">
                 <div className="text-sm font-medium">Knowledge Base</div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  FAQ, business rules, services, hours and source readiness — references operators and future AI drafts can rely on.
+                  FAQ, business rules, services, hours and source readiness — references operators
+                  and future AI drafts can rely on.
                 </p>
                 <span className="mt-2 inline-flex items-center gap-1 text-[12px] font-medium text-primary">
                   Open <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
@@ -146,8 +173,28 @@ function SettingsPage() {
             >
               <Field label="Business name" value={currentWorkspace.name} />
               <Field label="Workspace slug" value="tehran-dental" suffix=".airec.app" />
-              <Select label="Locale" value="Persian / English" options={["Persian / English", "English (United States)", "English (UK)", "Español", "Français"]} />
-              <Select label="Timezone" value="Asia/Tehran" options={["Asia/Tehran", "Asia/Dubai", "Europe/London", "America/New_York", "Asia/Singapore"]} />
+              <Select
+                label="Locale"
+                value="Persian / English"
+                options={[
+                  "Persian / English",
+                  "English (United States)",
+                  "English (UK)",
+                  "Español",
+                  "Français",
+                ]}
+              />
+              <Select
+                label="Timezone"
+                value="Asia/Tehran"
+                options={[
+                  "Asia/Tehran",
+                  "Asia/Dubai",
+                  "Europe/London",
+                  "America/New_York",
+                  "Asia/Singapore",
+                ]}
+              />
               <div className="grid gap-2 mb-1 sm:grid-cols-[180px_1fr] sm:items-center">
                 <label className="text-xs font-medium text-muted-foreground">Status</label>
                 <div>
@@ -169,7 +216,11 @@ function SettingsPage() {
               <Select
                 label="Workspace visibility"
                 value="Private — invite only"
-                options={["Private — invite only", "Restricted — domain allowlist", "Open within organization"]}
+                options={[
+                  "Private — invite only",
+                  "Restricted — domain allowlist",
+                  "Open within organization",
+                ]}
               />
               <Select
                 label="Operator assignment"
@@ -201,8 +252,17 @@ function SettingsPage() {
                 options={["New", "Open", "Needs review"]}
               />
               <div className="space-y-3 mt-2">
-                <Toggle label="Auto-classification of incoming messages" enabled={false} disabled note="Planned capability — operators classify manually for MVP" />
-                <Toggle label="Manual review mode" enabled note="Every reply is reviewed and sent by an operator" />
+                <Toggle
+                  label="Auto-classification of incoming messages"
+                  enabled={false}
+                  disabled
+                  note="Planned capability — operators classify manually for MVP"
+                />
+                <Toggle
+                  label="Manual review mode"
+                  enabled
+                  note="Every reply is reviewed and sent by an operator"
+                />
                 <Toggle label="Notify assigned operator on new message" enabled />
               </div>
             </Section>
@@ -221,19 +281,47 @@ function SettingsPage() {
                 body="AI auto-reply is intentionally disabled in MVP. Drafts are suggestions, never sent automatically."
               />
               <div className="space-y-3 mt-4">
-                <Toggle label="AI draft assistance" enabled={false} disabled note="Future capability — operators draft manually for MVP" />
-                <Toggle label="Human review required for every reply" enabled locked note="Cannot be disabled in MVP" />
-                <Toggle label="Auto-reply without operator review" enabled={false} disabled note="Not available in MVP" />
+                <Toggle
+                  label="AI draft assistance"
+                  enabled={false}
+                  disabled
+                  note="Future capability — operators draft manually for MVP"
+                />
+                <Toggle
+                  label="Human review required for every reply"
+                  enabled
+                  locked
+                  note="Cannot be disabled in MVP"
+                />
+                <Toggle
+                  label="Auto-reply without operator review"
+                  enabled={false}
+                  disabled
+                  note="Not available in MVP"
+                />
               </div>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <Card title="Confidence threshold" hint="Placeholder — no AI active.">
                   <RangeMock value={75} />
-                  <p className="mt-2 text-[11px] text-muted-foreground">Drafts below this confidence will be flagged for extra review.</p>
+                  <p className="mt-2 text-[11px] text-muted-foreground">
+                    Drafts below this confidence will be flagged for extra review.
+                  </p>
                 </Card>
                 <Card title="Source / context requirement" hint="Placeholder — no AI active.">
-                  <Select compact label="" value="At least one supporting source" options={["No requirement", "At least one supporting source", "Two or more supporting sources"]} />
-                  <p className="mt-2 text-[11px] text-muted-foreground">Drafts must cite workspace knowledge before being suggested.</p>
+                  <Select
+                    compact
+                    label=""
+                    value="At least one supporting source"
+                    options={[
+                      "No requirement",
+                      "At least one supporting source",
+                      "Two or more supporting sources",
+                    ]}
+                  />
+                  <p className="mt-2 text-[11px] text-muted-foreground">
+                    Drafts must cite workspace knowledge before being suggested.
+                  </p>
                 </Card>
               </div>
             </Section>
@@ -277,9 +365,7 @@ function SettingsPage() {
                 {futureIntegrations.map((c) => {
                   const Icon = c.icon;
                   const tagVariant =
-                    c.label === "Future"
-                      ? "muted-status-tag--future"
-                      : "muted-status-tag--planned";
+                    c.label === "Future" ? "muted-status-tag--future" : "muted-status-tag--planned";
                   return (
                     <div key={c.name} className="muted-card p-4">
                       <div className="flex items-start justify-between gap-3">
@@ -291,18 +377,14 @@ function SettingsPage() {
                             <div className="text-sm font-medium text-[color:var(--text-secondary)]">
                               {c.name}
                             </div>
-                            <span className={`muted-status-tag mt-1 ${tagVariant}`}>
-                              {c.label}
-                            </span>
+                            <span className={`muted-status-tag mt-1 ${tagVariant}`}>{c.label}</span>
                           </div>
                         </div>
                         <span className="muted-status-tag muted-status-tag--not-enabled">
                           Not enabled
                         </span>
                       </div>
-                      <p className="mt-3 text-xs text-[color:var(--text-tertiary)]">
-                        {c.desc}
-                      </p>
+                      <p className="mt-3 text-xs text-[color:var(--text-tertiary)]">{c.desc}</p>
                     </div>
                   );
                 })}
@@ -329,7 +411,10 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-6 rounded-xl border border-border bg-card p-6 shadow-soft">
+    <section
+      id={id}
+      className="scroll-mt-6 rounded-xl border border-border bg-card p-6 shadow-soft"
+    >
       <div className="mb-5 flex items-start gap-3">
         <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary-soft text-primary">
           <Icon className="h-4 w-4" />
@@ -386,7 +471,9 @@ function Select({
   compact?: boolean;
 }) {
   return (
-    <div className={`grid gap-2 ${compact ? "" : "mb-3 last:mb-0 sm:grid-cols-[180px_1fr] sm:items-center"}`}>
+    <div
+      className={`grid gap-2 ${compact ? "" : "mb-3 last:mb-0 sm:grid-cols-[180px_1fr] sm:items-center"}`}
+    >
       {label && <label className="text-xs font-medium text-muted-foreground">{label}</label>}
       <select
         defaultValue={value}
@@ -422,7 +509,9 @@ function Toggle({
       }`}
     >
       <div className="min-w-0 pr-3">
-        <div className={`flex items-center gap-2 text-sm ${disabled ? "text-muted-foreground" : "font-medium"}`}>
+        <div
+          className={`flex items-center gap-2 text-sm ${disabled ? "text-muted-foreground" : "font-medium"}`}
+        >
           {label}
           {locked && <Lock className="h-3 w-3 text-muted-foreground" />}
         </div>
@@ -452,7 +541,9 @@ function Card({ title, hint, children }: { title: string; hint?: string; childre
     <div className="rounded-xl border border-border bg-surface p-4">
       <div className="mb-2 flex items-center justify-between">
         <div className="text-sm font-medium">{title}</div>
-        {hint && <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{hint}</span>}
+        {hint && (
+          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{hint}</span>
+        )}
       </div>
       {children}
     </div>
@@ -463,7 +554,10 @@ function RangeMock({ value }: { value: number }) {
   return (
     <div>
       <div className="relative h-1.5 w-full rounded-full bg-secondary">
-        <div className="absolute inset-y-0 left-0 rounded-full bg-primary" style={{ width: `${value}%` }} />
+        <div
+          className="absolute inset-y-0 left-0 rounded-full bg-primary"
+          style={{ width: `${value}%` }}
+        />
         <div
           className="absolute -top-1 h-3.5 w-3.5 rounded-full border-2 border-primary bg-white shadow"
           style={{ left: `calc(${value}% - 7px)` }}

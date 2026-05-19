@@ -31,8 +31,7 @@ export const Route = createFileRoute("/role-preview")({
       { title: "Role preview — AI Reception" },
       {
         name: "description",
-        content:
-          "Preview how Owner, Admin, Operator, and Viewer experience the same workspace.",
+        content: "Preview how Owner, Admin, Operator, and Viewer experience the same workspace.",
       },
     ],
   }),
@@ -65,22 +64,86 @@ type Cap =
 type Allow = "yes" | "no" | "partial";
 
 const MATRIX: { id: Cap; label: string; roles: Record<Role, Allow> }[] = [
-  { id: "view_dashboard", label: "View dashboard", roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "yes" } },
-  { id: "view_inbox", label: "View inbox", roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "yes" } },
-  { id: "reply", label: "Reply to conversations", roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "no" } },
-  { id: "assign", label: "Assign conversations", roles: { Owner: "yes", Admin: "yes", Operator: "partial", Viewer: "no" } },
-  { id: "close", label: "Close conversations", roles: { Owner: "yes", Admin: "yes", Operator: "partial", Viewer: "no" } },
-  { id: "internal_note", label: "Add internal notes", roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "no" } },
-  { id: "view_customers", label: "View customers", roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "yes" } },
-  { id: "edit_customers", label: "Edit customers", roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "no" } },
-  { id: "invite_members", label: "Invite members", roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" } },
-  { id: "change_roles", label: "Change member roles", roles: { Owner: "yes", Admin: "partial", Operator: "no", Viewer: "no" } },
-  { id: "configure_channels", label: "Configure channels", roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" } },
-  { id: "configure_ai", label: "Configure AI settings", roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" } },
-  { id: "manage_knowledge", label: "Manage knowledge base", roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" } },
-  { id: "view_audit", label: "View audit log", roles: { Owner: "yes", Admin: "yes", Operator: "partial", Viewer: "no" } },
-  { id: "export", label: "Export data", roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" } },
-  { id: "manage_settings", label: "Manage workspace settings", roles: { Owner: "yes", Admin: "partial", Operator: "no", Viewer: "no" } },
+  {
+    id: "view_dashboard",
+    label: "View dashboard",
+    roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "yes" },
+  },
+  {
+    id: "view_inbox",
+    label: "View inbox",
+    roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "yes" },
+  },
+  {
+    id: "reply",
+    label: "Reply to conversations",
+    roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "no" },
+  },
+  {
+    id: "assign",
+    label: "Assign conversations",
+    roles: { Owner: "yes", Admin: "yes", Operator: "partial", Viewer: "no" },
+  },
+  {
+    id: "close",
+    label: "Close conversations",
+    roles: { Owner: "yes", Admin: "yes", Operator: "partial", Viewer: "no" },
+  },
+  {
+    id: "internal_note",
+    label: "Add internal notes",
+    roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "no" },
+  },
+  {
+    id: "view_customers",
+    label: "View customers",
+    roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "yes" },
+  },
+  {
+    id: "edit_customers",
+    label: "Edit customers",
+    roles: { Owner: "yes", Admin: "yes", Operator: "yes", Viewer: "no" },
+  },
+  {
+    id: "invite_members",
+    label: "Invite members",
+    roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" },
+  },
+  {
+    id: "change_roles",
+    label: "Change member roles",
+    roles: { Owner: "yes", Admin: "partial", Operator: "no", Viewer: "no" },
+  },
+  {
+    id: "configure_channels",
+    label: "Configure channels",
+    roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" },
+  },
+  {
+    id: "configure_ai",
+    label: "Configure AI settings",
+    roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" },
+  },
+  {
+    id: "manage_knowledge",
+    label: "Manage knowledge base",
+    roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" },
+  },
+  {
+    id: "view_audit",
+    label: "View audit log",
+    roles: { Owner: "yes", Admin: "yes", Operator: "partial", Viewer: "no" },
+  },
+  {
+    id: "export",
+    label: "Export data",
+    roles: { Owner: "yes", Admin: "yes", Operator: "no", Viewer: "no" },
+  },
+  {
+    id: "manage_settings",
+    label: "Manage workspace settings",
+    roles: { Owner: "yes", Admin: "partial", Operator: "no", Viewer: "no" },
+  },
 ];
 
 const ROLE_PROFILES: Record<
@@ -103,7 +166,8 @@ const ROLE_PROFILES: Record<
   Admin: {
     initials: "DK",
     name: "Daniel Kowalski",
-    description: "Manages most workspace operations. Cannot transfer ownership or remove the last owner.",
+    description:
+      "Manages most workspace operations. Cannot transfer ownership or remove the last owner.",
     level: "Elevated access",
     status: "Active",
   },
@@ -181,9 +245,7 @@ function Section({
       <div className="flex items-start justify-between gap-3 border-b border-border/60 px-5 py-4">
         <div className="min-w-0">
           <h2 className="text-[14px] font-medium text-foreground">{title}</h2>
-          {description && (
-            <p className="mt-0.5 text-[12px] text-muted-foreground">{description}</p>
-          )}
+          {description && <p className="mt-0.5 text-[12px] text-muted-foreground">{description}</p>}
         </div>
         {action}
       </div>
@@ -194,13 +256,7 @@ function Section({
 
 // ---------------- Role selector ----------------
 
-function RoleSelector({
-  role,
-  onChange,
-}: {
-  role: Role;
-  onChange: (r: Role) => void;
-}) {
+function RoleSelector({ role, onChange }: { role: Role; onChange: (r: Role) => void }) {
   return (
     <div className="inline-flex w-full flex-wrap gap-1 rounded-lg border border-border bg-surface p-1 sm:w-auto">
       {ROLES.map((r) => {
@@ -234,10 +290,25 @@ const SUMMARY: {
   icon: typeof MessageSquare;
   caps: Cap[];
 }[] = [
-  { id: "conversations", label: "Conversations", icon: MessageSquare, caps: ["reply", "assign", "close", "internal_note"] },
-  { id: "customers", label: "Customers", icon: UserCog, caps: ["view_customers", "edit_customers"] },
+  {
+    id: "conversations",
+    label: "Conversations",
+    icon: MessageSquare,
+    caps: ["reply", "assign", "close", "internal_note"],
+  },
+  {
+    id: "customers",
+    label: "Customers",
+    icon: UserCog,
+    caps: ["view_customers", "edit_customers"],
+  },
   { id: "members", label: "Members", icon: UserPlus, caps: ["invite_members", "change_roles"] },
-  { id: "settings", label: "Settings", icon: SettingsIcon, caps: ["manage_settings", "configure_ai"] },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: SettingsIcon,
+    caps: ["manage_settings", "configure_ai"],
+  },
   { id: "ai", label: "AI drafts", icon: Sparkles, caps: ["configure_ai", "reply"] },
   { id: "audit", label: "Audit log", icon: ListChecks, caps: ["view_audit", "export"] },
   { id: "channels", label: "Channels", icon: Radio, caps: ["configure_channels"] },
@@ -250,13 +321,7 @@ function summarize(role: Role, caps: Cap[]): Allow {
   return "partial";
 }
 
-function PermissionSummaryCard({
-  role,
-  item,
-}: {
-  role: Role;
-  item: (typeof SUMMARY)[number];
-}) {
+function PermissionSummaryCard({ role, item }: { role: Role; item: (typeof SUMMARY)[number] }) {
   const Icon = item.icon;
   const overall = summarize(role, item.caps);
   return (
@@ -323,7 +388,9 @@ function PermissionMatrix({ role }: { role: Role }) {
                       r === role ? "bg-secondary/40" : "",
                     ].join(" ")}
                   >
-                    <div className="inline-flex"><AllowMark a={row.roles[r]} /></div>
+                    <div className="inline-flex">
+                      <AllowMark a={row.roles[r]} />
+                    </div>
                   </td>
                 ))}
               </tr>
@@ -376,13 +443,7 @@ const ADMIN_ACTIONS: DemoAction[] = [
   { label: "Export audit log", icon: Download, cap: "export" },
 ];
 
-function DisabledActionDemo({
-  action,
-  role,
-}: {
-  action: DemoAction;
-  role: Role;
-}) {
+function DisabledActionDemo({ action, role }: { action: DemoAction; role: Role }) {
   const allowed = MATRIX.find((m) => m.id === action.cap)!.roles[role];
   const disabled = allowed !== "yes";
   const Icon = action.icon;
@@ -402,7 +463,9 @@ function DisabledActionDemo({
       </div>
       <div className="flex items-center gap-2">
         {allowed === "partial" && (
-          <Pill variant="warn" size="sm">Policy</Pill>
+          <Pill variant="warn" size="sm">
+            Policy
+          </Pill>
         )}
         <button
           type="button"
@@ -467,7 +530,8 @@ function RolePreviewArea({ role }: { role: Role }) {
           </div>
           {isOperator && (
             <p className="mt-3 text-[12px] text-muted-foreground">
-              Operators focus on customer conversations and AI draft review. Assign and close depend on workspace policy.
+              Operators focus on customer conversations and AI draft review. Assign and close depend
+              on workspace policy.
             </p>
           )}
         </div>
@@ -544,14 +608,18 @@ function RolePreviewArea({ role }: { role: Role }) {
                 </p>
               </div>
               <Pill
-                variant={MATRIX.find((m) => m.id === "view_audit")!.roles[role] === "yes" ? "success" : "muted"}
+                variant={
+                  MATRIX.find((m) => m.id === "view_audit")!.roles[role] === "yes"
+                    ? "success"
+                    : "muted"
+                }
                 size="sm"
               >
                 {MATRIX.find((m) => m.id === "view_audit")!.roles[role] === "yes"
                   ? "Visible"
                   : MATRIX.find((m) => m.id === "view_audit")!.roles[role] === "partial"
-                  ? "Limited"
-                  : "Restricted"}
+                    ? "Limited"
+                    : "Restricted"}
               </Pill>
             </div>
           </div>
@@ -623,7 +691,9 @@ function DeniedActionExample({ ex }: { ex: DeniedExample }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[13px] font-medium text-foreground">{ex.attempted}</span>
-            <Pill variant="destructive" size="sm">Permission denied</Pill>
+            <Pill variant="destructive" size="sm">
+              Permission denied
+            </Pill>
           </div>
           <dl className="mt-2 grid gap-1 text-[12px] sm:grid-cols-2">
             <div className="flex gap-1.5">
@@ -668,7 +738,8 @@ function RolePreviewPage() {
         <p className="text-[12.5px] text-foreground">
           <span className="font-medium">Client-side role previews are for UX only.</span>{" "}
           <span className="text-muted-foreground">
-            Server-side authorization must enforce all permissions. Every tenant-scoped request is verified server-side.
+            Server-side authorization must enforce all permissions. Every tenant-scoped request is
+            verified server-side.
           </span>
         </p>
       </div>
@@ -681,19 +752,18 @@ function RolePreviewPage() {
               {profile.initials}
             </div>
             <div className="min-w-0">
-              <div className="truncate text-[14px] font-medium text-foreground">
-                {profile.name}
-              </div>
-              <div className="truncate text-[12px] text-muted-foreground">
-                Tehran Dental Clinic
-              </div>
+              <div className="truncate text-[14px] font-medium text-foreground">{profile.name}</div>
+              <div className="truncate text-[12px] text-muted-foreground">Tehran Dental Clinic</div>
             </div>
           </div>
           <dl className="mt-4 space-y-2 text-[12.5px]">
             <div className="flex items-center justify-between gap-3">
               <dt className="text-muted-foreground">Role</dt>
               <dd>
-                <Pill variant={role === "Viewer" ? "muted" : role === "Operator" ? "operator" : "info"} size="sm">
+                <Pill
+                  variant={role === "Viewer" ? "muted" : role === "Operator" ? "operator" : "info"}
+                  size="sm"
+                >
                   <Shield className="h-3 w-3" />
                   <span className="ml-1">{role}</span>
                 </Pill>
@@ -702,7 +772,9 @@ function RolePreviewPage() {
             <div className="flex items-center justify-between gap-3">
               <dt className="text-muted-foreground">Status</dt>
               <dd>
-                <Pill variant="success" size="sm">{profile.status}</Pill>
+                <Pill variant="success" size="sm">
+                  {profile.status}
+                </Pill>
               </dd>
             </div>
             <div className="flex items-center justify-between gap-3">

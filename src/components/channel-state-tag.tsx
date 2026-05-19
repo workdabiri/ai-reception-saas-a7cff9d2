@@ -52,7 +52,9 @@ export function ChannelStateTag({ state }: { state: ChannelState }) {
         }}
       />
       {TEXT[state]}
-      {isConnecting && <Loader2 className="ml-0.5 h-3 w-3 animate-spin" style={{ color: dotColor }} />}
+      {isConnecting && (
+        <Loader2 className="ml-0.5 h-3 w-3 animate-spin" style={{ color: dotColor }} />
+      )}
     </span>
   );
 }

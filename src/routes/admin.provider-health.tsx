@@ -54,8 +54,18 @@ function ProviderCard({ p }: { p: AdminProvider }) {
 }
 
 const INCIDENTS = [
-  { at: "2026-05-18 14:21", title: "Web Chat — elevated mock latency", duration: "8 min", note: "Simulated incident. No customers were affected." },
-  { at: "2026-05-12 09:02", title: "Email — mock delivery delay", duration: "22 min", note: "Mock incident demo." },
+  {
+    at: "2026-05-18 14:21",
+    title: "Web Chat — elevated mock latency",
+    duration: "8 min",
+    note: "Simulated incident. No customers were affected.",
+  },
+  {
+    at: "2026-05-12 09:02",
+    title: "Email — mock delivery delay",
+    duration: "22 min",
+    note: "Mock incident demo.",
+  },
 ];
 
 function AdminProviderHealthPage() {
@@ -73,19 +83,28 @@ function AdminProviderHealthPage() {
 
       <SectionCard title="Active mock providers" description="Reporting mock telemetry only.">
         <div className="grid gap-3 sm:grid-cols-2">
-          {active.map((p) => <ProviderCard key={p.id} p={p} />)}
+          {active.map((p) => (
+            <ProviderCard key={p.id} p={p} />
+          ))}
         </div>
       </SectionCard>
 
-      <SectionCard title="Planned providers" description="Visible in channel setup as planned — not connected.">
+      <SectionCard
+        title="Planned providers"
+        description="Visible in channel setup as planned — not connected."
+      >
         <div className="grid gap-3 sm:grid-cols-2">
-          {planned.map((p) => <ProviderCard key={p.id} p={p} />)}
+          {planned.map((p) => (
+            <ProviderCard key={p.id} p={p} />
+          ))}
         </div>
       </SectionCard>
 
       <SectionCard title="Future providers" description="Not on MVP roadmap.">
         <div className="grid gap-3 sm:grid-cols-2">
-          {future.map((p) => <ProviderCard key={p.id} p={p} />)}
+          {future.map((p) => (
+            <ProviderCard key={p.id} p={p} />
+          ))}
         </div>
       </SectionCard>
 
@@ -95,7 +114,9 @@ function AdminProviderHealthPage() {
             <li key={i.title} className="py-2.5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-[12.5px] font-medium text-foreground">{i.title}</span>
-                <span className="text-[11px] text-muted-foreground">{i.at} · {i.duration}</span>
+                <span className="text-[11px] text-muted-foreground">
+                  {i.at} · {i.duration}
+                </span>
               </div>
               <p className="mt-0.5 text-[11.5px] text-muted-foreground">{i.note}</p>
             </li>

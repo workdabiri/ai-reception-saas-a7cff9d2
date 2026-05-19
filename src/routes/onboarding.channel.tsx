@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { OnboardingLayout, SummaryBlock } from "@/components/onboarding-layout";
-import { MessageSquare, Mail, Instagram, Phone, Send, MessageCircle, PhoneCall, Check, Sparkles } from "lucide-react";
+import {
+  MessageSquare,
+  Mail,
+  Instagram,
+  Phone,
+  Send,
+  MessageCircle,
+  PhoneCall,
+  Check,
+  Sparkles,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/onboarding/channel")({
@@ -20,13 +30,44 @@ const CHANNELS: {
   desc: string;
   recommended?: boolean;
 }[] = [
-  { key: "web", name: "Web Chat", icon: MessageSquare, status: "mock-active", desc: "Add a website chat widget for customer inquiries.", recommended: true },
-  { key: "email", name: "Email", icon: Mail, status: "mock-active", desc: "Triage customer messages from a shared email inbox." },
-  { key: "instagram", name: "Instagram DM", icon: Instagram, status: "planned", desc: "Direct messages from Instagram." },
-  { key: "whatsapp", name: "WhatsApp", icon: MessageCircle, status: "planned", desc: "WhatsApp Business messages." },
+  {
+    key: "web",
+    name: "Web Chat",
+    icon: MessageSquare,
+    status: "mock-active",
+    desc: "Add a website chat widget for customer inquiries.",
+    recommended: true,
+  },
+  {
+    key: "email",
+    name: "Email",
+    icon: Mail,
+    status: "mock-active",
+    desc: "Triage customer messages from a shared email inbox.",
+  },
+  {
+    key: "instagram",
+    name: "Instagram DM",
+    icon: Instagram,
+    status: "planned",
+    desc: "Direct messages from Instagram.",
+  },
+  {
+    key: "whatsapp",
+    name: "WhatsApp",
+    icon: MessageCircle,
+    status: "planned",
+    desc: "WhatsApp Business messages.",
+  },
   { key: "telegram", name: "Telegram", icon: Send, status: "planned", desc: "Telegram bot inbox." },
   { key: "sms", name: "SMS", icon: Phone, status: "planned", desc: "Inbound and outbound SMS." },
-  { key: "voice", name: "Voice", icon: PhoneCall, status: "future", desc: "AI-assisted voice reception." },
+  {
+    key: "voice",
+    name: "Voice",
+    icon: PhoneCall,
+    status: "future",
+    desc: "AI-assisted voice reception.",
+  },
 ];
 
 function statusLabel(s: Status) {

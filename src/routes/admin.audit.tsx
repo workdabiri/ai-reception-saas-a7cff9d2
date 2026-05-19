@@ -116,7 +116,9 @@ function AdminAuditPage() {
                   </td>
                   <td className="py-3 pr-3 text-foreground">{e.action}</td>
                   <td className="py-3 pr-3 text-foreground">{e.target}</td>
-                  <td className="py-3 pr-3"><AuditResultPill result={e.result} /></td>
+                  <td className="py-3 pr-3">
+                    <AuditResultPill result={e.result} />
+                  </td>
                   <td className="py-3 pr-3 text-muted-foreground">{e.source}</td>
                   <td className="py-3 pr-3 text-muted-foreground">{e.metadata}</td>
                 </tr>
@@ -132,9 +134,13 @@ function AdminAuditPage() {
                 <span className="text-[12.5px] font-medium text-foreground">{e.action}</span>
                 <AuditResultPill result={e.result} />
               </div>
-              <p className="mt-1 text-[11.5px] text-muted-foreground">{e.actor} → {e.target}</p>
+              <p className="mt-1 text-[11.5px] text-muted-foreground">
+                {e.actor} → {e.target}
+              </p>
               <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10.5px] text-muted-foreground">
-                <Pill variant="neutral" size="sm">{e.category}</Pill>
+                <Pill variant="neutral" size="sm">
+                  {e.category}
+                </Pill>
                 <span>{e.timestamp}</span>
                 <span>· {e.source}</span>
               </div>

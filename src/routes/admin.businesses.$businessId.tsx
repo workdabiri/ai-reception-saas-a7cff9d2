@@ -77,7 +77,10 @@ function AdminBusinessDetailPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-8">
       <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
-        <Link to="/admin/businesses" className="inline-flex items-center gap-1 hover:text-foreground">
+        <Link
+          to="/admin/businesses"
+          className="inline-flex items-center gap-1 hover:text-foreground"
+        >
           <ArrowLeft className="h-3 w-3" /> Businesses
         </Link>
         <span>/</span>
@@ -120,7 +123,9 @@ function AdminBusinessDetailPage() {
                   {active ? (
                     <ProviderStatusPill status={p.status} />
                   ) : (
-                    <ProviderStatusPill status={p.status === "mock-active" ? "planned" : p.status} />
+                    <ProviderStatusPill
+                      status={p.status === "mock-active" ? "planned" : p.status}
+                    />
                   )}
                 </li>
               );
@@ -137,7 +142,9 @@ function AdminBusinessDetailPage() {
           <dl className="space-y-3 text-[12.5px]">
             <div>
               <dt className="text-muted-foreground">Conversations / mo</dt>
-              <dd className="text-foreground">{business.conversationsThisMonth.toLocaleString()}</dd>
+              <dd className="text-foreground">
+                {business.conversationsThisMonth.toLocaleString()}
+              </dd>
             </div>
             <div>
               <dt className="text-muted-foreground">AI drafts / mo</dt>
@@ -150,7 +157,9 @@ function AdminBusinessDetailPage() {
             <div>
               <dt className="text-muted-foreground">Quota used</dt>
               <dd className="text-foreground">{business.quotaUsedPct}%</dd>
-              <div className="mt-1.5"><ProgressBar pct={business.quotaUsedPct} tone={quotaTone} /></div>
+              <div className="mt-1.5">
+                <ProgressBar pct={business.quotaUsedPct} tone={quotaTone} />
+              </div>
             </div>
           </dl>
         </SectionCard>
@@ -158,10 +167,22 @@ function AdminBusinessDetailPage() {
         {/* Members summary */}
         <SectionCard title="Members" description={`${members.length} total`}>
           <ul className="space-y-1.5 text-[12.5px]">
-            <li className="flex justify-between"><span className="text-muted-foreground">Owners</span><span className="font-medium text-foreground">{owners.length}</span></li>
-            <li className="flex justify-between"><span className="text-muted-foreground">Admins</span><span className="font-medium text-foreground">{admins.length}</span></li>
-            <li className="flex justify-between"><span className="text-muted-foreground">Operators</span><span className="font-medium text-foreground">{operators.length}</span></li>
-            <li className="flex justify-between"><span className="text-muted-foreground">Viewers</span><span className="font-medium text-foreground">{viewers.length}</span></li>
+            <li className="flex justify-between">
+              <span className="text-muted-foreground">Owners</span>
+              <span className="font-medium text-foreground">{owners.length}</span>
+            </li>
+            <li className="flex justify-between">
+              <span className="text-muted-foreground">Admins</span>
+              <span className="font-medium text-foreground">{admins.length}</span>
+            </li>
+            <li className="flex justify-between">
+              <span className="text-muted-foreground">Operators</span>
+              <span className="font-medium text-foreground">{operators.length}</span>
+            </li>
+            <li className="flex justify-between">
+              <span className="text-muted-foreground">Viewers</span>
+              <span className="font-medium text-foreground">{viewers.length}</span>
+            </li>
           </ul>
         </SectionCard>
       </div>

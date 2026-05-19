@@ -25,9 +25,9 @@ type Props = {
 };
 
 const confidenceTone: Record<DraftConfidence, string> = {
-  High:   "bg-success/12 text-foreground border-success/25",
+  High: "bg-success/12 text-foreground border-success/25",
   Medium: "bg-warning/20 text-foreground border-warning/35",
-  Low:    "bg-destructive/12 text-foreground border-destructive/25",
+  Low: "bg-destructive/12 text-foreground border-destructive/25",
 };
 
 const confidencePct: Record<DraftConfidence, number> = {
@@ -37,9 +37,9 @@ const confidencePct: Record<DraftConfidence, number> = {
 };
 
 const stateTone: Record<DraftState, string> = {
-  pending:  "bg-primary/10 dark:bg-primary/[0.18] text-foreground border-primary/30",
+  pending: "bg-primary/10 dark:bg-primary/[0.18] text-foreground border-primary/30",
   accepted: "bg-success/12 text-foreground border-success/25",
-  edited:   "bg-info/12 text-foreground border-info/25",
+  edited: "bg-info/12 text-foreground border-info/25",
   rejected: "bg-muted text-muted-foreground border-border",
 };
 
@@ -71,7 +71,10 @@ export function AIDraftPanel({
   return (
     <div className="overflow-hidden rounded-2xl glass-ai shadow-card">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 border-b border-[oklch(0.55_0.20_295)]/20 px-4 py-3" style={{ background: "color-mix(in oklab, var(--color-ai) 8%, transparent)" }}>
+      <div
+        className="flex items-start justify-between gap-3 border-b border-[oklch(0.55_0.20_295)]/20 px-4 py-3"
+        style={{ background: "color-mix(in oklab, var(--color-ai) 8%, transparent)" }}
+      >
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="grid h-7 w-7 place-items-center rounded-lg gradient-ai text-ai-foreground shadow-soft">

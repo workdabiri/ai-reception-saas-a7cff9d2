@@ -12,10 +12,7 @@ import { adminUsers, type AdminUser } from "@/lib/admin-mock-data";
 
 export const Route = createFileRoute("/admin/users")({
   head: () => ({
-    meta: [
-      { title: "Users — Platform Admin" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Users — Platform Admin" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: AdminUsersPage,
 });
@@ -67,10 +64,7 @@ function AdminUsersPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-8">
-      <AdminPageHeader
-        title="Users"
-        description="Cross-workspace mock user directory."
-      />
+      <AdminPageHeader title="Users" description="Cross-workspace mock user directory." />
       <AdminMockNotice />
 
       <div className="flex flex-wrap items-center gap-3">
@@ -121,7 +115,9 @@ function AdminUsersPage() {
                 <tr key={u.id}>
                   <td className="py-3 pr-3 font-medium text-foreground">{u.name}</td>
                   <td className="py-3 pr-3 text-muted-foreground">{u.email}</td>
-                  <td className="py-3 pr-3"><RolePill role={u.role} /></td>
+                  <td className="py-3 pr-3">
+                    <RolePill role={u.role} />
+                  </td>
                   <td className="py-3 pr-3 text-foreground">
                     <Link
                       to="/admin/businesses/$businessId"
@@ -131,7 +127,9 @@ function AdminUsersPage() {
                       {u.workspace}
                     </Link>
                   </td>
-                  <td className="py-3 pr-3"><StatusPill status={u.status} /></td>
+                  <td className="py-3 pr-3">
+                    <StatusPill status={u.status} />
+                  </td>
                   <td className="py-3 pr-3 text-muted-foreground">{u.lastActive}</td>
                   <td className="py-3 pr-3 text-muted-foreground">{u.joinedAt}</td>
                   <td className="py-3 pr-1">

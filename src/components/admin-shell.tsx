@@ -20,13 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 type AdminNavItem = {
   to: string;
@@ -69,13 +63,7 @@ function AdminBrand() {
   );
 }
 
-function NavList({
-  pathname,
-  onNavigate,
-}: {
-  pathname: string;
-  onNavigate?: () => void;
-}) {
+function NavList({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <nav className="space-y-0.5">
       {ADMIN_NAV.map((item) => {
@@ -117,8 +105,7 @@ function MockAdminNotice({ compact = false }: { compact?: boolean }) {
           </p>
           {!compact && (
             <p className="mt-0.5 text-[10.5px] leading-snug text-muted-foreground">
-              Read-only prototype. No real customer data. Admin actions are
-              mock-only.
+              Read-only prototype. No real customer data. Admin actions are mock-only.
             </p>
           )}
         </div>
@@ -229,10 +216,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   <MockAdminNotice />
                 </div>
                 <div className="flex-1 overflow-y-auto px-3 pb-3">
-                  <NavList
-                    pathname={pathname}
-                    onNavigate={() => setMobileOpen(false)}
-                  />
+                  <NavList pathname={pathname} onNavigate={() => setMobileOpen(false)} />
                 </div>
                 <div className="border-t border-border px-3 py-3">
                   <Link

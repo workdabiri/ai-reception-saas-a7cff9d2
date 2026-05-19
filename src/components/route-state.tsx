@@ -429,9 +429,7 @@ export function StateBanner({
         <div className="min-w-0">
           <div className="text-[13px] font-medium text-foreground">{title}</div>
           {description && (
-            <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">
-              {description}
-            </p>
+            <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{description}</p>
           )}
         </div>
       </div>

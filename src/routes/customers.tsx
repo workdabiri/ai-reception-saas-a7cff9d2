@@ -10,7 +10,15 @@ import {
   type InboxStatus,
   type Channel,
 } from "@/lib/mock-data";
-import { Search, Download, Shield, Users, ChevronRight, AlertTriangle, MessageCircle } from "lucide-react";
+import {
+  Search,
+  Download,
+  Shield,
+  Users,
+  ChevronRight,
+  AlertTriangle,
+  MessageCircle,
+} from "lucide-react";
 import type { ChannelKey } from "@/lib/mock-data";
 import { CustomersOperatorFirstEmpty, FilterNoMatchState } from "@/components/empty-states";
 import {
@@ -26,7 +34,10 @@ export const Route = createFileRoute("/customers")({
   head: () => ({
     meta: [
       { title: "Customers — AI Reception" },
-      { name: "description", content: "Reception customer directory with channel and conversation context." },
+      {
+        name: "description",
+        content: "Reception customer directory with channel and conversation context.",
+      },
     ],
   }),
   component: CustomersPage,
@@ -71,7 +82,7 @@ function buildRows(): Row[] {
     const convs = conversations.filter((cv) => cv.customerId === c.id);
     const last = convs[0];
     const assignee = last?.assignee
-      ? members.find((m) => m.id === last.assignee)?.name ?? null
+      ? (members.find((m) => m.id === last.assignee)?.name ?? null)
       : null;
     return {
       id: c.id,
@@ -98,9 +109,6 @@ function CustomersPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | InboxStatus>("all");
   const [channelFilter, setChannelFilter] = useState<"all" | Channel>("all");
-
-
-
 
   const rows = useMemo(buildRows, []);
   const filtered = useMemo(() => {
@@ -163,8 +171,16 @@ function CustomersPage() {
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <SummaryCard label="Customers" value={rows.length} accent="var(--color-primary)" />
           <SummaryCard label="Open conversations" value={totals.open} accent="var(--color-info)" />
-          <SummaryCard label="Unread messages" value={totals.unread} accent="var(--color-attention)" />
-          <SummaryCard label="Need follow-up" value={totals.followUp} accent="var(--color-attention)" />
+          <SummaryCard
+            label="Unread messages"
+            value={totals.unread}
+            accent="var(--color-attention)"
+          />
+          <SummaryCard
+            label="Need follow-up"
+            value={totals.followUp}
+            accent="var(--color-attention)"
+          />
         </div>
 
         <div className="workspace-scoped-callout mt-4 flex items-start gap-2 px-4 py-3">
@@ -172,11 +188,11 @@ function CustomersPage() {
           <div>
             <div className="workspace-scoped-callout-title">Workspace-scoped data</div>
             <div className="workspace-scoped-callout-body">
-              Visible only to permitted members of this workspace. Server verifies membership. Mock data — no real PII shown.
+              Visible only to permitted members of this workspace. Server verifies membership. Mock
+              data — no real PII shown.
             </div>
           </div>
         </div>
-
 
         <div className="mt-5 rounded-xl border border-border bg-card shadow-card overflow-hidden">
           {/* Filter bar */}
@@ -261,12 +277,17 @@ function CustomersPage() {
                             <Avatar initials={r.initials} />
                             <div className="min-w-0">
                               <div className="font-medium group-hover:underline">{r.name}</div>
-                              <div className="truncate text-xs text-muted-foreground">{r.email}</div>
+                              <div className="truncate text-xs text-muted-foreground">
+                                {r.email}
+                              </div>
                             </div>
                           </Link>
                         </td>
                         <td className="px-3 py-3">
-                          <ChannelChip channel={r.primaryChannel} label={channelLabel[r.primaryChannel]} />
+                          <ChannelChip
+                            channel={r.primaryChannel}
+                            label={channelLabel[r.primaryChannel]}
+                          />
                         </td>
                         <td className="px-3 py-3">
                           <div className="flex items-center gap-2">
@@ -274,7 +295,9 @@ function CustomersPage() {
                             <span className="text-xs text-muted-foreground">{r.lastSeen}</span>
                           </div>
                         </td>
-                        <td className="px-3 py-3 text-center text-sm tabular-nums">{r.openConversations}</td>
+                        <td className="px-3 py-3 text-center text-sm tabular-nums">
+                          {r.openConversations}
+                        </td>
                         <td className="px-3 py-3 text-center">
                           {r.unreadMessages > 0 ? (
                             <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-2 py-1 text-[11px] font-medium tabular-nums text-primary-foreground">
@@ -286,7 +309,9 @@ function CustomersPage() {
                         </td>
                         <td className="px-3 py-3">
                           {r.status ? (
-                            <span className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[r.status]}`}>
+                            <span
+                              className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[r.status]}`}
+                            >
                               <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
                               {statusLabel[r.status]}
                             </span>
@@ -306,7 +331,9 @@ function CustomersPage() {
                         <td className="px-3 py-3 text-xs text-muted-foreground">
                           {r.assignee ?? <span className="italic">Unassigned</span>}
                         </td>
-                        <td className="px-4 py-3 text-right text-xs text-muted-foreground">{r.lastSeen}</td>
+                        <td className="px-4 py-3 text-right text-xs text-muted-foreground">
+                          {r.lastSeen}
+                        </td>
                         <td className="px-2 text-muted-foreground">
                           <Link
                             to="/customers/$customerId"
@@ -335,13 +362,22 @@ function CustomersPage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
                           <span className="truncate text-sm font-medium">{r.name}</span>
-                          <span className="shrink-0 text-[11px] text-muted-foreground">{r.lastSeen}</span>
+                          <span className="shrink-0 text-[11px] text-muted-foreground">
+                            {r.lastSeen}
+                          </span>
                         </div>
-                        <p className="mt-1 truncate text-xs text-muted-foreground">{r.lastSubject}</p>
+                        <p className="mt-1 truncate text-xs text-muted-foreground">
+                          {r.lastSubject}
+                        </p>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <ChannelChip channel={r.primaryChannel} label={channelLabel[r.primaryChannel]} />
+                          <ChannelChip
+                            channel={r.primaryChannel}
+                            label={channelLabel[r.primaryChannel]}
+                          />
                           {r.status && (
-                            <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-medium ${statusTone[r.status]}`}>
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-medium ${statusTone[r.status]}`}
+                            >
                               {statusLabel[r.status]}
                             </span>
                           )}
@@ -380,7 +416,10 @@ function SummaryCard({ label, value, accent }: { label: string; value: number; a
       <div className="text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-3 text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground" style={{ fontFeatureSettings: '"tnum" 1' }}>
+      <div
+        className="mt-3 text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground"
+        style={{ fontFeatureSettings: '"tnum" 1' }}
+      >
         {value}
       </div>
     </div>
