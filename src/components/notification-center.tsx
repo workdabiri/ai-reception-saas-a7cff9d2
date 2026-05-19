@@ -1,18 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Bell, Check, CheckCheck, Inbox } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   mockNotifications,
@@ -56,10 +46,7 @@ function NotificationRow({
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               {n.unread && (
-                <span
-                  className={`h-1.5 w-1.5 rounded-full ${meta.dot}`}
-                  aria-label="Unread"
-                />
+                <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} aria-label="Unread" />
               )}
               <p className="text-[13px] font-medium leading-tight text-foreground truncate">
                 {n.title}
@@ -167,12 +154,8 @@ function NotificationBody({
             <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary text-muted-foreground">
               <Inbox className="h-5 w-5" />
             </div>
-            <div className="mt-3 text-[14px] font-medium text-foreground">
-              No notifications
-            </div>
-            <p className="mt-1 text-[12px] text-muted-foreground">
-              You're all caught up.
-            </p>
+            <div className="mt-3 text-[14px] font-medium text-foreground">No notifications</div>
+            <p className="mt-1 text-[12px] text-muted-foreground">You're all caught up.</p>
             <button
               onClick={() => setFilter("all")}
               className="mt-3 inline-flex items-center text-[12px] font-medium text-primary hover:underline"
@@ -183,12 +166,7 @@ function NotificationBody({
         ) : (
           <ul>
             {filtered.map((n) => (
-              <NotificationRow
-                key={n.id}
-                n={n}
-                onMarkRead={onMarkRead}
-                onNavigate={onClose}
-              />
+              <NotificationRow key={n.id} n={n} onMarkRead={onMarkRead} onNavigate={onClose} />
             ))}
           </ul>
         )}
@@ -216,11 +194,8 @@ export function NotificationCenter() {
   const unread = items.filter((n) => n.unread).length;
 
   const markRead = (id: string) =>
-    setItems((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, unread: false } : n)),
-    );
-  const markAll = () =>
-    setItems((prev) => prev.map((n) => ({ ...n, unread: false })));
+    setItems((prev) => prev.map((n) => (n.id === id ? { ...n, unread: false } : n)));
+  const markAll = () => setItems((prev) => prev.map((n) => ({ ...n, unread: false })));
 
   const Trigger = (
     <button
@@ -260,11 +235,7 @@ export function NotificationCenter() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{Trigger}</PopoverTrigger>
-      <PopoverContent
-        align="end"
-        sideOffset={8}
-        className="w-[380px] p-0 overflow-hidden"
-      >
+      <PopoverContent align="end" sideOffset={8} className="w-[380px] p-0 overflow-hidden">
         <NotificationBody
           items={items}
           filter={filter}

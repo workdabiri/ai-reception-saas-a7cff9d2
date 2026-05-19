@@ -27,12 +27,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationCenter } from "@/components/notification-center";
 import { ProfileMenu } from "@/components/profile-menu";
 import { workspaces, type WorkspaceRole } from "@/lib/mock-data";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ───────────────────────── Single shared menu config ───────────────────────── */
 
@@ -101,10 +96,8 @@ const MENU_CONFIG: {
 
 const allMenuItems = () => MENU_CONFIG.sections.flatMap((section) => section.items);
 const menuItem = (id: string) => allMenuItems().find((item) => item.id === id)!;
-const extraItem = (id: string) =>
-  MENU_CONFIG.extraItems.find((item) => item.id === id)!;
-const bottomItem = (id: string) =>
-  MENU_CONFIG.bottomItems.find((item) => item.id === id)!;
+const extraItem = (id: string) => MENU_CONFIG.extraItems.find((item) => item.id === id)!;
+const bottomItem = (id: string) => MENU_CONFIG.bottomItems.find((item) => item.id === id)!;
 const mobilePrimaryItems = () => ["inbox", "channels", "customers", "dashboard"].map(menuItem);
 
 // Grouped More menu — every desktop sidebar destination plus extra user-facing
@@ -147,11 +140,7 @@ const roleTone: Record<WorkspaceRole, string> = {
 
 /* ───────────────────────── AppShell ───────────────────────── */
 
-export function AppShell({
-  children,
-}: {
-  children?: React.ReactNode;
-}) {
+export function AppShell({ children }: { children?: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const mobilePrimary = mobilePrimaryItems();
   const moreGroups = mobileMoreGroups();
@@ -181,10 +170,7 @@ export function AppShell({
   }, [pathname]);
 
   useEffect(() => {
-    const stored =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem(STORAGE_KEY)
-        : null;
+    const stored = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null;
     if (stored !== null) return;
     const mql = window.matchMedia("(max-width: 1279px)");
     const apply = () => {
@@ -213,10 +199,7 @@ export function AppShell({
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen flex w-full bg-app text-foreground">
-        <SharedSidebar
-          collapsed={collapsed}
-          isActive={isActive}
-        />
+        <SharedSidebar collapsed={collapsed} isActive={isActive} />
 
         {/* Main */}
         <div data-sidebar-collapsed={collapsed} className="flex-1 flex min-w-0 flex-col">
@@ -265,9 +248,7 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="flex-1 min-w-0 pb-16 md:pb-0">
-            {children ?? <Outlet />}
-          </main>
+          <main className="flex-1 min-w-0 pb-16 md:pb-0">{children ?? <Outlet />}</main>
         </div>
 
         {/* Mobile bottom nav */}
@@ -299,7 +280,9 @@ export function AppShell({
                     </span>
                   ) : null}
                 </div>
-                <span className={`text-[11px] font-medium leading-none ${active ? "text-primary" : "text-muted-foreground"}`}>
+                <span
+                  className={`text-[11px] font-medium leading-none ${active ? "text-primary" : "text-muted-foreground"}`}
+                >
                   {label}
                 </span>
               </Link>
@@ -309,7 +292,10 @@ export function AppShell({
             onClick={() => setMoreOpen(true)}
             className="group relative flex flex-col items-center justify-center gap-1 min-w-[56px] px-2 py-1.5 rounded-lg transition-all duration-150 ease-out hover:bg-secondary/60"
           >
-            <MoreHorizontal strokeWidth={1.75} className="h-[22px] w-[22px] text-muted-foreground" />
+            <MoreHorizontal
+              strokeWidth={1.75}
+              className="h-[22px] w-[22px] text-muted-foreground"
+            />
             <span className="text-[11px] font-medium leading-none text-muted-foreground">More</span>
           </button>
         </nav>
@@ -428,9 +414,7 @@ function SharedSidebar({
               <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-success ring-2 ring-surface" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-[13px] font-medium leading-tight">
-                {ws.name}
-              </div>
+              <div className="truncate text-[13px] font-medium leading-tight">{ws.name}</div>
               <div className="mt-1 flex items-center gap-1 text-[10.5px] text-muted-foreground">
                 <Shield className="h-2.5 w-2.5" />
                 <span className={`rounded px-1 py-px text-[10px] font-medium ${roleTone[ws.role]}`}>
@@ -614,13 +598,7 @@ function NavRow({
   return row;
 }
 
-function BottomIcon({
-  icon: Icon,
-  label,
-}: {
-  icon: typeof HelpCircle;
-  label: string;
-}) {
+function BottomIcon({ icon: Icon, label }: { icon: typeof HelpCircle; label: string }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>

@@ -118,8 +118,7 @@ export const adminBusinesses: AdminBusiness[] = [
   },
 ];
 
-export const getAdminBusiness = (id: string) =>
-  adminBusinesses.find((b) => b.id === id);
+export const getAdminBusiness = (id: string) => adminBusinesses.find((b) => b.id === id);
 
 export type AdminUser = {
   id: string;
@@ -134,16 +133,116 @@ export type AdminUser = {
 };
 
 export const adminUsers: AdminUser[] = [
-  { id: "u1", name: "Dr. Niloofar Karimi", email: "niloofar@tehrandental.example", role: "Owner", workspace: "Tehran Dental Clinic", workspaceId: "tehran-dental-clinic", status: "active", lastActive: "12 min ago", joinedAt: "2025-09-12" },
-  { id: "u2", name: "Mehdi Rahmani", email: "mehdi@tehrandental.example", role: "Admin", workspace: "Tehran Dental Clinic", workspaceId: "tehran-dental-clinic", status: "active", lastActive: "2 hr ago", joinedAt: "2025-09-15" },
-  { id: "u3", name: "Leila Saberi", email: "leila@tehrandental.example", role: "Operator", workspace: "Tehran Dental Clinic", workspaceId: "tehran-dental-clinic", status: "active", lastActive: "1 hr ago", joinedAt: "2025-09-20" },
-  { id: "u4", name: "Amir Shahbazi", email: "amir@parsrepair.example", role: "Owner", workspace: "Pars Repair Services", workspaceId: "pars-repair-services", status: "active", lastActive: "1 hr ago", joinedAt: "2025-10-04" },
-  { id: "u5", name: "Hossein Karim", email: "hossein@parsrepair.example", role: "Operator", workspace: "Pars Repair Services", workspaceId: "pars-repair-services", status: "invited", lastActive: "—", joinedAt: "2026-05-10" },
-  { id: "u6", name: "Sara Tehrani", email: "sara@noorrestaurant.example", role: "Owner", workspace: "Noor Restaurant", workspaceId: "noor-restaurant", status: "active", lastActive: "4 min ago", joinedAt: "2025-08-22" },
-  { id: "u7", name: "Babak Yousefi", email: "babak@noorrestaurant.example", role: "Operator", workspace: "Noor Restaurant", workspaceId: "noor-restaurant", status: "active", lastActive: "30 min ago", joinedAt: "2025-09-01" },
-  { id: "u8", name: "Nazanin Pour", email: "nazanin@noorrestaurant.example", role: "Viewer", workspace: "Noor Restaurant", workspaceId: "noor-restaurant", status: "active", lastActive: "yesterday", joinedAt: "2025-09-09" },
-  { id: "u9", name: "Reza Mahdavi", email: "reza@demo-ecom.example", role: "Owner", workspace: "Demo Ecommerce Support", workspaceId: "demo-ecommerce-support", status: "active", lastActive: "yesterday", joinedAt: "2026-05-02" },
-  { id: "u10", name: "Maryam Hosseini", email: "maryam@atlaslegal.example", role: "Owner", workspace: "Atlas Legal Office", workspaceId: "atlas-legal-office", status: "suspended", lastActive: "9 days ago", joinedAt: "2025-06-18" },
+  {
+    id: "u1",
+    name: "Dr. Niloofar Karimi",
+    email: "niloofar@tehrandental.example",
+    role: "Owner",
+    workspace: "Tehran Dental Clinic",
+    workspaceId: "tehran-dental-clinic",
+    status: "active",
+    lastActive: "12 min ago",
+    joinedAt: "2025-09-12",
+  },
+  {
+    id: "u2",
+    name: "Mehdi Rahmani",
+    email: "mehdi@tehrandental.example",
+    role: "Admin",
+    workspace: "Tehran Dental Clinic",
+    workspaceId: "tehran-dental-clinic",
+    status: "active",
+    lastActive: "2 hr ago",
+    joinedAt: "2025-09-15",
+  },
+  {
+    id: "u3",
+    name: "Leila Saberi",
+    email: "leila@tehrandental.example",
+    role: "Operator",
+    workspace: "Tehran Dental Clinic",
+    workspaceId: "tehran-dental-clinic",
+    status: "active",
+    lastActive: "1 hr ago",
+    joinedAt: "2025-09-20",
+  },
+  {
+    id: "u4",
+    name: "Amir Shahbazi",
+    email: "amir@parsrepair.example",
+    role: "Owner",
+    workspace: "Pars Repair Services",
+    workspaceId: "pars-repair-services",
+    status: "active",
+    lastActive: "1 hr ago",
+    joinedAt: "2025-10-04",
+  },
+  {
+    id: "u5",
+    name: "Hossein Karim",
+    email: "hossein@parsrepair.example",
+    role: "Operator",
+    workspace: "Pars Repair Services",
+    workspaceId: "pars-repair-services",
+    status: "invited",
+    lastActive: "—",
+    joinedAt: "2026-05-10",
+  },
+  {
+    id: "u6",
+    name: "Sara Tehrani",
+    email: "sara@noorrestaurant.example",
+    role: "Owner",
+    workspace: "Noor Restaurant",
+    workspaceId: "noor-restaurant",
+    status: "active",
+    lastActive: "4 min ago",
+    joinedAt: "2025-08-22",
+  },
+  {
+    id: "u7",
+    name: "Babak Yousefi",
+    email: "babak@noorrestaurant.example",
+    role: "Operator",
+    workspace: "Noor Restaurant",
+    workspaceId: "noor-restaurant",
+    status: "active",
+    lastActive: "30 min ago",
+    joinedAt: "2025-09-01",
+  },
+  {
+    id: "u8",
+    name: "Nazanin Pour",
+    email: "nazanin@noorrestaurant.example",
+    role: "Viewer",
+    workspace: "Noor Restaurant",
+    workspaceId: "noor-restaurant",
+    status: "active",
+    lastActive: "yesterday",
+    joinedAt: "2025-09-09",
+  },
+  {
+    id: "u9",
+    name: "Reza Mahdavi",
+    email: "reza@demo-ecom.example",
+    role: "Owner",
+    workspace: "Demo Ecommerce Support",
+    workspaceId: "demo-ecommerce-support",
+    status: "active",
+    lastActive: "yesterday",
+    joinedAt: "2026-05-02",
+  },
+  {
+    id: "u10",
+    name: "Maryam Hosseini",
+    email: "maryam@atlaslegal.example",
+    role: "Owner",
+    workspace: "Atlas Legal Office",
+    workspaceId: "atlas-legal-office",
+    status: "suspended",
+    lastActive: "9 days ago",
+    joinedAt: "2025-06-18",
+  },
 ];
 
 export type ProviderStatus = "mock-active" | "planned" | "future";
@@ -159,16 +258,85 @@ export type AdminProvider = {
 };
 
 export const adminProviders: AdminProvider[] = [
-  { id: "web-chat", name: "Web Chat", status: "mock-active", availabilityPct: 100, lastCheck: "30 s ago", affectedBusinesses: 0, latencyMs: 42, notes: "Mock provider — no real backend." },
-  { id: "email", name: "Email", status: "mock-active", availabilityPct: 99.7, lastCheck: "1 min ago", affectedBusinesses: 0, latencyMs: 118, notes: "Mock provider — no real SMTP/IMAP." },
-  { id: "instagram", name: "Instagram", status: "planned", availabilityPct: 0, lastCheck: "—", affectedBusinesses: 0, latencyMs: null, notes: "Planned — not enabled in MVP." },
-  { id: "whatsapp", name: "WhatsApp", status: "planned", availabilityPct: 0, lastCheck: "—", affectedBusinesses: 0, latencyMs: null, notes: "Planned — not enabled in MVP." },
-  { id: "telegram", name: "Telegram", status: "planned", availabilityPct: 0, lastCheck: "—", affectedBusinesses: 0, latencyMs: null, notes: "Planned — not enabled in MVP." },
-  { id: "sms", name: "SMS", status: "planned", availabilityPct: 0, lastCheck: "—", affectedBusinesses: 0, latencyMs: null, notes: "Planned — not enabled in MVP." },
-  { id: "voice", name: "Voice", status: "future", availabilityPct: 0, lastCheck: "—", affectedBusinesses: 0, latencyMs: null, notes: "Future — not on MVP roadmap." },
+  {
+    id: "web-chat",
+    name: "Web Chat",
+    status: "mock-active",
+    availabilityPct: 100,
+    lastCheck: "30 s ago",
+    affectedBusinesses: 0,
+    latencyMs: 42,
+    notes: "Mock provider — no real backend.",
+  },
+  {
+    id: "email",
+    name: "Email",
+    status: "mock-active",
+    availabilityPct: 99.7,
+    lastCheck: "1 min ago",
+    affectedBusinesses: 0,
+    latencyMs: 118,
+    notes: "Mock provider — no real SMTP/IMAP.",
+  },
+  {
+    id: "instagram",
+    name: "Instagram",
+    status: "planned",
+    availabilityPct: 0,
+    lastCheck: "—",
+    affectedBusinesses: 0,
+    latencyMs: null,
+    notes: "Planned — not enabled in MVP.",
+  },
+  {
+    id: "whatsapp",
+    name: "WhatsApp",
+    status: "planned",
+    availabilityPct: 0,
+    lastCheck: "—",
+    affectedBusinesses: 0,
+    latencyMs: null,
+    notes: "Planned — not enabled in MVP.",
+  },
+  {
+    id: "telegram",
+    name: "Telegram",
+    status: "planned",
+    availabilityPct: 0,
+    lastCheck: "—",
+    affectedBusinesses: 0,
+    latencyMs: null,
+    notes: "Planned — not enabled in MVP.",
+  },
+  {
+    id: "sms",
+    name: "SMS",
+    status: "planned",
+    availabilityPct: 0,
+    lastCheck: "—",
+    affectedBusinesses: 0,
+    latencyMs: null,
+    notes: "Planned — not enabled in MVP.",
+  },
+  {
+    id: "voice",
+    name: "Voice",
+    status: "future",
+    availabilityPct: 0,
+    lastCheck: "—",
+    affectedBusinesses: 0,
+    latencyMs: null,
+    notes: "Future — not on MVP roadmap.",
+  },
 ];
 
-export type AdminAuditCategory = "business" | "user" | "access" | "feature-flag" | "provider" | "support";
+export type AdminAuditCategory =
+  | "business"
+  | "user"
+  | "access"
+  | "feature-flag"
+  | "provider"
+  | "support";
 export type AdminAuditResult = "success" | "denied" | "failed" | "mock";
 
 export type AdminAuditEvent = {
@@ -186,16 +354,134 @@ export type AdminAuditEvent = {
 };
 
 export const adminAuditEvents: AdminAuditEvent[] = [
-  { id: "a1", timestamp: "2026-05-19 09:42", actor: "Platform Admin · Saeed", actorType: "Platform Admin", action: "Business created", category: "business", target: "Demo Ecommerce Support", targetBusiness: "demo-ecommerce-support", result: "mock", source: "192.0.2.18", metadata: "Plan: Trial · Region: EU" },
-  { id: "a2", timestamp: "2026-05-19 09:30", actor: "Owner · Sara Tehrani", actorType: "Owner", action: "Member invited", category: "user", target: "babak@noorrestaurant.example", targetBusiness: "noor-restaurant", result: "success", source: "203.0.113.4", metadata: "Role: Operator" },
-  { id: "a3", timestamp: "2026-05-19 09:15", actor: "Admin · Mehdi Rahmani", actorType: "Admin", action: "Role changed", category: "user", target: "leila@tehrandental.example", targetBusiness: "tehran-dental-clinic", result: "success", source: "198.51.100.22", metadata: "Viewer → Operator" },
-  { id: "a4", timestamp: "2026-05-19 08:58", actor: "Viewer · Nazanin Pour", actorType: "Operator", action: "Attempted settings change", category: "access", target: "/settings/ai", targetBusiness: "noor-restaurant", result: "denied", source: "203.0.113.51", metadata: "Insufficient role" },
-  { id: "a5", timestamp: "2026-05-19 08:32", actor: "Platform Admin · Saeed", actorType: "Platform Admin", action: "Feature flag changed", category: "feature-flag", target: "platformAdminBeta → on", result: "mock", source: "192.0.2.18", metadata: "Scope: internal" },
-  { id: "a6", timestamp: "2026-05-19 08:05", actor: "System", actorType: "System", action: "Provider health check", category: "provider", target: "Web Chat", result: "success", source: "internal", metadata: "Latency 42 ms" },
-  { id: "a7", timestamp: "2026-05-19 07:51", actor: "Operator · Leila Saberi", actorType: "Operator", action: "AI draft approved", category: "business", target: "Conversation #4821", targetBusiness: "tehran-dental-clinic", result: "success", source: "198.51.100.22", metadata: "Confidence 0.84" },
-  { id: "a8", timestamp: "2026-05-18 22:14", actor: "Platform Support · Mina", actorType: "Platform Support", action: "Support note added", category: "support", target: "Pars Repair Services", targetBusiness: "pars-repair-services", result: "mock", source: "192.0.2.31", metadata: "Quota concern" },
-  { id: "a9", timestamp: "2026-05-18 19:02", actor: "Platform Admin · Saeed", actorType: "Platform Admin", action: "Workspace suspended", category: "business", target: "Atlas Legal Office", targetBusiness: "atlas-legal-office", result: "mock", source: "192.0.2.18", metadata: "Reason: payment review" },
-  { id: "a10", timestamp: "2026-05-18 15:33", actor: "System", actorType: "System", action: "Quota warning", category: "business", target: "Noor Restaurant", targetBusiness: "noor-restaurant", result: "mock", source: "internal", metadata: "104% of monthly tokens" },
+  {
+    id: "a1",
+    timestamp: "2026-05-19 09:42",
+    actor: "Platform Admin · Saeed",
+    actorType: "Platform Admin",
+    action: "Business created",
+    category: "business",
+    target: "Demo Ecommerce Support",
+    targetBusiness: "demo-ecommerce-support",
+    result: "mock",
+    source: "192.0.2.18",
+    metadata: "Plan: Trial · Region: EU",
+  },
+  {
+    id: "a2",
+    timestamp: "2026-05-19 09:30",
+    actor: "Owner · Sara Tehrani",
+    actorType: "Owner",
+    action: "Member invited",
+    category: "user",
+    target: "babak@noorrestaurant.example",
+    targetBusiness: "noor-restaurant",
+    result: "success",
+    source: "203.0.113.4",
+    metadata: "Role: Operator",
+  },
+  {
+    id: "a3",
+    timestamp: "2026-05-19 09:15",
+    actor: "Admin · Mehdi Rahmani",
+    actorType: "Admin",
+    action: "Role changed",
+    category: "user",
+    target: "leila@tehrandental.example",
+    targetBusiness: "tehran-dental-clinic",
+    result: "success",
+    source: "198.51.100.22",
+    metadata: "Viewer → Operator",
+  },
+  {
+    id: "a4",
+    timestamp: "2026-05-19 08:58",
+    actor: "Viewer · Nazanin Pour",
+    actorType: "Operator",
+    action: "Attempted settings change",
+    category: "access",
+    target: "/settings/ai",
+    targetBusiness: "noor-restaurant",
+    result: "denied",
+    source: "203.0.113.51",
+    metadata: "Insufficient role",
+  },
+  {
+    id: "a5",
+    timestamp: "2026-05-19 08:32",
+    actor: "Platform Admin · Saeed",
+    actorType: "Platform Admin",
+    action: "Feature flag changed",
+    category: "feature-flag",
+    target: "platformAdminBeta → on",
+    result: "mock",
+    source: "192.0.2.18",
+    metadata: "Scope: internal",
+  },
+  {
+    id: "a6",
+    timestamp: "2026-05-19 08:05",
+    actor: "System",
+    actorType: "System",
+    action: "Provider health check",
+    category: "provider",
+    target: "Web Chat",
+    result: "success",
+    source: "internal",
+    metadata: "Latency 42 ms",
+  },
+  {
+    id: "a7",
+    timestamp: "2026-05-19 07:51",
+    actor: "Operator · Leila Saberi",
+    actorType: "Operator",
+    action: "AI draft approved",
+    category: "business",
+    target: "Conversation #4821",
+    targetBusiness: "tehran-dental-clinic",
+    result: "success",
+    source: "198.51.100.22",
+    metadata: "Confidence 0.84",
+  },
+  {
+    id: "a8",
+    timestamp: "2026-05-18 22:14",
+    actor: "Platform Support · Mina",
+    actorType: "Platform Support",
+    action: "Support note added",
+    category: "support",
+    target: "Pars Repair Services",
+    targetBusiness: "pars-repair-services",
+    result: "mock",
+    source: "192.0.2.31",
+    metadata: "Quota concern",
+  },
+  {
+    id: "a9",
+    timestamp: "2026-05-18 19:02",
+    actor: "Platform Admin · Saeed",
+    actorType: "Platform Admin",
+    action: "Workspace suspended",
+    category: "business",
+    target: "Atlas Legal Office",
+    targetBusiness: "atlas-legal-office",
+    result: "mock",
+    source: "192.0.2.18",
+    metadata: "Reason: payment review",
+  },
+  {
+    id: "a10",
+    timestamp: "2026-05-18 15:33",
+    actor: "System",
+    actorType: "System",
+    action: "Quota warning",
+    category: "business",
+    target: "Noor Restaurant",
+    targetBusiness: "noor-restaurant",
+    result: "mock",
+    source: "internal",
+    metadata: "104% of monthly tokens",
+  },
 ];
 
 export type AdminFeatureFlag = {
@@ -210,16 +496,84 @@ export type AdminFeatureFlag = {
 };
 
 export const adminFeatureFlags: AdminFeatureFlag[] = [
-  { id: "webChatMock", label: "Web Chat (mock)", description: "Mock Web Chat channel rendering for all workspaces.", enabled: true, scope: "Mock active", affectedWorkspaces: 5, owner: "Platform Ops", lastChanged: "2026-04-30" },
-  { id: "emailMock", label: "Email (mock)", description: "Mock email channel rendering and threading.", enabled: true, scope: "Mock active", affectedWorkspaces: 5, owner: "Platform Ops", lastChanged: "2026-04-30" },
-  { id: "aiDraftReview", label: "AI draft review", description: "Operator-reviewed AI drafts. Human-review-first. No auto-send.", enabled: true, scope: "All workspaces", affectedWorkspaces: 5, owner: "Product", lastChanged: "2026-05-02" },
-  { id: "knowledgeBase", label: "Knowledge base", description: "FAQ + business rules editor for AI grounding.", enabled: true, scope: "All workspaces", affectedWorkspaces: 5, owner: "Product", lastChanged: "2026-05-05" },
-  { id: "nightMode", label: "Night mode", description: "Optional fourth theme layered on dark for low-light reception desks.", enabled: true, scope: "All workspaces", affectedWorkspaces: 5, owner: "Design", lastChanged: "2026-05-10" },
-  { id: "whatsappPlanned", label: "WhatsApp (planned visible)", description: "Show WhatsApp as a planned channel in channel setup.", enabled: true, scope: "All workspaces", affectedWorkspaces: 5, owner: "Product", lastChanged: "2026-04-21" },
-  { id: "platformAdminBeta", label: "Platform Admin (beta)", description: "Internal mock admin surface — visible to platform staff only.", enabled: true, scope: "Internal", affectedWorkspaces: 0, owner: "Platform Ops", lastChanged: "2026-05-19" },
+  {
+    id: "webChatMock",
+    label: "Web Chat (mock)",
+    description: "Mock Web Chat channel rendering for all workspaces.",
+    enabled: true,
+    scope: "Mock active",
+    affectedWorkspaces: 5,
+    owner: "Platform Ops",
+    lastChanged: "2026-04-30",
+  },
+  {
+    id: "emailMock",
+    label: "Email (mock)",
+    description: "Mock email channel rendering and threading.",
+    enabled: true,
+    scope: "Mock active",
+    affectedWorkspaces: 5,
+    owner: "Platform Ops",
+    lastChanged: "2026-04-30",
+  },
+  {
+    id: "aiDraftReview",
+    label: "AI draft review",
+    description: "Operator-reviewed AI drafts. Human-review-first. No auto-send.",
+    enabled: true,
+    scope: "All workspaces",
+    affectedWorkspaces: 5,
+    owner: "Product",
+    lastChanged: "2026-05-02",
+  },
+  {
+    id: "knowledgeBase",
+    label: "Knowledge base",
+    description: "FAQ + business rules editor for AI grounding.",
+    enabled: true,
+    scope: "All workspaces",
+    affectedWorkspaces: 5,
+    owner: "Product",
+    lastChanged: "2026-05-05",
+  },
+  {
+    id: "nightMode",
+    label: "Night mode",
+    description: "Optional fourth theme layered on dark for low-light reception desks.",
+    enabled: true,
+    scope: "All workspaces",
+    affectedWorkspaces: 5,
+    owner: "Design",
+    lastChanged: "2026-05-10",
+  },
+  {
+    id: "whatsappPlanned",
+    label: "WhatsApp (planned visible)",
+    description: "Show WhatsApp as a planned channel in channel setup.",
+    enabled: true,
+    scope: "All workspaces",
+    affectedWorkspaces: 5,
+    owner: "Product",
+    lastChanged: "2026-04-21",
+  },
+  {
+    id: "platformAdminBeta",
+    label: "Platform Admin (beta)",
+    description: "Internal mock admin surface — visible to platform staff only.",
+    enabled: true,
+    scope: "Internal",
+    affectedWorkspaces: 0,
+    owner: "Platform Ops",
+    lastChanged: "2026-05-19",
+  },
 ];
 
-export type SupportCategory = "Workspace setup" | "Invite issue" | "Channel setup" | "Billing (future)" | "AI draft review";
+export type SupportCategory =
+  | "Workspace setup"
+  | "Invite issue"
+  | "Channel setup"
+  | "Billing (future)"
+  | "AI draft review";
 export type SupportPriority = "low" | "normal" | "high" | "urgent";
 export type SupportStatus = "open" | "waiting" | "resolved";
 
@@ -251,7 +605,11 @@ export const adminSupportItems: AdminSupportItem[] = [
     summary: "Owner is approaching monthly quota — wants to review usage breakdown.",
     timeline: [
       { at: "08:10", actor: "Amir Shahbazi", note: "Submitted from workspace settings (mock)." },
-      { at: "08:32", actor: "Mina (Support)", note: "Added internal note: monitor quota; suggest plan review." },
+      {
+        at: "08:32",
+        actor: "Mina (Support)",
+        note: "Added internal note: monitor quota; suggest plan review.",
+      },
     ],
   },
   {
@@ -282,8 +640,16 @@ export const adminSupportItems: AdminSupportItem[] = [
     owner: "Saeed (Admin)",
     summary: "Question about Email channel mock configuration.",
     timeline: [
-      { at: "13:02", actor: "Dr. Niloofar Karimi", note: "Asked how Email auto-routing will work." },
-      { at: "14:15", actor: "Saeed (Admin)", note: "Resolved — explained mock behavior; pointed to docs." },
+      {
+        at: "13:02",
+        actor: "Dr. Niloofar Karimi",
+        note: "Asked how Email auto-routing will work.",
+      },
+      {
+        at: "14:15",
+        actor: "Saeed (Admin)",
+        note: "Resolved — explained mock behavior; pointed to docs.",
+      },
     ],
   },
   {
@@ -297,9 +663,7 @@ export const adminSupportItems: AdminSupportItem[] = [
     createdAt: "2026-05-18 11:40",
     owner: "—",
     summary: "Asked about plan upgrade path. Billing not enabled in MVP.",
-    timeline: [
-      { at: "11:40", actor: "Reza Mahdavi", note: "Requested pricing options (mock)." },
-    ],
+    timeline: [{ at: "11:40", actor: "Reza Mahdavi", note: "Requested pricing options (mock)." }],
   },
   {
     id: "s5",
@@ -326,7 +690,9 @@ export const adminPlatformKPIs = {
   messagesThisMonth: adminBusinesses.reduce((s, b) => s + b.conversationsThisMonth, 0),
   aiDraftsThisMonth: adminBusinesses.reduce((s, b) => s + b.aiDraftsThisMonth, 0),
   tokensThisMonth: adminBusinesses.reduce((s, b) => s + b.tokensThisMonth, 0),
-  providerAlerts: adminProviders.filter((p) => p.status === "mock-active" && p.availabilityPct < 99.9).length,
+  providerAlerts: adminProviders.filter(
+    (p) => p.status === "mock-active" && p.availabilityPct < 99.9,
+  ).length,
   supportItemsOpen: adminSupportItems.filter((s) => s.status !== "resolved").length,
   quotaWarnings: adminBusinesses.filter((b) => b.usageStatus !== "healthy").length,
 };

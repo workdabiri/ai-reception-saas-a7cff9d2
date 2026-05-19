@@ -36,7 +36,10 @@ export const Route = createFileRoute("/audit")({
   head: () => ({
     meta: [
       { title: "Audit log — AI Reception" },
-      { name: "description", content: "Trustworthy record of every action taken in this workspace." },
+      {
+        name: "description",
+        content: "Trustworthy record of every action taken in this workspace.",
+      },
     ],
   }),
   component: AuditPage,
@@ -57,7 +60,7 @@ function AuditPage() {
 
   const allActions = useMemo(
     () => ["All", ...Array.from(new Set(auditEvents.map((e) => e.actionLabel)))],
-    []
+    [],
   );
 
   const filtered = useMemo(() => {
@@ -80,7 +83,6 @@ function AuditPage() {
   }, [actorType, result, actionFilter, workspace, query]);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
-
   const selected = filtered.find((e) => e.id === selectedId) ?? filtered[0] ?? null;
 
   const stateOverride = useStateParam();
@@ -92,14 +94,10 @@ function AuditPage() {
     );
   }
   if (stateOverride === "access-denied") {
-    return (
-      <RouteStatePage title="Audit log">{statePresets.auditAccessDenied()}</RouteStatePage>
-    );
+    return <RouteStatePage title="Audit log">{statePresets.auditAccessDenied()}</RouteStatePage>;
   }
   if (stateOverride === "error") {
-    return (
-      <RouteStatePage title="Audit log">{statePresets.auditError()}</RouteStatePage>
-    );
+    return <RouteStatePage title="Audit log">{statePresets.auditError()}</RouteStatePage>;
   }
   if (stateOverride === "loading") {
     return (
@@ -112,7 +110,6 @@ function AuditPage() {
   return (
     <>
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
-
         <PageHeader
           title="Audit log"
           description="A trustworthy record of who did what, where, and what the server allowed."
@@ -140,10 +137,30 @@ function AuditPage() {
                 className="h-9 w-full rounded-lg border border-input bg-surface pl-8 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
               />
             </div>
-            <FilterSelect label="Actor" value={actorType} onChange={(v) => setActorType(v as typeof actorType)} options={actorTypes} />
-            <FilterSelect label="Action" value={actionFilter} onChange={setActionFilter} options={allActions} />
-            <FilterSelect label="Result" value={result} onChange={(v) => setResult(v as typeof result)} options={results} />
-            <FilterSelect label="Date" value={dateRange} onChange={(v) => setDateRange(v as typeof dateRange)} options={dateRanges as readonly string[]} />
+            <FilterSelect
+              label="Actor"
+              value={actorType}
+              onChange={(v) => setActorType(v as typeof actorType)}
+              options={actorTypes}
+            />
+            <FilterSelect
+              label="Action"
+              value={actionFilter}
+              onChange={setActionFilter}
+              options={allActions}
+            />
+            <FilterSelect
+              label="Result"
+              value={result}
+              onChange={(v) => setResult(v as typeof result)}
+              options={results}
+            />
+            <FilterSelect
+              label="Date"
+              value={dateRange}
+              onChange={(v) => setDateRange(v as typeof dateRange)}
+              options={dateRanges as readonly string[]}
+            />
             <FilterSelect
               label="Workspace"
               value={workspace}
@@ -179,7 +196,9 @@ function AuditPage() {
                         selected?.id === e.id ? "bg-primary-soft/30" : ""
                       }`}
                     >
-                      <td className="px-4 py-3 whitespace-nowrap text-muted-foreground tabular-nums">{e.time}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-muted-foreground tabular-nums">
+                        {e.time}
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <ActorIcon type={e.actorType} />
@@ -189,13 +208,17 @@ function AuditPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{e.workspace}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
+                        {e.workspace}
+                      </td>
                       <td className="px-4 py-3">
                         <span className="rounded-md border border-border bg-surface px-2 py-1 text-[11px] font-medium">
                           {e.actionLabel}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-foreground/90 max-w-[260px] truncate">{e.target}</td>
+                      <td className="px-4 py-3 text-foreground/90 max-w-[260px] truncate">
+                        {e.target}
+                      </td>
                       <td className="px-4 py-3">
                         <ResultBadge result={e.result} />
                       </td>
@@ -232,7 +255,9 @@ function AuditPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <span className="truncate text-sm font-medium">{e.actor}</span>
-                        <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">{e.time}</span>
+                        <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
+                          {e.time}
+                        </span>
                       </div>
                       <div className="mt-1 truncate text-[12px] text-muted-foreground">
                         {e.actionLabel} · {e.target}
@@ -255,9 +280,9 @@ function AuditPage() {
               )}
             </ul>
 
-
             <div className="border-t border-border bg-surface-muted/40 px-4 py-2 text-[11px] text-muted-foreground">
-              Showing {filtered.length} of {auditEvents.length} mock events · Retention is a planned capability.
+              Showing {filtered.length} of {auditEvents.length} mock events · Retention is a planned
+              capability.
             </div>
           </div>
 
@@ -278,12 +303,9 @@ function AuditPage() {
       <Sheet open={mobileDetailOpen} onOpenChange={setMobileDetailOpen}>
         <SheetContent side="bottom" className="h-[85vh] overflow-y-auto p-0 sm:hidden">
           <SheetTitle className="sr-only">Audit event details</SheetTitle>
-          {selected && (
-            <DetailPanel event={selected} onClose={() => setMobileDetailOpen(false)} />
-          )}
+          {selected && <DetailPanel event={selected} onClose={() => setMobileDetailOpen(false)} />}
         </SheetContent>
       </Sheet>
-
     </>
   );
 }
@@ -331,13 +353,27 @@ function ActorIcon({ type }: { type: AuditActorType }) {
 
 function ResultBadge({ result }: { result: AuditResult }) {
   const map = {
-    Success: { Icon: ShieldCheck, cls: "border-success/20 bg-success/10 text-foreground", icon: "text-success" },
-    Denied:  { Icon: ShieldOff,   cls: "border-destructive/20 bg-destructive/10 text-foreground", icon: "text-destructive" },
-    Failed:  { Icon: ShieldAlert, cls: "border-warning/30 bg-warning/15 text-foreground", icon: "text-warning" },
+    Success: {
+      Icon: ShieldCheck,
+      cls: "border-success/20 bg-success/10 text-foreground",
+      icon: "text-success",
+    },
+    Denied: {
+      Icon: ShieldOff,
+      cls: "border-destructive/20 bg-destructive/10 text-foreground",
+      icon: "text-destructive",
+    },
+    Failed: {
+      Icon: ShieldAlert,
+      cls: "border-warning/30 bg-warning/15 text-foreground",
+      icon: "text-warning",
+    },
   } as const;
   const { Icon, cls, icon } = map[result];
   return (
-    <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium ${cls}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium ${cls}`}
+    >
       <Icon className={`h-3 w-3 ${icon}`} /> {result}
     </span>
   );
@@ -416,14 +452,21 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        {label}
+      </div>
       <div className="mt-1">{children}</div>
     </div>
   );
 }
 
 type SecVariant = "danger" | "warning" | "neutral";
-const securityStates: { title: string; desc: string; Icon: typeof ShieldOff; variant: SecVariant }[] = [
+const securityStates: {
+  title: string;
+  desc: string;
+  Icon: typeof ShieldOff;
+  variant: SecVariant;
+}[] = [
   {
     title: "Access denied",
     desc: "Server-side membership check rejected the request.",
@@ -458,9 +501,21 @@ const securityStates: { title: string; desc: string; Icon: typeof ShieldOff; var
 
 function SecurityStatesStrip() {
   const variantToken: Record<SecVariant, { bg: string; border: string; icon: string }> = {
-    danger:  { bg: "var(--status-danger-soft)",  border: "var(--status-danger)",  icon: "var(--status-danger)" },
-    warning: { bg: "var(--status-warning-soft)", border: "var(--status-warning)", icon: "var(--status-warning)" },
-    neutral: { bg: "var(--status-neutral-soft)", border: "var(--status-neutral)", icon: "var(--status-neutral)" },
+    danger: {
+      bg: "var(--status-danger-soft)",
+      border: "var(--status-danger)",
+      icon: "var(--status-danger)",
+    },
+    warning: {
+      bg: "var(--status-warning-soft)",
+      border: "var(--status-warning)",
+      icon: "var(--status-warning)",
+    },
+    neutral: {
+      bg: "var(--status-neutral-soft)",
+      border: "var(--status-neutral)",
+      icon: "var(--status-neutral)",
+    },
   };
   return (
     <div>

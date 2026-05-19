@@ -16,12 +16,28 @@ import { CHANNELS, type ChannelState } from "@/lib/channels";
 export const Route = createFileRoute("/dev/pill-gallery")({ component: Gallery });
 
 const PILL_VARIANTS: PillVariant[] = [
-  "info", "success", "warn", "destructive", "primary", "ai", "operator", "muted", "neutral",
+  "info",
+  "success",
+  "warn",
+  "destructive",
+  "primary",
+  "ai",
+  "operator",
+  "muted",
+  "neutral",
 ];
 const PILL_APPEARANCES: PillAppearance[] = ["soft", "solid"];
 const CHIP_STATES = [
-  "new", "open", "waiting", "closed", "needs-review",
-  "follow-up", "urgent", "active", "access-denied", "future",
+  "new",
+  "open",
+  "waiting",
+  "closed",
+  "needs-review",
+  "follow-up",
+  "urgent",
+  "active",
+  "access-denied",
+  "future",
 ] as const;
 const CHANNEL_STATES: ChannelState[] = ["active", "connecting", "planned", "not_connected"];
 
@@ -55,7 +71,9 @@ function Gallery() {
         {PILL_VARIANTS.flatMap((v) =>
           PILL_APPEARANCES.map((a) => (
             <Cell key={`p-${v}-${a}`} id={`pill--${v}--${a}`}>
-              <Pill variant={v} appearance={a}>{v}</Pill>
+              <Pill variant={v} appearance={a}>
+                {v}
+              </Pill>
             </Cell>
           )),
         )}

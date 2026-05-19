@@ -31,11 +31,7 @@ export type ChannelKey =
   | "sms"
   | "call";
 
-export type ChannelState =
-  | "active"
-  | "connecting"
-  | "planned"
-  | "not_connected";
+export type ChannelState = "active" | "connecting" | "planned" | "not_connected";
 
 export type ChannelDefinition = {
   key: ChannelKey;

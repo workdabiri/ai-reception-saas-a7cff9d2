@@ -18,15 +18,27 @@ export const Route = createFileRoute("/widget-preview")({
 });
 
 const STATES: { key: WidgetState | "launcher-closed"; label: string; note: string }[] = [
-  { key: "launcher-closed", label: "Launcher closed", note: "Default floating launcher resting state." },
+  {
+    key: "launcher-closed",
+    label: "Launcher closed",
+    note: "Default floating launcher resting state.",
+  },
   { key: "welcome", label: "Welcome", note: "First view — invites the customer to start." },
   { key: "form", label: "New conversation", note: "Customer details + first message." },
   { key: "validation", label: "Validation", note: "Required fields missing." },
   { key: "submitted", label: "Submitted", note: "Message added to business inbox." },
   { key: "active", label: "Active thread", note: "Customer + operator messages." },
   { key: "offline", label: "Offline", note: "Business is offline — customer leaves a message." },
-  { key: "ai-unavailable", label: "AI unavailable", note: "Drafts unavailable; operator still replies manually." },
-  { key: "provider-unavailable", label: "Channel unavailable", note: "Provider channel not available right now." },
+  {
+    key: "ai-unavailable",
+    label: "AI unavailable",
+    note: "Drafts unavailable; operator still replies manually.",
+  },
+  {
+    key: "provider-unavailable",
+    label: "Channel unavailable",
+    note: "Provider channel not available right now.",
+  },
   { key: "closed", label: "Closed", note: "Conversation closed; customer can start a new one." },
 ];
 
@@ -64,7 +76,8 @@ function WidgetPreviewPage() {
         <div className="space-y-2">
           <h1 className="text-2xl font-medium tracking-tight">Web Chat widget preview</h1>
           <p className="text-sm text-muted-foreground">
-            Static mock preview of every customer-facing state. No backend, no realtime, no AI auto-reply.
+            Static mock preview of every customer-facing state. No backend, no realtime, no AI
+            auto-reply.
           </p>
         </div>
 

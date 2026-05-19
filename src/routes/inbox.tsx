@@ -131,7 +131,20 @@ function PriorityFlag({ priority }: { priority: Priority }) {
 }
 
 type SectionFilter =
-  | { kind: "inbox"; value: "all" | "new" | "unassigned" | "assigned-me" | "waiting" | "needs-followup" | "needs-review" | "overdue" | "closed"; label: string }
+  | {
+      kind: "inbox";
+      value:
+        | "all"
+        | "new"
+        | "unassigned"
+        | "assigned-me"
+        | "waiting"
+        | "needs-followup"
+        | "needs-review"
+        | "overdue"
+        | "closed";
+      label: string;
+    }
   | { kind: "channel"; value: Channel | "planned" | "future"; label: string }
   | { kind: "ai"; value: "pending" | "accepted" | "rejected" | "needs-source"; label: string }
   | { kind: "operator"; value: string | "unassigned"; label: string }
@@ -157,28 +170,43 @@ function InboxPage() {
 
   const filtered = useMemo(() => {
     return conversations.filter((c) => {
-
-
       let matchSection = true;
       if (section.kind === "inbox") {
         switch (section.value) {
-          case "all": matchSection = true; break;
-          case "new": matchSection = c.inboxStatus === "new"; break;
-          case "unassigned": matchSection = !c.assignee; break;
-          case "assigned-me": matchSection = c.assignee === ME_ID; break;
-          case "waiting": matchSection = c.inboxStatus === "waiting"; break;
-          case "needs-followup": matchSection = c.inboxStatus === "needs-followup"; break;
-          case "needs-review": matchSection = c.messages.some((m) => m.author === "ai-draft"); break;
-          case "overdue": matchSection = c.priority === "urgent" || /hr|d/i.test(c.updated); break;
-          case "closed": matchSection = c.inboxStatus === "closed"; break;
+          case "all":
+            matchSection = true;
+            break;
+          case "new":
+            matchSection = c.inboxStatus === "new";
+            break;
+          case "unassigned":
+            matchSection = !c.assignee;
+            break;
+          case "assigned-me":
+            matchSection = c.assignee === ME_ID;
+            break;
+          case "waiting":
+            matchSection = c.inboxStatus === "waiting";
+            break;
+          case "needs-followup":
+            matchSection = c.inboxStatus === "needs-followup";
+            break;
+          case "needs-review":
+            matchSection = c.messages.some((m) => m.author === "ai-draft");
+            break;
+          case "overdue":
+            matchSection = c.priority === "urgent" || /hr|d/i.test(c.updated);
+            break;
+          case "closed":
+            matchSection = c.inboxStatus === "closed";
+            break;
         }
       } else if (section.kind === "channel") {
         if (section.value === "planned" || section.value === "future") matchSection = false;
         else matchSection = c.channel === section.value;
       } else if (section.kind === "ai") {
-        matchSection = section.value === "pending"
-          ? c.messages.some((m) => m.author === "ai-draft")
-          : false;
+        matchSection =
+          section.value === "pending" ? c.messages.some((m) => m.author === "ai-draft") : false;
       } else if (section.kind === "operator") {
         matchSection = section.value === "unassigned" ? !c.assignee : c.assignee === section.value;
       } else if (section.kind === "priority") {
@@ -213,9 +241,7 @@ function InboxPage() {
     );
   }
   if (stateOverride === "access-denied") {
-    return (
-      <RouteStatePage title="Inbox">{statePresets.inboxAccessDenied()}</RouteStatePage>
-    );
+    return <RouteStatePage title="Inbox">{statePresets.inboxAccessDenied()}</RouteStatePage>;
   }
   if (stateOverride === "loading") {
     return (
@@ -227,7 +253,6 @@ function InboxPage() {
       </RouteStatePage>
     );
   }
-
 
   const openConversation = (id: string) => {
     setActiveId(id);
@@ -244,7 +269,12 @@ function InboxPage() {
     />
   );
 
-  const channelChips: { value: Channel | "planned" | "future" | "all"; label: string; planned?: boolean; dotChannel?: string }[] = [
+  const channelChips: {
+    value: Channel | "planned" | "future" | "all";
+    label: string;
+    planned?: boolean;
+    dotChannel?: string;
+  }[] = [
     { value: "all", label: "All" },
     { value: "webform", label: "Web" },
     { value: "email", label: "Email" },
@@ -256,8 +286,7 @@ function InboxPage() {
   ];
 
   const queueRows = inboxSectionGroups[0].rows;
-  const activeQueueLabel =
-    section.kind === "inbox" ? section.label : "All conversations";
+  const activeQueueLabel = section.kind === "inbox" ? section.label : "All conversations";
 
   return (
     <>
@@ -291,12 +320,12 @@ function InboxPage() {
                 onClick={() => setQueueMenuOpen((v) => !v)}
                 className="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 text-left transition hover:bg-surface-muted"
               >
-                <span className="min-w-0 truncate text-[13px] font-medium">
-                  {activeQueueLabel}
-                </span>
+                <span className="min-w-0 truncate text-[13px] font-medium">{activeQueueLabel}</span>
                 <span className="flex items-center gap-2 shrink-0 text-[11px] text-muted-foreground">
                   <span className="tabular-nums">{filtered.length}</span>
-                  <ChevronRight className={`h-3.5 w-3.5 transition ${queueMenuOpen ? "rotate-90" : ""}`} />
+                  <ChevronRight
+                    className={`h-3.5 w-3.5 transition ${queueMenuOpen ? "rotate-90" : ""}`}
+                  />
                 </span>
               </button>
               {queueMenuOpen && (
@@ -306,7 +335,8 @@ function InboxPage() {
                     {queueRows.map((row) => {
                       const Icon = row.icon;
                       const isActive =
-                        section.kind === "inbox" && section.value === (row.filter as { value: string }).value;
+                        section.kind === "inbox" &&
+                        section.value === (row.filter as { value: string }).value;
                       return (
                         <button
                           key={row.label}
@@ -315,13 +345,21 @@ function InboxPage() {
                             setQueueMenuOpen(false);
                           }}
                           className={`flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[12.5px] transition ${
-                            isActive ? "bg-primary-soft text-primary font-medium" : "hover:bg-secondary"
+                            isActive
+                              ? "bg-primary-soft text-primary font-medium"
+                              : "hover:bg-secondary"
                           }`}
                         >
-                          {Icon && <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`} />}
+                          {Icon && (
+                            <Icon
+                              className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                            />
+                          )}
                           <span className="min-w-0 flex-1 truncate">{row.label}</span>
                           {row.badge !== undefined && row.badge !== 0 && (
-                            <span className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-medium tabular-nums ${badgeToneClass[row.badgeTone ?? "muted"]}`}>
+                            <span
+                              className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-medium tabular-nums ${badgeToneClass[row.badgeTone ?? "muted"]}`}
+                            >
                               {row.badge}
                             </span>
                           )}
@@ -358,7 +396,11 @@ function InboxPage() {
                       if (chip.value === "all") {
                         setSection({ kind: "inbox", value: "all", label: "All conversations" });
                       } else if (!chip.planned) {
-                        setSection({ kind: "channel", value: chip.value as Channel, label: chip.label });
+                        setSection({
+                          kind: "channel",
+                          value: chip.value as Channel,
+                          label: chip.label,
+                        });
                       }
                     }}
                     className={
@@ -418,9 +460,7 @@ function InboxPage() {
                           </span>
                         </div>
                         <p className="mt-1 truncate text-xs font-medium">{c.subject}</p>
-                        <p className="mt-1 truncate text-xs text-muted-foreground">
-                          {c.preview}
-                        </p>
+                        <p className="mt-1 truncate text-xs text-muted-foreground">{c.preview}</p>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <InboxStatusChip status={c.inboxStatus} />
                           <ChannelChip channel={c.channel} label={channelLabel[c.channel]} />
@@ -433,7 +473,11 @@ function InboxPage() {
                             {a ? (
                               <>
                                 <span className="grid h-4 w-4 place-items-center rounded-full bg-secondary text-[8px] font-medium text-secondary-foreground">
-                                  {a.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                                  {a.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .slice(0, 2)
+                                    .join("")}
                                 </span>
                                 <span className="truncate">{a.name}</span>
                               </>
@@ -604,7 +648,6 @@ function InboxPage() {
               </div>
             )}
 
-
             <div className="flex items-center gap-1 pb-2 text-[11px]">
               <button
                 onClick={() => setNoteMode(false)}
@@ -631,9 +674,7 @@ function InboxPage() {
 
             <div
               className={`rounded-xl border focus-within:ring-2 focus-within:ring-ring/40 ${
-                noteMode
-                  ? "border-warning/40 bg-warning/10"
-                  : "border-border bg-card"
+                noteMode ? "border-warning/40 bg-warning/10" : "border-border bg-card"
               }`}
             >
               <textarea
@@ -722,10 +763,7 @@ function InboxPage() {
 
       {/* All filters drawer (operators, priority, AI review, channels) */}
       <Sheet open={sectionsOpen} onOpenChange={setSectionsOpen}>
-        <SheetContent
-          side="left"
-          className="w-[300px] overflow-y-auto p-0"
-        >
+        <SheetContent side="left" className="w-[300px] overflow-y-auto p-0">
           <SheetTitle className="sr-only">All filters</SheetTitle>
           {allFiltersPanel}
         </SheetContent>
@@ -788,7 +826,8 @@ function CustomerContext({
         <div>
           <div className="workspace-scoped-callout-title">Workspace-scoped</div>
           <div className="workspace-scoped-callout-body">
-            Customer data is visible only to members of this workspace. Mock data — no real PII shown.
+            Customer data is visible only to members of this workspace. Mock data — no real PII
+            shown.
           </div>
         </div>
       </div>
@@ -797,7 +836,10 @@ function CustomerContext({
       <div className="p-5">
         <SectionTitle>Next action suggestions</SectionTitle>
         <ul className="mt-3 space-y-2">
-          <NextAction label="Confirm Wed 10:30am slot" hint="Based on customer's morning preference" />
+          <NextAction
+            label="Confirm Wed 10:30am slot"
+            hint="Based on customer's morning preference"
+          />
           <NextAction label="Send first-visit forms" hint="Eleanor hasn't returned them" />
           <NextAction label="Mark as resolved" hint="If reply is acknowledged" />
         </ul>
@@ -847,7 +889,9 @@ function CustomerContext({
                   <span className="text-[13px] font-medium text-foreground">{n.authorName}</span>
                   <span className="text-[12px] text-muted-foreground tabular-nums">{n.time}</span>
                 </div>
-                <p className="text-[13px] font-normal leading-[1.5] text-muted-foreground">{n.body}</p>
+                <p className="text-[13px] font-normal leading-[1.5] text-muted-foreground">
+                  {n.body}
+                </p>
               </li>
             ))}
           {active.messages.filter((m) => m.author === "internal-note").length === 0 && (
@@ -902,13 +946,7 @@ function systemLabel(m: Message) {
   }
 }
 
-function ActionBtn({
-  icon: Icon,
-  label,
-}: {
-  icon: typeof Filter;
-  label: string;
-}) {
+function ActionBtn({ icon: Icon, label }: { icon: typeof Filter; label: string }) {
   return (
     <button className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary">
       <Icon className="h-3.5 w-3.5" />
@@ -948,13 +986,7 @@ function NextAction({ label, hint }: { label: string; hint: string }) {
   );
 }
 
-function ThreadItem({
-  message,
-  customerInitials,
-}: {
-  message: Message;
-  customerInitials: string;
-}) {
+function ThreadItem({ message, customerInitials }: { message: Message; customerInitials: string }) {
   // System events
   if (
     message.author === "system-assignment" ||
@@ -1003,10 +1035,7 @@ function ThreadItem({
   const mine = message.author === "operator";
   return (
     <div className={`flex gap-3 ${mine ? "flex-row-reverse" : ""}`}>
-      <Avatar
-        initials={mine ? "OP" : customerInitials}
-        tone={mine ? "primary" : "neutral"}
-      />
+      <Avatar initials={mine ? "OP" : customerInitials} tone={mine ? "primary" : "neutral"} />
       <div className={`flex max-w-xl flex-col ${mine ? "items-end" : ""}`}>
         <div className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground">
           <span className="font-medium text-foreground">{message.authorName}</span>
@@ -1031,11 +1060,16 @@ function ThreadItem({
 
 function sectionGroupLabel(kind: SectionFilter["kind"]) {
   switch (kind) {
-    case "inbox": return "Inbox";
-    case "channel": return "Channels";
-    case "ai": return "AI Review";
-    case "operator": return "Operators";
-    case "priority": return "Priority";
+    case "inbox":
+      return "Inbox";
+    case "channel":
+      return "Channels";
+    case "ai":
+      return "AI Review";
+    case "operator":
+      return "Operators";
+    case "priority":
+      return "Priority";
   }
 }
 
@@ -1055,59 +1089,220 @@ const inboxSectionGroups: SectionGroup[] = [
     id: "inbox",
     title: "Inbox",
     rows: [
-      { label: "All conversations", filter: { kind: "inbox", value: "all", label: "All conversations" }, icon: InboxIcon, badge: 6 },
-      { label: "New", filter: { kind: "inbox", value: "new", label: "New" }, icon: Sparkles, badge: 1, badgeTone: "info" },
-      { label: "Unassigned", filter: { kind: "inbox", value: "unassigned", label: "Unassigned" }, icon: AlertTriangle, badge: 2, badgeTone: "warning" },
-      { label: "Assigned to me", filter: { kind: "inbox", value: "assigned-me", label: "Assigned to me" }, icon: UserPlus, badge: 0 },
-      { label: "Waiting for operator", filter: { kind: "inbox", value: "waiting", label: "Waiting for operator" }, icon: Clock, badge: 2, badgeTone: "warning" },
-      { label: "Needs follow-up", filter: { kind: "inbox", value: "needs-followup", label: "Needs follow-up" }, icon: Flag, badge: 1, badgeTone: "primary" },
-      { label: "Needs review", filter: { kind: "inbox", value: "needs-review", label: "Needs review" }, icon: FileSearch, badge: 1, badgeTone: "primary" },
-      { label: "Overdue", filter: { kind: "inbox", value: "overdue", label: "Overdue" }, icon: AlertTriangle, badge: 2, badgeTone: "warning" },
-      { label: "Closed", filter: { kind: "inbox", value: "closed", label: "Closed" }, icon: CheckCheck, badge: 1, badgeTone: "muted" },
+      {
+        label: "All conversations",
+        filter: { kind: "inbox", value: "all", label: "All conversations" },
+        icon: InboxIcon,
+        badge: 6,
+      },
+      {
+        label: "New",
+        filter: { kind: "inbox", value: "new", label: "New" },
+        icon: Sparkles,
+        badge: 1,
+        badgeTone: "info",
+      },
+      {
+        label: "Unassigned",
+        filter: { kind: "inbox", value: "unassigned", label: "Unassigned" },
+        icon: AlertTriangle,
+        badge: 2,
+        badgeTone: "warning",
+      },
+      {
+        label: "Assigned to me",
+        filter: { kind: "inbox", value: "assigned-me", label: "Assigned to me" },
+        icon: UserPlus,
+        badge: 0,
+      },
+      {
+        label: "Waiting for operator",
+        filter: { kind: "inbox", value: "waiting", label: "Waiting for operator" },
+        icon: Clock,
+        badge: 2,
+        badgeTone: "warning",
+      },
+      {
+        label: "Needs follow-up",
+        filter: { kind: "inbox", value: "needs-followup", label: "Needs follow-up" },
+        icon: Flag,
+        badge: 1,
+        badgeTone: "primary",
+      },
+      {
+        label: "Needs review",
+        filter: { kind: "inbox", value: "needs-review", label: "Needs review" },
+        icon: FileSearch,
+        badge: 1,
+        badgeTone: "primary",
+      },
+      {
+        label: "Overdue",
+        filter: { kind: "inbox", value: "overdue", label: "Overdue" },
+        icon: AlertTriangle,
+        badge: 2,
+        badgeTone: "warning",
+      },
+      {
+        label: "Closed",
+        filter: { kind: "inbox", value: "closed", label: "Closed" },
+        icon: CheckCheck,
+        badge: 1,
+        badgeTone: "muted",
+      },
     ],
   },
   {
     id: "channel",
     title: "Channels",
     rows: [
-      { label: "Web Chat", filter: { kind: "channel", value: "webform", label: "Web Chat" }, icon: MessageSquare, badge: 3, badgeTone: "info" },
-      { label: "Email", filter: { kind: "channel", value: "email", label: "Email" }, icon: MailIcon, badge: 5, badgeTone: "info" },
-      { label: "Instagram DM", filter: { kind: "channel", value: "planned", label: "Instagram DM" }, icon: Instagram, badge: "Planned", badgeTone: "muted", disabled: true },
-      { label: "WhatsApp", filter: { kind: "channel", value: "planned", label: "WhatsApp" }, icon: MessageCircle, badge: "Planned", badgeTone: "muted", disabled: true },
-      { label: "Telegram", filter: { kind: "channel", value: "planned", label: "Telegram" }, icon: SendIcon, badge: "Planned", badgeTone: "muted", disabled: true },
-      { label: "SMS", filter: { kind: "channel", value: "planned", label: "SMS" }, icon: Smartphone, badge: "Planned", badgeTone: "muted", disabled: true },
-      { label: "Voice", filter: { kind: "channel", value: "future", label: "Voice" }, icon: PhoneCall, badge: "Future", badgeTone: "muted", disabled: true },
+      {
+        label: "Web Chat",
+        filter: { kind: "channel", value: "webform", label: "Web Chat" },
+        icon: MessageSquare,
+        badge: 3,
+        badgeTone: "info",
+      },
+      {
+        label: "Email",
+        filter: { kind: "channel", value: "email", label: "Email" },
+        icon: MailIcon,
+        badge: 5,
+        badgeTone: "info",
+      },
+      {
+        label: "Instagram DM",
+        filter: { kind: "channel", value: "planned", label: "Instagram DM" },
+        icon: Instagram,
+        badge: "Planned",
+        badgeTone: "muted",
+        disabled: true,
+      },
+      {
+        label: "WhatsApp",
+        filter: { kind: "channel", value: "planned", label: "WhatsApp" },
+        icon: MessageCircle,
+        badge: "Planned",
+        badgeTone: "muted",
+        disabled: true,
+      },
+      {
+        label: "Telegram",
+        filter: { kind: "channel", value: "planned", label: "Telegram" },
+        icon: SendIcon,
+        badge: "Planned",
+        badgeTone: "muted",
+        disabled: true,
+      },
+      {
+        label: "SMS",
+        filter: { kind: "channel", value: "planned", label: "SMS" },
+        icon: Smartphone,
+        badge: "Planned",
+        badgeTone: "muted",
+        disabled: true,
+      },
+      {
+        label: "Voice",
+        filter: { kind: "channel", value: "future", label: "Voice" },
+        icon: PhoneCall,
+        badge: "Future",
+        badgeTone: "muted",
+        disabled: true,
+      },
     ],
   },
   {
     id: "ai",
     title: "AI Review",
     rows: [
-      { label: "Drafts pending review", filter: { kind: "ai", value: "pending", label: "Drafts pending review" }, icon: Sparkles, badge: 1, badgeTone: "primary" },
-      { label: "Accepted drafts", filter: { kind: "ai", value: "accepted", label: "Accepted drafts" }, icon: CheckCircle2, badge: 0 },
-      { label: "Rejected drafts", filter: { kind: "ai", value: "rejected", label: "Rejected drafts" }, icon: XCircle, badge: 0 },
-      { label: "Needs source check", filter: { kind: "ai", value: "needs-source", label: "Needs source check" }, icon: FileSearch, badge: 0 },
+      {
+        label: "Drafts pending review",
+        filter: { kind: "ai", value: "pending", label: "Drafts pending review" },
+        icon: Sparkles,
+        badge: 1,
+        badgeTone: "primary",
+      },
+      {
+        label: "Accepted drafts",
+        filter: { kind: "ai", value: "accepted", label: "Accepted drafts" },
+        icon: CheckCircle2,
+        badge: 0,
+      },
+      {
+        label: "Rejected drafts",
+        filter: { kind: "ai", value: "rejected", label: "Rejected drafts" },
+        icon: XCircle,
+        badge: 0,
+      },
+      {
+        label: "Needs source check",
+        filter: { kind: "ai", value: "needs-source", label: "Needs source check" },
+        icon: FileSearch,
+        badge: 0,
+      },
     ],
   },
   {
     id: "operator",
     title: "Operators",
     rows: [
-      { label: "Unassigned", filter: { kind: "operator", value: "unassigned", label: "Unassigned" }, badge: 2, badgeTone: "warning" },
-      { label: "Priya Raman", filter: { kind: "operator", value: "u3", label: "Priya Raman" }, badge: 2 },
-      { label: "Marcus Lee", filter: { kind: "operator", value: "u4", label: "Marcus Lee" }, badge: 1 },
-      { label: "Daniel Cho", filter: { kind: "operator", value: "u2", label: "Daniel Cho" }, badge: 1 },
-      { label: "Amelia Hart", filter: { kind: "operator", value: "u1", label: "Amelia Hart" }, badge: 0 },
+      {
+        label: "Unassigned",
+        filter: { kind: "operator", value: "unassigned", label: "Unassigned" },
+        badge: 2,
+        badgeTone: "warning",
+      },
+      {
+        label: "Priya Raman",
+        filter: { kind: "operator", value: "u3", label: "Priya Raman" },
+        badge: 2,
+      },
+      {
+        label: "Marcus Lee",
+        filter: { kind: "operator", value: "u4", label: "Marcus Lee" },
+        badge: 1,
+      },
+      {
+        label: "Daniel Cho",
+        filter: { kind: "operator", value: "u2", label: "Daniel Cho" },
+        badge: 1,
+      },
+      {
+        label: "Amelia Hart",
+        filter: { kind: "operator", value: "u1", label: "Amelia Hart" },
+        badge: 0,
+      },
     ],
   },
   {
     id: "priority",
     title: "Priority",
     rows: [
-      { label: "Urgent", filter: { kind: "priority", value: "urgent", label: "Urgent" }, badge: 1, badgeTone: "warning" },
-      { label: "High", filter: { kind: "priority", value: "high", label: "High" }, badge: 1, badgeTone: "primary" },
-      { label: "Normal", filter: { kind: "priority", value: "normal", label: "Normal" }, badge: 2, badgeTone: "info" },
-      { label: "Low", filter: { kind: "priority", value: "low", label: "Low" }, badge: 2, badgeTone: "muted" },
+      {
+        label: "Urgent",
+        filter: { kind: "priority", value: "urgent", label: "Urgent" },
+        badge: 1,
+        badgeTone: "warning",
+      },
+      {
+        label: "High",
+        filter: { kind: "priority", value: "high", label: "High" },
+        badge: 1,
+        badgeTone: "primary",
+      },
+      {
+        label: "Normal",
+        filter: { kind: "priority", value: "normal", label: "Normal" },
+        badge: 2,
+        badgeTone: "info",
+      },
+      {
+        label: "Low",
+        filter: { kind: "priority", value: "low", label: "Low" },
+        badge: 2,
+        badgeTone: "muted",
+      },
     ],
   },
 ];
@@ -1157,15 +1352,21 @@ function InboxSectionsPanel({
                         active
                           ? "bg-primary-soft text-primary font-medium"
                           : row.disabled
-                          ? "text-muted-foreground/60 cursor-not-allowed"
-                          : "text-foreground/85 hover:bg-secondary"
+                            ? "text-muted-foreground/60 cursor-not-allowed"
+                            : "text-foreground/85 hover:bg-secondary"
                       }`}
                     >
                       {Icon ? (
-                        <Icon className={`h-3.5 w-3.5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                        <Icon
+                          className={`h-3.5 w-3.5 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`}
+                        />
                       ) : (
                         <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-secondary text-[8px] font-medium text-muted-foreground">
-                          {row.label.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                          {row.label
+                            .split(" ")
+                            .map((n) => n[0])
+                            .slice(0, 2)
+                            .join("")}
                         </span>
                       )}
                       <span className="min-w-0 flex-1 truncate">{row.label}</span>

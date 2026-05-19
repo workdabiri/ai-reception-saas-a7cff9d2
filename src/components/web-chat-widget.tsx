@@ -1,15 +1,5 @@
 import { useState, type ReactNode } from "react";
-import {
-  MessageCircle,
-  X,
-  Send,
-  Check,
-  CloudOff,
-  Sparkles,
-  Ban,
-  Lock,
-  Minus,
-} from "lucide-react";
+import { MessageCircle, X, Send, Check, CloudOff, Sparkles, Ban, Lock, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,8 +48,7 @@ export function WebChatWidget({
     else setInternalOpen(v);
   };
 
-  const initial =
-    businessInitial ?? (businessName.trim().charAt(0).toUpperCase() || "B");
+  const initial = businessInitial ?? (businessName.trim().charAt(0).toUpperCase() || "B");
   const isOffline = state === "offline";
   const isProviderDown = state === "provider-unavailable";
 
@@ -124,11 +113,7 @@ export function Launcher({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={
-        disabled
-          ? "Chat unavailable"
-          : `Open chat with ${businessName ?? "business"}`
-      }
+      aria-label={disabled ? "Chat unavailable" : `Open chat with ${businessName ?? "business"}`}
       className={cn(
         "group inline-flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-medium text-primary-foreground shadow-card transition hover:bg-primary/92 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         disabled && "cursor-not-allowed bg-muted text-muted-foreground shadow-soft hover:bg-muted",
@@ -145,9 +130,7 @@ export function Launcher({
           />
         )}
       </span>
-      {showLabel && (
-        <span className="pr-1">{disabled ? "Chat unavailable" : "Chat with us"}</span>
-      )}
+      {showLabel && <span className="pr-1">{disabled ? "Chat unavailable" : "Chat with us"}</span>}
     </button>
   );
 }
@@ -217,12 +200,8 @@ function Header({
         {initial}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium text-foreground">
-          {businessName}
-        </div>
-        <div className="truncate text-[11px] text-muted-foreground">
-          {statusLabel}
-        </div>
+        <div className="truncate text-sm font-medium text-foreground">{businessName}</div>
+        <div className="truncate text-[11px] text-muted-foreground">{statusLabel}</div>
       </div>
       <button
         type="button"
@@ -294,9 +273,7 @@ function NoteCard({
         <div className="min-w-0 space-y-1.5">
           <div className="text-sm font-medium text-foreground">{title}</div>
           {children && (
-            <div className="text-xs leading-relaxed text-muted-foreground">
-              {children}
-            </div>
+            <div className="text-xs leading-relaxed text-muted-foreground">{children}</div>
           )}
         </div>
       </div>
@@ -308,9 +285,7 @@ function HumanFirstNotes({ withAi = true }: { withAi?: boolean }) {
   return (
     <div className="space-y-2 rounded-lg bg-secondary/60 p-3 text-[11px] text-muted-foreground">
       <p>Operators review every reply.</p>
-      {withAi && (
-        <p>AI may prepare drafts, but the business sends final replies.</p>
-      )}
+      {withAi && <p>AI may prepare drafts, but the business sends final replies.</p>}
     </div>
   );
 }
@@ -324,8 +299,7 @@ function WelcomeBody({ businessName }: { businessName: string }) {
           Hi, how can we help you today?
         </h2>
         <p className="text-sm text-muted-foreground">
-          Send {businessName} a message and a member of the reception team will
-          review it shortly.
+          Send {businessName} a message and a member of the reception team will review it shortly.
         </p>
       </div>
       <FormBody />
@@ -335,11 +309,7 @@ function WelcomeBody({ businessName }: { businessName: string }) {
 
 function FormBody({ validation }: { validation?: boolean }) {
   return (
-    <form
-      className="space-y-3"
-      onSubmit={(e) => e.preventDefault()}
-      noValidate
-    >
+    <form className="space-y-3" onSubmit={(e) => e.preventDefault()} noValidate>
       <div className="space-y-1.5">
         <Label htmlFor="cust-name">Name</Label>
         <Input id="cust-name" placeholder="Sara Mohammadi" defaultValue="" />
@@ -391,12 +361,9 @@ function SubmittedBody() {
           <Check className="h-5 w-5" />
         </div>
         <div>
-          <div className="text-base font-medium text-foreground">
-            Message received
-          </div>
+          <div className="text-base font-medium text-foreground">Message received</div>
           <p className="mt-1 text-xs text-muted-foreground">
-            Your message was added to the business inbox. An operator will
-            review it.
+            Your message was added to the business inbox. An operator will review it.
           </p>
         </div>
       </div>
@@ -415,9 +382,7 @@ function ActiveThreadBody({ initial }: { initial: string }) {
   return (
     <div className="space-y-3">
       {/* customer */}
-      <Bubble side="right">
-        Hi, I'd like to reschedule my Thursday appointment.
-      </Bubble>
+      <Bubble side="right">Hi, I'd like to reschedule my Thursday appointment.</Bubble>
       <SystemEvent>Message added to Tehran Dental Clinic inbox</SystemEvent>
       <Bubble side="left" initial={initial} author="Reception team">
         Thanks — our receptionist will review this shortly.
@@ -440,12 +405,7 @@ function Bubble({
 }) {
   const isLeft = side === "left";
   return (
-    <div
-      className={cn(
-        "flex items-end gap-2",
-        isLeft ? "justify-start" : "justify-end",
-      )}
-    >
+    <div className={cn("flex items-end gap-2", isLeft ? "justify-start" : "justify-end")}>
       {isLeft && (
         <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/12 text-[11px] font-medium text-primary">
           {initial}

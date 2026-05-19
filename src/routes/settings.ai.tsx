@@ -15,7 +15,12 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useStateParam, presets as statePresets, RouteStatePage, RouteSkeleton } from "@/components/route-state";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 export const Route = createFileRoute("/settings/ai")({
   head: () => ({
@@ -23,8 +28,7 @@ export const Route = createFileRoute("/settings/ai")({
       { title: "AI Assistance Settings — AI Reception" },
       {
         name: "description",
-        content:
-          "Control how AI prepares drafts. Operators always review and send final replies.",
+        content: "Control how AI prepares drafts. Operators always review and send final replies.",
       },
     ],
   }),
@@ -42,10 +46,16 @@ function AISettingsPage() {
   const [escalateUnsure, setEscalateUnsure] = useState(true);
 
   if (stateOverride === "ai-unavailable") {
-    return <RouteStatePage title="AI Assistance Settings">{statePresets.aiUnavailable()}</RouteStatePage>;
+    return (
+      <RouteStatePage title="AI Assistance Settings">{statePresets.aiUnavailable()}</RouteStatePage>
+    );
   }
   if (stateOverride === "access-denied") {
-    return <RouteStatePage title="AI Assistance Settings">{statePresets.aiAccessDenied()}</RouteStatePage>;
+    return (
+      <RouteStatePage title="AI Assistance Settings">
+        {statePresets.aiAccessDenied()}
+      </RouteStatePage>
+    );
   }
   if (stateOverride === "loading") {
     return (
@@ -54,8 +64,6 @@ function AISettingsPage() {
       </RouteStatePage>
     );
   }
-
-
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
@@ -216,9 +224,8 @@ function AISettingsPage() {
                 <div className="rounded-md border border-ai/30 bg-ai/5 px-3 py-2">
                   <div className="text-[10px] uppercase tracking-wide text-ai">AI draft</div>
                   <p className="mt-1 text-[13px] text-foreground">
-                    Thanks for reaching out. I can help prepare this for the reception team.
-                    Please confirm the preferred new time and an operator will review the
-                    request.
+                    Thanks for reaching out. I can help prepare this for the reception team. Please
+                    confirm the preferred new time and an operator will review the request.
                   </p>
                 </div>
               </div>
@@ -297,9 +304,7 @@ function Section({
         </div>
         <div>
           <h2 className="text-base font-medium">{title}</h2>
-          {description && (
-            <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-          )}
+          {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
         </div>
       </div>
       <div className="space-y-3">{children}</div>

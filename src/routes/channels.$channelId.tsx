@@ -1,13 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Check,
-  Copy,
-  ExternalLink,
-  Info,
-} from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check, Copy, ExternalLink, Info } from "lucide-react";
 import { PageHeader, MockBanner } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,8 +59,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
     status: "Mock Active",
     state: "active",
     availability: "Available in prototype",
-    description:
-      "Add a customer-facing website chat widget for inbound messages.",
+    description: "Add a customer-facing website chat widget for inbound messages.",
     primaryActionLabel: "Preview widget",
     secondaryActionLabel: "Copy mock embed code",
     setupSteps: [
@@ -92,9 +84,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
       { label: "Customers", value: "14" },
       { label: "Waiting", value: "2" },
     ],
-    stateNotes: [
-      "AI may prepare drafts, but operators send final replies.",
-    ],
+    stateNotes: ["AI may prepare drafts, but operators send final replies."],
   },
   email: {
     id: "email",
@@ -127,9 +117,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
       { label: "Customers", value: "22" },
       { label: "Waiting", value: "3" },
     ],
-    stateNotes: [
-      "AI may prepare drafts, but operators send final replies.",
-    ],
+    stateNotes: ["AI may prepare drafts, but operators send final replies."],
   },
   instagram: {
     id: "instagram",
@@ -139,8 +127,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
     status: "Planned",
     state: "planned",
     availability: "Not enabled in MVP",
-    description:
-      "Instagram DM support is planned for a future integration.",
+    description: "Instagram DM support is planned for a future integration.",
     primaryActionLabel: "Not enabled in MVP",
     secondaryActionLabel: "Back to Channels",
     setupSteps: [],
@@ -148,10 +135,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
       "A connected Meta Business account (future)",
       "Operator coverage for DM replies (future)",
     ],
-    limitations: [
-      "No Instagram provider is connected",
-      "No real messages are sent or received",
-    ],
+    limitations: ["No Instagram provider is connected", "No real messages are sent or received"],
     mockMetrics: [],
     stateNotes: ["This provider is not connected. No real messages are sent or received."],
   },
@@ -163,8 +147,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
     status: "Planned",
     state: "planned",
     availability: "Not enabled in MVP",
-    description:
-      "WhatsApp support is planned. No provider is connected in this prototype.",
+    description: "WhatsApp support is planned. No provider is connected in this prototype.",
     primaryActionLabel: "Not enabled in MVP",
     secondaryActionLabel: "Back to Channels",
     setupSteps: [],
@@ -172,10 +155,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
       "A WhatsApp Business API provider account (future)",
       "Approved sender number and templates (future)",
     ],
-    limitations: [
-      "No WhatsApp provider is connected",
-      "No real messages are sent or received",
-    ],
+    limitations: ["No WhatsApp provider is connected", "No real messages are sent or received"],
     mockMetrics: [],
     stateNotes: ["This provider is not connected. No real messages are sent or received."],
   },
@@ -191,14 +171,8 @@ const CHANNELS: Record<string, ChannelDetail> = {
     primaryActionLabel: "Not enabled in MVP",
     secondaryActionLabel: "Back to Channels",
     setupSteps: [],
-    requirements: [
-      "A Telegram bot token (future)",
-      "Operator coverage for bot replies (future)",
-    ],
-    limitations: [
-      "No Telegram bot is connected",
-      "No real messages are sent or received",
-    ],
+    requirements: ["A Telegram bot token (future)", "Operator coverage for bot replies (future)"],
+    limitations: ["No Telegram bot is connected", "No real messages are sent or received"],
     mockMetrics: [],
     stateNotes: ["This provider is not connected. No real messages are sent or received."],
   },
@@ -210,8 +184,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
     status: "Planned",
     state: "planned",
     availability: "Not enabled in MVP",
-    description:
-      "SMS support is planned. No Twilio or SMS provider is connected.",
+    description: "SMS support is planned. No Twilio or SMS provider is connected.",
     primaryActionLabel: "Not enabled in MVP",
     secondaryActionLabel: "Back to Channels",
     setupSteps: [],
@@ -234,8 +207,7 @@ const CHANNELS: Record<string, ChannelDetail> = {
     status: "Future",
     state: "planned",
     availability: "Future capability",
-    description:
-      "Voice reception is a future capability and is not enabled in this MVP.",
+    description: "Voice reception is a future capability and is not enabled in this MVP.",
     primaryActionLabel: "Not enabled in MVP",
     secondaryActionLabel: "Back to Channels",
     setupSteps: [],
@@ -269,11 +241,7 @@ function ChannelDetailPage() {
     );
   }
   if (stateOverride === "planned") {
-    return (
-      <RouteStatePage title={channel.name}>
-        {statePresets.channelPlanned()}
-      </RouteStatePage>
-    );
+    return <RouteStatePage title={channel.name}>{statePresets.channelPlanned()}</RouteStatePage>;
   }
   if (stateOverride === "loading") {
     return (
@@ -288,7 +256,6 @@ function ChannelDetailPage() {
       <BackLink />
       <Header channel={channel} />
       <MockBanner />
-
 
       {channel.id === "web-chat" ? (
         <WebChatBody channel={channel} />
@@ -358,7 +325,10 @@ function WebChatBody({ channel }: { channel: ChannelDetail }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
       <div className="space-y-6">
-        <Card title="Header actions" subtitle="Open the customer-facing preview or copy the mock embed.">
+        <Card
+          title="Header actions"
+          subtitle="Open the customer-facing preview or copy the mock embed."
+        >
           <div className="flex flex-wrap gap-2">
             <Button asChild>
               <Link to="/widget-preview">
@@ -367,10 +337,7 @@ function WebChatBody({ channel }: { channel: ChannelDetail }) {
             </Button>
             <CopyButton text={WEB_CHAT_EMBED} label="Copy mock embed code" />
             <Button asChild variant="outline">
-              <Link
-                to="/chat/$businessId"
-                params={{ businessId: "tehran-dental-clinic" }}
-              >
+              <Link to="/chat/$businessId" params={{ businessId: "tehran-dental-clinic" }}>
                 Open public chat page <ExternalLink className="h-3.5 w-3.5" />
               </Link>
             </Button>
@@ -392,14 +359,22 @@ function WebChatBody({ channel }: { channel: ChannelDetail }) {
           <TestMessagePanel
             fields={[
               { id: "name", label: "Customer name", placeholder: "Sara" },
-              { id: "message", label: "Message", placeholder: "Hi, I'd like to book…", multiline: true },
+              {
+                id: "message",
+                label: "Message",
+                placeholder: "Hi, I'd like to book…",
+                multiline: true,
+              },
             ]}
             buttonLabel="Send test message"
             resultText="Test message would appear in Inbox as Web Chat."
           />
         </Card>
 
-        <Card title="Widget states preview" subtitle="Open any state inside the widget preview surface.">
+        <Card
+          title="Widget states preview"
+          subtitle="Open any state inside the widget preview surface."
+        >
           <div className="flex flex-wrap gap-2">
             {WIDGET_STATES.map((s) => (
               <Button key={s} asChild variant="outline" size="sm">
@@ -603,20 +578,14 @@ function Card({
     <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
       <div className="mb-3">
         <h2 className="text-sm font-medium tracking-tight">{title}</h2>
-        {subtitle && (
-          <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
-        )}
+        {subtitle && <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>}
       </div>
       {children}
     </section>
   );
 }
 
-function SetupChecklist({
-  steps,
-}: {
-  steps: { label: string; done: boolean; note?: string }[];
-}) {
+function SetupChecklist({ steps }: { steps: { label: string; done: boolean; note?: string }[] }) {
   if (steps.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
@@ -634,9 +603,7 @@ function SetupChecklist({
           <div className="flex items-center gap-2.5 min-w-0">
             <span
               className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] ${
-                s.done
-                  ? "bg-success/15 text-success"
-                  : "bg-muted text-muted-foreground"
+                s.done ? "bg-success/15 text-success" : "bg-muted text-muted-foreground"
               }`}
             >
               {s.done ? <Check className="h-3 w-3" /> : null}
@@ -656,7 +623,7 @@ function MockCodeBlock({ code }: { code: string }) {
   return (
     <div className="overflow-x-auto rounded-lg border border-border bg-[color:var(--bg-app)] p-3">
       <pre className="font-mono text-[12px] leading-relaxed text-foreground whitespace-pre">
-{code}
+        {code}
       </pre>
     </div>
   );
@@ -706,10 +673,7 @@ function TestMessagePanel({
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
         {fields.map((f) => (
-          <div
-            key={f.id}
-            className={f.multiline ? "sm:col-span-2 space-y-1.5" : "space-y-1.5"}
-          >
+          <div key={f.id} className={f.multiline ? "sm:col-span-2 space-y-1.5" : "space-y-1.5"}>
             <Label htmlFor={`tm-${f.id}`} className="text-xs">
               {f.label}
             </Label>
@@ -718,9 +682,7 @@ function TestMessagePanel({
                 id={`tm-${f.id}`}
                 placeholder={f.placeholder}
                 value={values[f.id] ?? ""}
-                onChange={(e) =>
-                  setValues((v) => ({ ...v, [f.id]: e.target.value }))
-                }
+                onChange={(e) => setValues((v) => ({ ...v, [f.id]: e.target.value }))}
                 rows={3}
               />
             ) : (
@@ -728,9 +690,7 @@ function TestMessagePanel({
                 id={`tm-${f.id}`}
                 placeholder={f.placeholder}
                 value={values[f.id] ?? ""}
-                onChange={(e) =>
-                  setValues((v) => ({ ...v, [f.id]: e.target.value }))
-                }
+                onChange={(e) => setValues((v) => ({ ...v, [f.id]: e.target.value }))}
               />
             )}
           </div>
@@ -760,10 +720,7 @@ function KVList({ items }: { items: { k: string; v: string }[] }) {
   return (
     <dl className="divide-y divide-border/70">
       {items.map((i) => (
-        <div
-          key={i.k}
-          className="flex items-center justify-between gap-3 py-2 text-sm"
-        >
+        <div key={i.k} className="flex items-center justify-between gap-3 py-2 text-sm">
           <dt className="text-muted-foreground">{i.k}</dt>
           <dd className="font-medium">{i.v}</dd>
         </div>
@@ -775,9 +732,7 @@ function KVList({ items }: { items: { k: string; v: string }[] }) {
 function KVRow({ k, v }: { k: string; v: string }) {
   return (
     <div className="rounded-lg bg-surface-muted/60 px-2 py-1.5">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-        {k}
-      </div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{k}</div>
       <div className="text-xs font-medium">{v}</div>
     </div>
   );
@@ -801,9 +756,7 @@ function UnknownChannel({ id }: { id: string }) {
         <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-muted text-muted-foreground">
           <Info className="h-5 w-5" />
         </div>
-        <h1 className="mt-4 text-xl font-medium tracking-tight">
-          Channel not found
-        </h1>
+        <h1 className="mt-4 text-xl font-medium tracking-tight">Channel not found</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           This channel{id ? ` (“${id}”)` : ""} does not exist or is not available in this workspace.
         </p>

@@ -8,7 +8,12 @@ import {
   type NotificationCategory,
 } from "@/lib/notifications";
 import { CheckCheck, Inbox, Check } from "lucide-react";
-import { useStateParam, presets as statePresets, RouteStatePage, RouteSkeleton } from "@/components/route-state";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({
@@ -16,7 +21,8 @@ export const Route = createFileRoute("/notifications")({
       { title: "Notifications — AI Reception" },
       {
         name: "description",
-        content: "Full activity feed: conversations, AI drafts, members, channels, and security events.",
+        content:
+          "Full activity feed: conversations, AI drafts, members, channels, and security events.",
       },
     ],
   }),
@@ -42,7 +48,9 @@ function NotificationsPage() {
   const [filter, setFilter] = useState<Filter>("all");
 
   if (stateOverride === "empty") {
-    return <RouteStatePage title="Notifications">{statePresets.notificationsEmpty()}</RouteStatePage>;
+    return (
+      <RouteStatePage title="Notifications">{statePresets.notificationsEmpty()}</RouteStatePage>
+    );
   }
   if (stateOverride === "loading") {
     return (
@@ -51,7 +59,6 @@ function NotificationsPage() {
       </RouteStatePage>
     );
   }
-
 
   const filtered = useMemo(() => {
     if (filter === "all") return items;
@@ -144,9 +151,7 @@ function NotificationsPage() {
                     <div className="flex items-start gap-2">
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          {n.unread && (
-                            <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
-                          )}
+                          {n.unread && <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />}
                           <p className="text-[13.5px] font-medium text-foreground truncate">
                             {n.title}
                           </p>

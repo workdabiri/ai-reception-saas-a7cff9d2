@@ -26,8 +26,7 @@ export const Route = createFileRoute("/admin/")({
       { title: "Platform Admin Overview — AI Reception" },
       {
         name: "description",
-        content:
-          "Internal mock platform admin overview for the AI Reception SaaS prototype.",
+        content: "Internal mock platform admin overview for the AI Reception SaaS prototype.",
       },
       { name: "robots", content: "noindex,nofollow" },
     ],
@@ -52,11 +51,34 @@ function AdminOverviewPage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <KpiCard label="Active businesses" value={k.activeBusinesses} hint="Mock tenants" />
-        <KpiCard label="Trial workspaces" value={k.trialWorkspaces} hint="Mock trials" tone="info" />
-        <KpiCard label="Messages / mo" value={k.messagesThisMonth.toLocaleString()} hint="Across all mock tenants" />
-        <KpiCard label="AI drafts / mo" value={k.aiDraftsThisMonth.toLocaleString()} hint="Operator-reviewed" />
-        <KpiCard label="Provider alerts" value={k.providerAlerts} hint="Mock providers" tone={k.providerAlerts > 0 ? "warn" : "neutral"} />
-        <KpiCard label="Support items" value={k.supportItemsOpen} hint="Open / waiting" tone={k.supportItemsOpen > 0 ? "warn" : "neutral"} />
+        <KpiCard
+          label="Trial workspaces"
+          value={k.trialWorkspaces}
+          hint="Mock trials"
+          tone="info"
+        />
+        <KpiCard
+          label="Messages / mo"
+          value={k.messagesThisMonth.toLocaleString()}
+          hint="Across all mock tenants"
+        />
+        <KpiCard
+          label="AI drafts / mo"
+          value={k.aiDraftsThisMonth.toLocaleString()}
+          hint="Operator-reviewed"
+        />
+        <KpiCard
+          label="Provider alerts"
+          value={k.providerAlerts}
+          hint="Mock providers"
+          tone={k.providerAlerts > 0 ? "warn" : "neutral"}
+        />
+        <KpiCard
+          label="Support items"
+          value={k.supportItemsOpen}
+          hint="Open / waiting"
+          tone={k.supportItemsOpen > 0 ? "warn" : "neutral"}
+        />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -105,14 +127,20 @@ function AdminOverviewPage() {
           title="Provider health"
           description="Mock providers only."
           action={
-            <Link to="/admin/provider-health" className="text-[12px] font-medium text-primary hover:underline">
+            <Link
+              to="/admin/provider-health"
+              className="text-[12px] font-medium text-primary hover:underline"
+            >
               Details →
             </Link>
           }
         >
           <ul className="space-y-2">
             {adminProviders.slice(0, 6).map((p) => (
-              <li key={p.id} className="flex items-center justify-between gap-2 rounded-md bg-surface px-3 py-2 ring-1 ring-inset ring-border">
+              <li
+                key={p.id}
+                className="flex items-center justify-between gap-2 rounded-md bg-surface px-3 py-2 ring-1 ring-inset ring-border"
+              >
                 <span className="text-[12.5px] font-medium text-foreground">{p.name}</span>
                 <ProviderStatusPill status={p.status} />
               </li>
@@ -126,7 +154,10 @@ function AdminOverviewPage() {
         <SectionCard
           title="Recent platform audit"
           action={
-            <Link to="/admin/audit" className="text-[12px] font-medium text-primary hover:underline">
+            <Link
+              to="/admin/audit"
+              className="text-[12px] font-medium text-primary hover:underline"
+            >
               Open log →
             </Link>
           }
@@ -135,9 +166,7 @@ function AdminOverviewPage() {
             {recentEvents.map((e) => (
               <li key={e.id} className="py-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-[12.5px] font-medium text-foreground">
-                    {e.action}
-                  </span>
+                  <span className="text-[12.5px] font-medium text-foreground">{e.action}</span>
                   <AuditResultPill result={e.result} />
                 </div>
                 <p className="mt-0.5 text-[11.5px] text-muted-foreground">
@@ -152,7 +181,10 @@ function AdminOverviewPage() {
         <SectionCard
           title="Support queue"
           action={
-            <Link to="/admin/support" className="text-[12px] font-medium text-primary hover:underline">
+            <Link
+              to="/admin/support"
+              className="text-[12px] font-medium text-primary hover:underline"
+            >
               Open queue →
             </Link>
           }
@@ -161,9 +193,7 @@ function AdminOverviewPage() {
             {openSupport.map((s) => (
               <li key={s.id} className="py-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-[12.5px] font-medium text-foreground">
-                    {s.business}
-                  </span>
+                  <span className="text-[12.5px] font-medium text-foreground">{s.business}</span>
                   <div className="flex items-center gap-1.5">
                     <SupportPriorityPill priority={s.priority} />
                     <SupportStatusPill status={s.status} />

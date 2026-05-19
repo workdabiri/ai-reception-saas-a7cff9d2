@@ -126,10 +126,16 @@ type PermissionRow = {
 };
 
 const matrix: PermissionRow[] = [
-  { area: "Business settings", perms: { Owner: "full", Admin: "full", Operator: "none", Viewer: "none" } },
+  {
+    area: "Business settings",
+    perms: { Owner: "full", Admin: "full", Operator: "none", Viewer: "none" },
+  },
   { area: "Members", perms: { Owner: "full", Admin: "full", Operator: "none", Viewer: "none" } },
   { area: "Customers", perms: { Owner: "full", Admin: "full", Operator: "full", Viewer: "read" } },
-  { area: "Conversations", perms: { Owner: "full", Admin: "full", Operator: "full", Viewer: "read" } },
+  {
+    area: "Conversations",
+    perms: { Owner: "full", Admin: "full", Operator: "full", Viewer: "read" },
+  },
   { area: "Messages", perms: { Owner: "full", Admin: "full", Operator: "full", Viewer: "read" } },
   { area: "AI drafts", perms: { Owner: "full", Admin: "full", Operator: "full", Viewer: "none" } },
   { area: "Audit log", perms: { Owner: "full", Admin: "read", Operator: "none", Viewer: "none" } },
@@ -182,7 +188,7 @@ function MembersPage() {
             workspace: currentWorkspace.name,
           },
         ]
-      : baseRows
+      : baseRows,
   );
   const [invite, setInvite] = useState(false);
   const [changeRole, setChangeRole] = useState<Row | null>(null);
@@ -191,7 +197,10 @@ function MembersPage() {
 
   if (stateOverride === "empty") {
     return (
-      <RouteStatePage title="Members & access" description="Manage who can see and act in this workspace.">
+      <RouteStatePage
+        title="Members & access"
+        description="Manage who can see and act in this workspace."
+      >
         {statePresets.membersEmpty()}
       </RouteStatePage>
     );
@@ -208,7 +217,6 @@ function MembersPage() {
       </RouteStatePage>
     );
   }
-
 
   return (
     <>
@@ -250,9 +258,7 @@ function MembersPage() {
               <Lock className="callout-icon" />
               The last Owner cannot be removed
             </div>
-            <p className="callout-body">
-              Removed members lose access immediately on next request.
-            </p>
+            <p className="callout-body">Removed members lose access immediately on next request.</p>
           </div>
         </div>
 
@@ -267,7 +273,6 @@ function MembersPage() {
             <Shield className="h-3.5 w-3.5" /> Role preview
           </Link>
         </div>
-
 
         {/* Members — desktop table */}
         <div className="mt-6 hidden md:block overflow-hidden rounded-xl border border-border bg-card shadow-card">
@@ -341,10 +346,7 @@ function MembersPage() {
         {/* Members — mobile cards */}
         <ul className="mt-6 space-y-3 md:hidden">
           {rows.map((m) => (
-            <li
-              key={m.id}
-              className="rounded-xl border border-border bg-card p-4 shadow-soft"
-            >
+            <li key={m.id} className="rounded-xl border border-border bg-card p-4 shadow-soft">
               <div className="flex items-start gap-3">
                 <Avatar initials={m.initials} />
                 <div className="min-w-0 flex-1">
@@ -404,7 +406,8 @@ function MembersPage() {
             <div>
               <h2 className="text-sm font-medium">Permission matrix</h2>
               <p className="text-[12px] text-muted-foreground">
-                What each role can do inside a workspace. Visualization only — server is the source of truth.
+                What each role can do inside a workspace. Visualization only — server is the source
+                of truth.
               </p>
             </div>
             <span className="inline-flex items-center gap-1 rounded-md border border-dashed border-border bg-surface-muted px-2 py-1 text-[11px] text-muted-foreground">
@@ -419,7 +422,9 @@ function MembersPage() {
                   <th className="px-4 py-3 text-left font-medium">Area</th>
                   {roles.map((r) => (
                     <th key={r} className="px-4 py-3 text-center font-medium">
-                      <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] ${roleTone[r]}`}>
+                      <span
+                        className={`inline-flex rounded-md border px-2 py-1 text-[11px] ${roleTone[r]}`}
+                      >
                         {r}
                       </span>
                     </th>
@@ -444,13 +449,21 @@ function MembersPage() {
           {/* Mobile permission role cards */}
           <div className="md:hidden divide-y divide-border">
             {roles.map((r) => {
-              const allowed = matrix.filter((row) => row.perms[r] === "full").map((row) => row.area);
-              const readOnly = matrix.filter((row) => row.perms[r] === "read").map((row) => row.area);
-              const restricted = matrix.filter((row) => row.perms[r] === "none").map((row) => row.area);
+              const allowed = matrix
+                .filter((row) => row.perms[r] === "full")
+                .map((row) => row.area);
+              const readOnly = matrix
+                .filter((row) => row.perms[r] === "read")
+                .map((row) => row.area);
+              const restricted = matrix
+                .filter((row) => row.perms[r] === "none")
+                .map((row) => row.area);
               return (
                 <div key={r} className="px-4 py-4">
                   <div className="flex items-center gap-2">
-                    <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[r]}`}>
+                    <span
+                      className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[r]}`}
+                    >
                       {r}
                     </span>
                   </div>
@@ -494,7 +507,9 @@ function MembersPage() {
             ].map(([role, desc]) => (
               <div key={role} className="rounded-lg border border-border bg-card p-3">
                 <div className="flex items-center gap-2">
-                  <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[role as WorkspaceRole]}`}>
+                  <span
+                    className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[role as WorkspaceRole]}`}
+                  >
                     {role}
                   </span>
                 </div>
@@ -511,12 +526,30 @@ function MembersPage() {
             <h3 className="text-sm font-medium">Safety &amp; access rules</h3>
           </div>
           <ul className="mt-3 grid gap-2 text-[12px] text-muted-foreground sm:grid-cols-2">
-            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Last Owner cannot be removed or demoted.</li>
-            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Removed members lose access immediately.</li>
-            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Server verifies membership on every tenant-scoped request.</li>
-            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Client-side checks are UX only — never trusted for authorization.</li>
-            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Suspended members keep records but cannot access the workspace. Auth planned.</li>
-            <li className="flex gap-2"><Check className="mt-1 h-3.5 w-3.5 text-success" /> Role changes are written to the audit log.</li>
+            <li className="flex gap-2">
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Last Owner cannot be removed or
+              demoted.
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Removed members lose access
+              immediately.
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Server verifies membership on
+              every tenant-scoped request.
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Client-side checks are UX only —
+              never trusted for authorization.
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Suspended members keep records but
+              cannot access the workspace. Auth planned.
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Role changes are written to the
+              audit log.
+            </li>
           </ul>
         </div>
       </div>
@@ -526,9 +559,7 @@ function MembersPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Invite member</DialogTitle>
-            <DialogDescription>
-              Mock invite — no email is sent in this prototype.
-            </DialogDescription>
+            <DialogDescription>Mock invite — no email is sent in this prototype.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-2">
             <div className="grid gap-2">
@@ -543,17 +574,22 @@ function MembersPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {roles.map((r) => (
-                    <SelectItem key={r} value={r}>{r}</SelectItem>
+                    <SelectItem key={r} value={r}>
+                      {r}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <p className="text-[11px] text-muted-foreground">
-                Invitee will only see data inside <span className="font-medium text-foreground">{currentWorkspace.name}</span>.
+                Invitee will only see data inside{" "}
+                <span className="font-medium text-foreground">{currentWorkspace.name}</span>.
               </p>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setInvite(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setInvite(false)}>
+              Cancel
+            </Button>
             <Button onClick={() => setInvite(false)}>Send invite (mock)</Button>
           </DialogFooter>
         </DialogContent>
@@ -566,7 +602,10 @@ function MembersPage() {
             <DialogTitle>Change role</DialogTitle>
             <DialogDescription>
               {changeRole && (
-                <>Update access for <span className="font-medium text-foreground">{changeRole.name}</span>.</>
+                <>
+                  Update access for{" "}
+                  <span className="font-medium text-foreground">{changeRole.name}</span>.
+                </>
               )}
             </DialogDescription>
           </DialogHeader>
@@ -584,7 +623,9 @@ function MembersPage() {
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[r]}`}>
+                    <span
+                      className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[r]}`}
+                    >
                       {r}
                     </span>
                   </div>
@@ -599,7 +640,9 @@ function MembersPage() {
             ))}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setChangeRole(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setChangeRole(null)}>
+              Cancel
+            </Button>
             <Button onClick={() => setChangeRole(null)}>Save role (mock)</Button>
           </DialogFooter>
         </DialogContent>
@@ -613,8 +656,10 @@ function MembersPage() {
             <DialogDescription>
               {removeRow && (
                 <>
-                  <span className="font-medium text-foreground">{removeRow.name}</span> will lose access to{" "}
-                  <span className="font-medium text-foreground">{currentWorkspace.name}</span> immediately.
+                  <span className="font-medium text-foreground">{removeRow.name}</span> will lose
+                  access to{" "}
+                  <span className="font-medium text-foreground">{currentWorkspace.name}</span>{" "}
+                  immediately.
                 </>
               )}
             </DialogDescription>
@@ -623,13 +668,15 @@ function MembersPage() {
             <div className="flex items-start gap-2">
               <ShieldAlert className="mt-1 h-4 w-4" />
               <div>
-                Their assigned conversations will become unassigned. Audit history is preserved.
-                The last Owner cannot be removed.
+                Their assigned conversations will become unassigned. Audit history is preserved. The
+                last Owner cannot be removed.
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRemoveRow(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setRemoveRow(null)}>
+              Cancel
+            </Button>
             <Button variant="destructive" onClick={() => setRemoveRow(null)}>
               Remove member (mock)
             </Button>
@@ -650,7 +697,8 @@ function MembersPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="rounded-lg border border-border bg-surface p-3 text-[12px] text-muted-foreground">
-            Server-side membership and role checks blocked this request. Ask an Owner or Admin to grant the right role.
+            Server-side membership and role checks blocked this request. Ask an Owner or Admin to
+            grant the right role.
           </div>
           <DialogFooter>
             <Button onClick={() => setAccessDenied(false)}>Got it</Button>

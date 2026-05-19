@@ -9,12 +9,7 @@
  * old `inactive` + numeric `size` props used across existing routes.
  */
 import { Loader2 } from "lucide-react";
-import {
-  CHANNELS,
-  resolveChannelKey,
-  type ChannelKey,
-  type ChannelState,
-} from "@/lib/channels";
+import { CHANNELS, resolveChannelKey, type ChannelKey, type ChannelState } from "@/lib/channels";
 
 type SizeToken = "sm" | "md" | "lg";
 
@@ -79,9 +74,15 @@ export function ChannelIcon({
       {isConnecting && (
         <span
           className="absolute -bottom-0.5 -right-0.5 grid place-items-center rounded-full bg-card text-foreground ring-1 ring-border"
-          style={{ width: Math.max(12, Math.round(px * 0.32)), height: Math.max(12, Math.round(px * 0.32)) }}
+          style={{
+            width: Math.max(12, Math.round(px * 0.32)),
+            height: Math.max(12, Math.round(px * 0.32)),
+          }}
         >
-          <Loader2 className="animate-spin" style={{ width: iconPx * 0.55, height: iconPx * 0.55 }} />
+          <Loader2
+            className="animate-spin"
+            style={{ width: iconPx * 0.55, height: iconPx * 0.55 }}
+          />
         </span>
       )}
     </span>

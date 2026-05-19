@@ -5,10 +5,7 @@ import type { ReactNode } from "react";
 
 export type ErrorStateTone = "destructive" | "warning";
 
-const toneStyles: Record<
-  ErrorStateTone,
-  { tile: string; icon: string; chip: string }
-> = {
+const toneStyles: Record<ErrorStateTone, { tile: string; icon: string; chip: string }> = {
   destructive: {
     tile: "bg-destructive/10",
     icon: "text-destructive",

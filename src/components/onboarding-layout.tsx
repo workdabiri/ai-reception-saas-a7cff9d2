@@ -154,12 +154,7 @@ function Stepper({ currentIdx }: { currentIdx: number }) {
               {step.label}
             </span>
             {i < ONBOARDING_STEPS.length - 1 && (
-              <span
-                className={cn(
-                  "h-px flex-1 bg-border",
-                  isDone && "bg-success/40",
-                )}
-              />
+              <span className={cn("h-px flex-1 bg-border", isDone && "bg-success/40")} />
             )}
           </li>
         );

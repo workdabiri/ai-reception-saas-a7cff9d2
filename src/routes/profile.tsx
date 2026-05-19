@@ -2,17 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, MockBanner } from "@/components/ui-bits";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { currentUser } from "@/lib/notifications";
-import {
-  Shield,
-  Building2,
-  Bell,
-  LogOut,
-  KeyRound,
-  Mail,
-  User as UserIcon,
-} from "lucide-react";
+import { Shield, Building2, Bell, LogOut, KeyRound, Mail, User as UserIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { useStateParam, presets as statePresets, RouteStatePage, RouteSkeleton } from "@/components/route-state";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -20,7 +17,8 @@ export const Route = createFileRoute("/profile")({
       { title: "Account — AI Reception" },
       {
         name: "description",
-        content: "Mock account settings: profile, role, workspace, theme, and notification preferences.",
+        content:
+          "Mock account settings: profile, role, workspace, theme, and notification preferences.",
       },
     ],
   }),
@@ -40,31 +38,19 @@ function Section({
     <section className="rounded-2xl border border-border bg-card shadow-soft">
       <div className="border-b border-border/60 px-5 py-4">
         <h2 className="text-[14px] font-medium text-foreground">{title}</h2>
-        {description && (
-          <p className="mt-0.5 text-[12px] text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="mt-0.5 text-[12px] text-muted-foreground">{description}</p>}
       </div>
       <div className="px-5 py-4">{children}</div>
     </section>
   );
 }
 
-function Field({
-  label,
-  value,
-  icon: Icon,
-}: {
-  label: string;
-  value: string;
-  icon?: typeof Mail;
-}) {
+function Field({ label, value, icon: Icon }: { label: string; value: string; icon?: typeof Mail }) {
   return (
     <div className="flex items-start gap-3 py-2">
       {Icon && <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />}
       <div className="min-w-0 flex-1">
-        <div className="text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
-          {label}
-        </div>
+        <div className="text-[11px] uppercase tracking-[0.06em] text-muted-foreground">{label}</div>
         <div className="mt-0.5 text-[13px] text-foreground">{value}</div>
       </div>
     </div>
@@ -135,9 +121,7 @@ function ProfilePage() {
                 {currentUser.initials}
               </div>
               <div className="min-w-0">
-                <div className="text-[15px] font-medium text-foreground">
-                  {currentUser.name}
-                </div>
+                <div className="text-[15px] font-medium text-foreground">{currentUser.name}</div>
                 <div className="text-[12px] text-muted-foreground">{currentUser.email}</div>
               </div>
             </div>

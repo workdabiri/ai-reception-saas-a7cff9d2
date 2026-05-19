@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun, Monitor, MoonStar } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export type Theme = "light" | "dark" | "night" | "system";
 const STORAGE_KEY = "app.theme";

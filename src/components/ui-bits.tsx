@@ -45,14 +45,18 @@ const chipLabel: Record<ChipStatus | "follow-up" | "urgent" | "active", string> 
   future: "Future",
 };
 
-export function StatusChip({ status }: { status: ChipStatus | ConvStatus | "follow-up" | "urgent" | "active" }) {
+export function StatusChip({
+  status,
+}: {
+  status: ChipStatus | ConvStatus | "follow-up" | "urgent" | "active";
+}) {
   const map: Record<string, keyof typeof chipStyles> = {
     open: "open",
     pending: "waiting",
     snoozed: "waiting",
     closed: "closed",
   };
-  const key = (map[status as string] ?? (status as keyof typeof chipStyles));
+  const key = map[status as string] ?? (status as keyof typeof chipStyles);
   return (
     <span
       className={`inline-flex items-center gap-2 rounded-full px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${chipStyles[key]}`}
@@ -81,10 +85,7 @@ export function ChannelChip({ channel, label }: { channel: Channel; label: strin
       className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground ring-1 ring-inset ring-border"
       style={planned ? { opacity: 0.7 } : undefined}
     >
-      <span
-        className="h-1.5 w-1.5 rounded-full"
-        style={{ background: channelDotVar[channel] }}
-      />
+      <span className="h-1.5 w-1.5 rounded-full" style={{ background: channelDotVar[channel] }} />
       {label}
       {planned && (
         <span className="ml-1 text-[9px] uppercase tracking-wider text-muted-foreground/70">
@@ -109,7 +110,11 @@ export function Avatar({
       ? "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
       : "bg-gradient-to-br from-secondary to-surface-muted text-secondary-foreground";
   const sz =
-    size === "sm" ? "h-7 w-7 text-[10px]" : size === "lg" ? "h-10 w-10 text-sm" : "h-8 w-8 text-[11px]";
+    size === "sm"
+      ? "h-7 w-7 text-[10px]"
+      : size === "lg"
+        ? "h-10 w-10 text-sm"
+        : "h-8 w-8 text-[11px]";
   return (
     <div
       className={`grid shrink-0 place-items-center rounded-full font-medium ring-1 ring-border/60 shadow-soft ${cls} ${sz}`}
@@ -160,7 +165,8 @@ export function MockBanner() {
         <span className="callout-title" style={{ marginBottom: 0, display: "inline" }}>
           Prototype with mock data only.
         </span>{" "}
-        Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts; an operator sends every reply.
+        Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts;
+        an operator sends every reply.
       </div>
       <button
         onClick={() => setDismissed(true)}

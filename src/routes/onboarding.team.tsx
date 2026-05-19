@@ -95,8 +95,7 @@ function TeamStep() {
                 <div className="min-w-0">
                   <p className="truncate text-[13px] text-foreground">{i.email}</p>
                   <p className="text-[11.5px] text-muted-foreground">
-                    {i.role} ·{" "}
-                    <span className="text-warning">Pending</span>
+                    {i.role} · <span className="text-warning">Pending</span>
                   </p>
                 </div>
                 <button
@@ -115,7 +114,8 @@ function TeamStep() {
 
       <div className="flex items-start gap-2 rounded-md border border-border bg-surface-muted px-3 py-2 text-[12px] text-muted-foreground">
         <Info className="mt-0.5 h-3.5 w-3.5" />
-        Owners can manage members and roles later from <span className="font-medium text-foreground">Members</span>.
+        Owners can manage members and roles later from{" "}
+        <span className="font-medium text-foreground">Members</span>.
       </div>
     </OnboardingLayout>
   );

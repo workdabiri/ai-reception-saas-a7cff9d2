@@ -17,7 +17,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useStateParam, presets as statePresets, RouteStatePage, RouteSkeleton } from "@/components/route-state";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 export const Route = createFileRoute("/knowledge")({
   head: () => ({
@@ -89,12 +94,37 @@ const RULES = [
 ];
 
 const SERVICES = [
-  { name: "Dental consultation", desc: "Initial assessment and treatment plan.", status: "Active", note: "Bookable" },
+  {
+    name: "Dental consultation",
+    desc: "Initial assessment and treatment plan.",
+    status: "Active",
+    note: "Bookable",
+  },
   { name: "Cleaning", desc: "Routine hygiene cleaning.", status: "Active", note: "30–45 min" },
-  { name: "Whitening", desc: "In-clinic whitening treatment.", status: "Active", note: "Requires consultation" },
-  { name: "Orthodontic consultation", desc: "Braces and aligner evaluation.", status: "Active", note: "Specialist visit" },
-  { name: "Emergency dental visit", desc: "Urgent care for pain or injury.", status: "Active", note: "Same-day where possible" },
-  { name: "Follow-up appointment", desc: "Post-treatment checkup.", status: "Draft", note: "Notes incomplete" },
+  {
+    name: "Whitening",
+    desc: "In-clinic whitening treatment.",
+    status: "Active",
+    note: "Requires consultation",
+  },
+  {
+    name: "Orthodontic consultation",
+    desc: "Braces and aligner evaluation.",
+    status: "Active",
+    note: "Specialist visit",
+  },
+  {
+    name: "Emergency dental visit",
+    desc: "Urgent care for pain or injury.",
+    status: "Active",
+    note: "Same-day where possible",
+  },
+  {
+    name: "Follow-up appointment",
+    desc: "Post-treatment checkup.",
+    status: "Draft",
+    note: "Notes incomplete",
+  },
 ];
 
 const HOURS = [
@@ -120,7 +150,9 @@ function KnowledgePage() {
     return <RouteStatePage title="Knowledge Base">{statePresets.knowledgeEmpty()}</RouteStatePage>;
   }
   if (stateOverride === "access-denied") {
-    return <RouteStatePage title="Knowledge Base">{statePresets.knowledgeAccessDenied()}</RouteStatePage>;
+    return (
+      <RouteStatePage title="Knowledge Base">{statePresets.knowledgeAccessDenied()}</RouteStatePage>
+    );
   }
   if (stateOverride === "loading") {
     return (
@@ -129,7 +161,6 @@ function KnowledgePage() {
       </RouteStatePage>
     );
   }
-
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
@@ -153,10 +184,7 @@ function KnowledgePage() {
         {STATS.map((s) => {
           const Icon = s.icon;
           return (
-            <div
-              key={s.label}
-              className="rounded-xl border border-border bg-card p-4 shadow-soft"
-            >
+            <div key={s.label} className="rounded-xl border border-border bg-card p-4 shadow-soft">
               <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                 <Icon className="h-3.5 w-3.5" />
                 {s.label}
@@ -220,10 +248,7 @@ function KnowledgePage() {
                       {f.cat}
                     </div>
                     <div>
-                      <Pill
-                        variant={f.status === "Active" ? "success" : "muted"}
-                        size="sm"
-                      >
+                      <Pill variant={f.status === "Active" ? "success" : "muted"} size="sm">
                         {f.status}
                       </Pill>
                     </div>
@@ -279,16 +304,10 @@ function KnowledgePage() {
           <Section icon={Briefcase} title="Services">
             <div className="grid gap-3 sm:grid-cols-2">
               {SERVICES.map((s) => (
-                <div
-                  key={s.name}
-                  className="rounded-lg border border-border bg-surface p-3"
-                >
+                <div key={s.name} className="rounded-lg border border-border bg-surface p-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="text-[13px] font-medium">{s.name}</div>
-                    <Pill
-                      variant={s.status === "Active" ? "success" : "muted"}
-                      size="sm"
-                    >
+                    <Pill variant={s.status === "Active" ? "success" : "muted"} size="sm">
                       {s.status}
                     </Pill>
                   </div>
@@ -321,9 +340,7 @@ function KnowledgePage() {
                 ))}
               </ul>
             </div>
-            <p className="mt-2 text-[11.5px] text-muted-foreground">
-              Timezone: Asia/Tehran
-            </p>
+            <p className="mt-2 text-[11.5px] text-muted-foreground">Timezone: Asia/Tehran</p>
           </Section>
         </div>
 
@@ -336,16 +353,11 @@ function KnowledgePage() {
             </div>
             <ul className="space-y-2">
               {READINESS.map((r) => (
-                <li
-                  key={r.label}
-                  className="flex items-start gap-2 text-[12.5px] text-foreground"
-                >
+                <li key={r.label} className="flex items-start gap-2 text-[12.5px] text-foreground">
                   <span
                     className={cn(
                       "mt-0.5 grid h-4 w-4 place-items-center rounded-full",
-                      r.done
-                        ? "bg-success/15 text-success"
-                        : "bg-muted text-muted-foreground",
+                      r.done ? "bg-success/15 text-success" : "bg-muted text-muted-foreground",
                     )}
                   >
                     {r.done ? (
@@ -366,8 +378,8 @@ function KnowledgePage() {
               How AI uses knowledge
             </div>
             <p className="text-[12.5px] text-muted-foreground">
-              AI drafts reference your business profile and knowledge base. Operators
-              always review and send the final reply.
+              AI drafts reference your business profile and knowledge base. Operators always review
+              and send the final reply.
             </p>
             <Link
               to="/settings/ai"
@@ -404,9 +416,7 @@ function Section({
           </div>
           <div className="min-w-0">
             <h2 className="text-base font-medium">{title}</h2>
-            {description && (
-              <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-            )}
+            {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
           </div>
         </div>
         {action}

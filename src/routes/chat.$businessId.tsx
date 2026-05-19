@@ -11,8 +11,7 @@ export const Route = createFileRoute("/chat/$businessId")({
       { title: "Chat — AI Reception" },
       {
         name: "description",
-        content:
-          "Customer-facing web chat surface. Prototype only — operators review every reply.",
+        content: "Customer-facing web chat surface. Prototype only — operators review every reply.",
       },
     ],
   }),
@@ -58,20 +57,18 @@ function ChatPage() {
                   Web Chat · Online for mock demo
                 </span>
               </div>
-              <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">
-                {businessName}
-              </h1>
+              <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">{businessName}</h1>
               <p className="text-sm text-muted-foreground">
-                Send a message and the reception team will review it shortly.
-                Operators review every reply — AI may help prepare drafts.
+                Send a message and the reception team will review it shortly. Operators review every
+                reply — AI may help prepare drafts.
               </p>
             </div>
 
             <div className="rounded-xl border border-border bg-card p-4 text-xs text-muted-foreground">
               <div className="font-medium text-foreground">Prototype only</div>
               <p className="mt-1">
-                No message is actually sent. This page demonstrates where
-                customer messages originate in the AI Reception workspace.
+                No message is actually sent. This page demonstrates where customer messages
+                originate in the AI Reception workspace.
               </p>
             </div>
 
@@ -107,11 +104,7 @@ function ChatPage() {
           </section>
 
           <section className="lg:sticky lg:top-8">
-            <WebChatWidget
-              businessName={businessName}
-              state={state}
-              variant="inline"
-            />
+            <WebChatWidget businessName={businessName} state={state} variant="inline" />
           </section>
         </div>
       </main>

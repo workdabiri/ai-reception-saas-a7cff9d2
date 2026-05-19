@@ -1,11 +1,4 @@
-import {
-  MessageSquare,
-  Sparkles,
-  ShieldAlert,
-  UserPlus,
-  Radio,
-  BookOpen,
-} from "lucide-react";
+import { MessageSquare, Sparkles, ShieldAlert, UserPlus, Radio, BookOpen } from "lucide-react";
 
 export type NotificationCategory =
   | "conversation"
