@@ -407,7 +407,7 @@ function Bubble({
   return (
     <div className={cn("flex items-end gap-2", isLeft ? "justify-start" : "justify-end")}>
       {isLeft && (
-        <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/12 text-[11px] font-medium text-primary">
+        <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/12 text-[11px] font-medium text-foreground ring-1 ring-primary/30">
           {initial}
         </div>
       )}
