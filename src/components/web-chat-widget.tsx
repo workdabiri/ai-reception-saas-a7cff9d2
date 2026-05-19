@@ -196,7 +196,7 @@ function Header({
 
   return (
     <div className="flex items-center gap-3 border-b border-border bg-surface px-4 py-3">
-      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/12 text-sm font-medium text-primary">
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/12 text-sm font-medium text-foreground ring-1 ring-primary/30">
         {initial}
       </div>
       <div className="min-w-0 flex-1">
