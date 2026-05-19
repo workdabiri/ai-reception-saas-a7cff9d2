@@ -71,7 +71,45 @@ function StatesPage() {
             </section>
           ))}
         </div>
+
+        <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+          <h2 className="text-sm font-medium text-foreground">Route state previews</h2>
+          <p className="mt-1 text-[12px] text-muted-foreground">
+            Append <code className="rounded bg-surface-muted px-1">?state=…</code> to a real route to preview a mock state.
+          </p>
+          <ul className="mt-3 grid gap-1.5 text-[12.5px] sm:grid-cols-2">
+            {[
+              ["/inbox?state=empty", "Inbox — empty"],
+              ["/inbox?state=ai-unavailable", "Inbox — AI unavailable"],
+              ["/inbox?state=low-confidence", "Inbox — low-confidence draft"],
+              ["/inbox?state=loading", "Inbox — loading"],
+              ["/inbox?state=access-denied", "Inbox — access denied"],
+              ["/customers?state=empty", "Customers — empty"],
+              ["/customers?state=access-denied", "Customers — access denied"],
+              ["/audit?state=empty", "Audit — empty"],
+              ["/audit?state=access-denied", "Audit — access denied"],
+              ["/audit?state=error", "Audit — error"],
+              ["/members?state=empty", "Members — empty"],
+              ["/members?state=pending", "Members — invites pending"],
+              ["/members?state=access-denied", "Members — access denied"],
+              ["/channels?state=no-active", "Channels — none active"],
+              ["/channels?state=provider-unavailable", "Channels — provider unavailable"],
+              ["/channels/web-chat?state=provider-unavailable", "Web Chat — provider unavailable"],
+              ["/channels/whatsapp?state=planned", "WhatsApp — planned"],
+              ["/settings?state=access-denied", "Settings — access denied"],
+              ["/settings/ai?state=ai-unavailable", "AI Settings — AI unavailable"],
+              ["/knowledge?state=empty", "Knowledge — empty"],
+              ["/notifications?state=empty", "Notifications — empty"],
+              ["/profile?state=session-expired", "Profile — session expired"],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <a href={href} className="text-primary hover:underline">{label}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </>
+
   );
 }
