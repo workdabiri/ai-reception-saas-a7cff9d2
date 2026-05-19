@@ -84,7 +84,7 @@ function NavList({
         return (
           <Link
             key={item.to}
-            to={item.to}
+            to={item.to as "/"}
             onClick={onNavigate}
             className={[
               "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] transition-colors",
@@ -171,7 +171,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             return (
               <Link
                 key={item.to}
-                to={item.to}
+                to={item.to as "/"}
                 title={item.label}
                 aria-label={item.label}
                 className={[
