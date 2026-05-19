@@ -73,7 +73,7 @@ const MENU_CONFIG: {
       title: "Management",
       items: [
         { id: "members", to: "/members", label: "Members", icon: UserCog },
-        { id: "settings", to: "/settings", label: "Settings", icon: Settings },
+        { id: "settings", to: "/settings", label: "Settings", icon: Settings, exact: true },
       ],
     },
     {
