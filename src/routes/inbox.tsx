@@ -205,6 +205,30 @@ function InboxPage() {
     (c) => c.customerId === active.customerId && c.id !== active.id,
   );
 
+  if (stateOverride === "empty") {
+    return (
+      <RouteStatePage title="Inbox" description="Operator inbox with AI drafts and human review.">
+        {statePresets.inboxEmpty()}
+      </RouteStatePage>
+    );
+  }
+  if (stateOverride === "access-denied") {
+    return (
+      <RouteStatePage title="Inbox">{statePresets.inboxAccessDenied()}</RouteStatePage>
+    );
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Inbox" description="Loading conversations…">
+        <div className="grid gap-4 md:grid-cols-[360px_minmax(0,1fr)]">
+          <RouteSkeleton variant="list" />
+          <RouteSkeleton variant="settings" />
+        </div>
+      </RouteStatePage>
+    );
+  }
+
+
   const openConversation = (id: string) => {
     setActiveId(id);
     setMobileView("thread");
