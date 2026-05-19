@@ -108,6 +108,17 @@ function ToggleRow({
 }
 
 function ProfilePage() {
+  const stateOverride = useStateParam();
+  if (stateOverride === "session-expired") {
+    return <RouteStatePage title="Account">{statePresets.profileSessionExpired()}</RouteStatePage>;
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Account" description="Loading account…">
+        <RouteSkeleton variant="settings" />
+      </RouteStatePage>
+    );
+  }
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 lg:px-8 space-y-6">
       <PageHeader

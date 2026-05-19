@@ -113,7 +113,23 @@ const READINESS = [
 ];
 
 function KnowledgePage() {
+  const stateOverride = useStateParam();
   const [addOpen, setAddOpen] = useState(false);
+
+  if (stateOverride === "empty") {
+    return <RouteStatePage title="Knowledge Base">{statePresets.knowledgeEmpty()}</RouteStatePage>;
+  }
+  if (stateOverride === "access-denied") {
+    return <RouteStatePage title="Knowledge Base">{statePresets.knowledgeAccessDenied()}</RouteStatePage>;
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Knowledge Base" description="Loading knowledge…">
+        <RouteSkeleton variant="cards" />
+      </RouteStatePage>
+    );
+  }
+
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">

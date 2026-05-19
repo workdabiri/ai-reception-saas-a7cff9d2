@@ -37,8 +37,21 @@ const filters: { id: Filter; label: string }[] = [
 ];
 
 function NotificationsPage() {
+  const stateOverride = useStateParam();
   const [items, setItems] = useState<MockNotification[]>(mockNotifications);
   const [filter, setFilter] = useState<Filter>("all");
+
+  if (stateOverride === "empty") {
+    return <RouteStatePage title="Notifications">{statePresets.notificationsEmpty()}</RouteStatePage>;
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Notifications" description="Loading notifications…">
+        <RouteSkeleton variant="list" />
+      </RouteStatePage>
+    );
+  }
+
 
   const filtered = useMemo(() => {
     if (filter === "all") return items;

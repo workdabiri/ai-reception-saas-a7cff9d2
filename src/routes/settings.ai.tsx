@@ -35,6 +35,7 @@ const TONES = ["Professional", "Friendly", "Concise", "Warm"] as const;
 type Tone = (typeof TONES)[number];
 
 function AISettingsPage() {
+  const stateOverride = useStateParam();
   const [tone, setTone] = useState<Tone>("Friendly");
   const [lowConfWarn, setLowConfWarn] = useState(true);
   const [sourceReview, setSourceReview] = useState(true);
