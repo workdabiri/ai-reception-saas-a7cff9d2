@@ -357,7 +357,7 @@ function SubmittedBody() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col items-center gap-3 rounded-xl border border-success/25 bg-success/8 p-5 text-center">
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-success/15 text-success">
+        <div className="grid h-10 w-10 place-items-center rounded-full bg-success/15 text-foreground ring-1 ring-success/30">
           <Check className="h-5 w-5" />
         </div>
         <div>
