@@ -358,7 +358,8 @@ function MembersPage() {
               <Info className="h-3 w-3" /> Planned capability
             </span>
           </div>
-          <div className="overflow-x-auto">
+          {/* Desktop/tablet matrix */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-surface text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -386,6 +387,51 @@ function MembersPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile permission role cards */}
+          <div className="md:hidden divide-y divide-border">
+            {roles.map((r) => {
+              const allowed = matrix.filter((row) => row.perms[r] === "full").map((row) => row.area);
+              const readOnly = matrix.filter((row) => row.perms[r] === "read").map((row) => row.area);
+              const restricted = matrix.filter((row) => row.perms[r] === "none").map((row) => row.area);
+              return (
+                <div key={r} className="px-4 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[r]}`}>
+                      {r}
+                    </span>
+                  </div>
+                  <dl className="mt-3 space-y-3 text-[12px]">
+                    {allowed.length > 0 && (
+                      <div>
+                        <dt className="mb-1 inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                          <Check className="h-3 w-3 text-success" /> Full access
+                        </dt>
+                        <dd className="text-foreground">{allowed.join(" · ")}</dd>
+                      </div>
+                    )}
+                    {readOnly.length > 0 && (
+                      <div>
+                        <dt className="mb-1 inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                          <Minus className="h-3 w-3" /> Read only
+                        </dt>
+                        <dd className="text-foreground">{readOnly.join(" · ")}</dd>
+                      </div>
+                    )}
+                    {restricted.length > 0 && (
+                      <div>
+                        <dt className="mb-1 inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                          <X className="h-3 w-3 text-muted-foreground" /> Restricted
+                        </dt>
+                        <dd className="text-muted-foreground">{restricted.join(" · ")}</dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+              );
+            })}
+          </div>
+
           <div className="grid gap-3 border-t border-border bg-surface px-4 py-4 sm:grid-cols-2">
             {[
               ["Owner", "Full workspace access, members and settings. Billing planned."],
