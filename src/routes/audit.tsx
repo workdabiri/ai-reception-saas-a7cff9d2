@@ -228,8 +228,8 @@ function AuditPage() {
             </div>
           </div>
 
-          {/* Detail panel */}
-          <aside className="lg:sticky lg:top-6 lg:self-start">
+          {/* Detail panel — tablet & desktop */}
+          <aside className="hidden sm:block lg:sticky lg:top-6 lg:self-start">
             {selected ? (
               <DetailPanel event={selected} onClose={() => setSelectedId(null)} />
             ) : (
@@ -240,6 +240,17 @@ function AuditPage() {
           </aside>
         </div>
       </div>
+
+      {/* Mobile detail sheet */}
+      <Sheet open={mobileDetailOpen} onOpenChange={setMobileDetailOpen}>
+        <SheetContent side="bottom" className="h-[85vh] overflow-y-auto p-0 sm:hidden">
+          <SheetTitle className="sr-only">Audit event details</SheetTitle>
+          {selected && (
+            <DetailPanel event={selected} onClose={() => setMobileDetailOpen(false)} />
+          )}
+        </SheetContent>
+      </Sheet>
+
     </>
   );
 }
