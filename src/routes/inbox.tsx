@@ -52,6 +52,14 @@ import {
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { InboxOperatorFirstEmpty, FilterNoMatchState } from "@/components/empty-states";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+  StateBanner,
+} from "@/components/route-state";
+import { Sparkles as SparklesIcon } from "lucide-react";
 
 export const Route = createFileRoute("/inbox")({
   head: () => ({
@@ -145,9 +153,12 @@ function InboxPage() {
   const [contextOpen, setContextOpen] = useState(false);
   const [sectionsOpen, setSectionsOpen] = useState(false);
   const [queueMenuOpen, setQueueMenuOpen] = useState(false);
+  const stateOverride = useStateParam();
 
   const filtered = useMemo(() => {
     return conversations.filter((c) => {
+
+
       let matchSection = true;
       if (section.kind === "inbox") {
         switch (section.value) {
@@ -193,6 +204,30 @@ function InboxPage() {
   const linked = conversations.filter(
     (c) => c.customerId === active.customerId && c.id !== active.id,
   );
+
+  if (stateOverride === "empty") {
+    return (
+      <RouteStatePage title="Inbox" description="Operator inbox with AI drafts and human review.">
+        {statePresets.inboxEmpty()}
+      </RouteStatePage>
+    );
+  }
+  if (stateOverride === "access-denied") {
+    return (
+      <RouteStatePage title="Inbox">{statePresets.inboxAccessDenied()}</RouteStatePage>
+    );
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Inbox" description="Loading conversations…">
+        <div className="grid gap-4 md:grid-cols-[360px_minmax(0,1fr)]">
+          <RouteSkeleton variant="list" />
+          <RouteSkeleton variant="settings" />
+        </div>
+      </RouteStatePage>
+    );
+  }
+
 
   const openConversation = (id: string) => {
     setActiveId(id);
@@ -530,17 +565,45 @@ function InboxPage() {
 
           {/* Composer (sticky on mobile, padded above floating bottom nav) */}
           <div className="border-t border-border bg-surface px-4 py-3 sm:px-6 sm:py-4 pb-[88px] md:pb-4">
-            {aiDraft && !noteMode && (
+            {stateOverride === "ai-unavailable" && (
+              <div className="mb-3">
+                <StateBanner
+                  icon={SparklesIcon}
+                  tone="warning"
+                  title="AI assistance unavailable"
+                  description="Operators can still reply manually. AI draft assistance is temporarily unavailable."
+                  actions={[
+                    { label: "Continue manually", variant: "primary", onClick: () => undefined },
+                    { label: "Open AI settings", to: "/settings/ai", variant: "secondary" },
+                  ]}
+                />
+              </div>
+            )}
+            {aiDraft && !noteMode && stateOverride !== "ai-unavailable" && (
               <div className="mb-3">
                 <AIDraftPanel
                   draft={aiDraft.body}
-                  confidence={active.priority === "urgent" ? "Low" : active.priority === "high" ? "High" : "Medium"}
+                  confidence={
+                    stateOverride === "low-confidence"
+                      ? "Low"
+                      : active.priority === "urgent"
+                        ? "Low"
+                        : active.priority === "high"
+                          ? "High"
+                          : "Medium"
+                  }
+                  riskNote={
+                    stateOverride === "low-confidence"
+                      ? "Review source/context before sending."
+                      : undefined
+                  }
                   onAccept={(t) => setDraft(t)}
                   onEdit={(t) => setDraft(t)}
                   onReject={() => setDraft("")}
                 />
               </div>
             )}
+
 
             <div className="flex items-center gap-1 pb-2 text-[11px]">
               <button

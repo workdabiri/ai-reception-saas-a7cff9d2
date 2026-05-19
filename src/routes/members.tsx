@@ -42,6 +42,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 export const Route = createFileRoute("/members")({
   head: () => ({
@@ -151,11 +157,58 @@ function PermCell({ p }: { p: Perm }) {
 }
 
 function MembersPage() {
-  const [rows] = useState<Row[]>(baseRows);
+  const stateOverride = useStateParam();
+  const [rows] = useState<Row[]>(
+    stateOverride === "pending"
+      ? [
+          {
+            id: "inv1",
+            name: "Priya Patel",
+            email: "priya@example.com",
+            role: "Operator",
+            status: "Invited",
+            initials: "PP",
+            lastActive: "Invite pending",
+            workspace: currentWorkspace.name,
+          },
+          {
+            id: "inv2",
+            name: "Marcus Lee",
+            email: "marcus@example.com",
+            role: "Viewer",
+            status: "Invited",
+            initials: "ML",
+            lastActive: "Invite pending",
+            workspace: currentWorkspace.name,
+          },
+        ]
+      : baseRows
+  );
   const [invite, setInvite] = useState(false);
   const [changeRole, setChangeRole] = useState<Row | null>(null);
   const [removeRow, setRemoveRow] = useState<Row | null>(null);
   const [accessDenied, setAccessDenied] = useState(false);
+
+  if (stateOverride === "empty") {
+    return (
+      <RouteStatePage title="Members & access" description="Manage who can see and act in this workspace.">
+        {statePresets.membersEmpty()}
+      </RouteStatePage>
+    );
+  }
+  if (stateOverride === "access-denied") {
+    return (
+      <RouteStatePage title="Members & access">{statePresets.membersAccessDenied()}</RouteStatePage>
+    );
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Members & access" description="Loading members…">
+        <RouteSkeleton variant="table" />
+      </RouteStatePage>
+    );
+  }
+
 
   return (
     <>

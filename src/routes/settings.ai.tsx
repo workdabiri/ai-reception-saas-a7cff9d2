@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useStateParam, presets as statePresets, RouteStatePage, RouteSkeleton } from "@/components/route-state";
 
 export const Route = createFileRoute("/settings/ai")({
   head: () => ({
@@ -34,10 +35,27 @@ const TONES = ["Professional", "Friendly", "Concise", "Warm"] as const;
 type Tone = (typeof TONES)[number];
 
 function AISettingsPage() {
+  const stateOverride = useStateParam();
   const [tone, setTone] = useState<Tone>("Friendly");
   const [lowConfWarn, setLowConfWarn] = useState(true);
   const [sourceReview, setSourceReview] = useState(true);
   const [escalateUnsure, setEscalateUnsure] = useState(true);
+
+  if (stateOverride === "ai-unavailable") {
+    return <RouteStatePage title="AI Assistance Settings">{statePresets.aiUnavailable()}</RouteStatePage>;
+  }
+  if (stateOverride === "access-denied") {
+    return <RouteStatePage title="AI Assistance Settings">{statePresets.aiAccessDenied()}</RouteStatePage>;
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="AI Assistance Settings" description="Loading…">
+        <RouteSkeleton variant="settings" />
+      </RouteStatePage>
+    );
+  }
+
+
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">

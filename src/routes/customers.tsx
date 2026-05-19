@@ -13,6 +13,12 @@ import {
 import { Search, Download, Shield, Users, ChevronRight, AlertTriangle, MessageCircle } from "lucide-react";
 import type { ChannelKey } from "@/lib/mock-data";
 import { CustomersOperatorFirstEmpty, FilterNoMatchState } from "@/components/empty-states";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 const channelToKey = (c: Channel): ChannelKey => (c === "webform" ? "webchat" : (c as ChannelKey));
 
@@ -88,9 +94,13 @@ function buildRows(): Row[] {
 }
 
 function CustomersPage() {
+  const stateOverride = useStateParam();
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | InboxStatus>("all");
   const [channelFilter, setChannelFilter] = useState<"all" | Channel>("all");
+
+
+
 
   const rows = useMemo(buildRows, []);
   const filtered = useMemo(() => {
@@ -115,6 +125,26 @@ function CustomersPage() {
     }),
     [rows],
   );
+
+  if (stateOverride === "empty") {
+    return (
+      <RouteStatePage title="Customers" description="Reception directory.">
+        {statePresets.customersEmpty()}
+      </RouteStatePage>
+    );
+  }
+  if (stateOverride === "access-denied") {
+    return (
+      <RouteStatePage title="Customers">{statePresets.customersAccessDenied()}</RouteStatePage>
+    );
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Customers" description="Loading customers…">
+        <RouteSkeleton variant="table" />
+      </RouteStatePage>
+    );
+  }
 
   return (
     <>

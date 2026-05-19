@@ -17,6 +17,12 @@ import {
   Activity,
   Info,
 } from "lucide-react";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 export const Route = createFileRoute("/channels")({
   head: () => ({
@@ -195,6 +201,27 @@ function Stat({
 }
 
 function ChannelsPage() {
+  const stateOverride = useStateParam();
+  if (stateOverride === "no-active") {
+    return (
+      <RouteStatePage title="Channels" description="Channel overview.">
+        {statePresets.channelsNoActive()}
+      </RouteStatePage>
+    );
+  }
+  if (stateOverride === "provider-unavailable") {
+    return (
+      <RouteStatePage title="Channels">{statePresets.channelsProviderUnavailable()}</RouteStatePage>
+    );
+  }
+  if (stateOverride === "loading") {
+    return (
+      <RouteStatePage title="Channels" description="Loading channels…">
+        <RouteSkeleton variant="cards" />
+      </RouteStatePage>
+    );
+  }
+
   const totals = channelOverview.reduce(
     (acc, c) => ({
       unread: acc.unread + c.unread,
