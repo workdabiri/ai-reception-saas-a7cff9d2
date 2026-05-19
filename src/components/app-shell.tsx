@@ -10,7 +10,7 @@ import {
   AlertCircle,
   Search,
   Sparkles,
-  
+  Bell,
   Plus,
   Radio,
   PanelLeftClose,
@@ -19,6 +19,7 @@ import {
   ChevronsUpDown,
   Shield,
   User,
+  Bot,
   MoreHorizontal,
   X,
 } from "lucide-react";
@@ -50,7 +51,11 @@ type NavSection = {
   items: NavItem[];
 };
 
-const MENU_CONFIG: { sections: NavSection[]; bottomItems: NavItem[] } = {
+const MENU_CONFIG: {
+  sections: NavSection[];
+  bottomItems: NavItem[];
+  extraItems: NavItem[];
+} = {
   sections: [
     {
       id: "workspace",
@@ -83,19 +88,50 @@ const MENU_CONFIG: { sections: NavSection[]; bottomItems: NavItem[] } = {
   bottomItems: [
     { id: "studio", to: "/studio", label: "Design Studio", icon: Sparkles },
     { id: "help", to: "/settings", label: "Help", icon: HelpCircle },
-    { id: "profile", to: "/settings", label: "Profile", icon: User },
+    { id: "profile", to: "/profile", label: "Profile", icon: User },
+  ],
+  // Items not in desktop sidebar, but user-facing routes that must be
+  // reachable from mobile More / utility menus.
+  extraItems: [
+    { id: "ai-settings", to: "/settings/ai", label: "AI Settings", icon: Bot },
+    { id: "role-preview", to: "/role-preview", label: "Role preview", icon: Shield },
+    { id: "notifications", to: "/notifications", label: "Notifications", icon: Bell },
   ],
 };
 
 const allMenuItems = () => MENU_CONFIG.sections.flatMap((section) => section.items);
 const menuItem = (id: string) => allMenuItems().find((item) => item.id === id)!;
+const extraItem = (id: string) =>
+  MENU_CONFIG.extraItems.find((item) => item.id === id)!;
+const bottomItem = (id: string) =>
+  MENU_CONFIG.bottomItems.find((item) => item.id === id)!;
 const mobilePrimaryItems = () => ["inbox", "channels", "customers", "dashboard"].map(menuItem);
-const mobileMoreItems = () => [
-  menuItem("members"),
-  menuItem("settings"),
-  menuItem("audit"),
-  menuItem("states"),
-  ...MENU_CONFIG.bottomItems,
+
+// Grouped More menu — every desktop sidebar destination plus extra user-facing
+// routes that don't appear in the sidebar today (AI Settings, Role preview,
+// Notifications, Profile).
+type MoreGroup = { id: string; title: string; items: NavItem[] };
+const mobileMoreGroups = (): MoreGroup[] => [
+  {
+    id: "workspace",
+    title: "Workspace",
+    items: [menuItem("dashboard"), menuItem("knowledge"), extraItem("role-preview")],
+  },
+  {
+    id: "management",
+    title: "Management",
+    items: [menuItem("members"), menuItem("settings"), extraItem("ai-settings")],
+  },
+  {
+    id: "trust",
+    title: "Trust & System",
+    items: [menuItem("audit"), menuItem("states"), extraItem("notifications")],
+  },
+  {
+    id: "account",
+    title: "Account",
+    items: [bottomItem("profile"), bottomItem("studio")],
+  },
 ];
 
 const STORAGE_KEY = "app.sidebar.collapsed";
@@ -118,7 +154,7 @@ export function AppShell({
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const mobilePrimary = mobilePrimaryItems();
-  const mobileMore = mobileMoreItems();
+  const moreGroups = mobileMoreGroups();
 
   const isInbox = (path: string) => path === "/inbox" || path.startsWith("/inbox/");
 
@@ -285,7 +321,7 @@ export function AppShell({
               className="absolute inset-0 bg-foreground/40 animate-fade-in"
               onClick={() => setMoreOpen(false)}
             />
-            <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-border bg-surface p-4 shadow-pop animate-slide-in-right">
+            <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl border-t border-border bg-surface p-4 shadow-pop animate-slide-in-right">
               <div className="mb-3 flex items-center justify-between">
                 <div className="text-sm font-medium">More</div>
                 <button
@@ -296,26 +332,42 @@ export function AppShell({
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                {mobileMore.map((it) => {
-                  const Icon = it.icon;
-                  return (
-                    <Link
-                      key={it.id}
-                      to={it.to as "/"}
-                      onClick={() => setMoreOpen(false)}
-                      className="relative flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-[11px] font-medium text-foreground transition hover:bg-secondary"
-                    >
-                      <Icon className="h-4 w-4 text-muted-foreground" />
-                      {it.label}
-                      {it.badge ? (
-                        <span className="absolute right-2 top-2 flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-[9px] text-[11px] font-medium tabular-nums bg-background dark:bg-white/[0.08] text-muted-foreground">
-                          {it.badge}
-                        </span>
-                      ) : null}
-                    </Link>
-                  );
-                })}
+              <div className="space-y-4">
+                {moreGroups.map((group) => (
+                  <section key={group.id}>
+                    <div className="mb-1.5 px-1 text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
+                      {group.title}
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {group.items.map((it) => {
+                        const Icon = it.icon;
+                        const active = isActive(it.to, it.exact);
+                        return (
+                          <Link
+                            key={it.id}
+                            to={it.to as "/"}
+                            onClick={() => setMoreOpen(false)}
+                            className={`relative flex flex-col items-center gap-2 rounded-xl border px-2 py-3 text-[11px] font-medium transition ${
+                              active
+                                ? "border-primary/40 bg-primary-soft text-primary"
+                                : "border-border bg-card text-foreground hover:bg-secondary"
+                            }`}
+                          >
+                            <Icon
+                              className={`h-4 w-4 ${active ? "text-primary" : "text-muted-foreground"}`}
+                            />
+                            {it.label}
+                            {it.badge ? (
+                              <span className="absolute right-2 top-2 flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-[9px] text-[11px] font-medium tabular-nums bg-background dark:bg-white/[0.08] text-muted-foreground">
+                                {it.badge}
+                              </span>
+                            ) : null}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </section>
+                ))}
               </div>
               <div className="mt-4 pb-6">
                 <div className="mb-2 px-1 text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
