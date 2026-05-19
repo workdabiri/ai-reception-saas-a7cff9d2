@@ -28,7 +28,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-export const ADMIN_NAV = [
+type AdminNavItem = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+};
+
+export const ADMIN_NAV: AdminNavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/businesses", label: "Businesses", icon: Building2 },
   { to: "/admin/users", label: "Users", icon: Users },
@@ -37,7 +44,7 @@ export const ADMIN_NAV = [
   { to: "/admin/audit", label: "Platform Audit", icon: ScrollText },
   { to: "/admin/feature-flags", label: "Feature Flags", icon: Flag },
   { to: "/admin/support", label: "Support", icon: LifeBuoy },
-] as const;
+];
 
 function isPathActive(current: string, to: string, exact?: boolean) {
   if (exact) return current === to;
