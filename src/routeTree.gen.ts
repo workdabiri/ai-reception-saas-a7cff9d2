@@ -27,8 +27,10 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ChannelsRouteImport } from './routes/channels'
 import { Route as AuditRouteImport } from './routes/audit'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as SettingsAiRouteImport } from './routes/settings.ai'
 import { Route as OnboardingWorkspaceRouteImport } from './routes/onboarding.workspace'
 import { Route as OnboardingTeamRouteImport } from './routes/onboarding.team'
@@ -41,6 +43,15 @@ import { Route as DevPillGalleryRouteImport } from './routes/dev.pill-gallery'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
 import { Route as ChatBusinessIdRouteImport } from './routes/chat.$businessId'
 import { Route as ChannelsChannelIdRouteImport } from './routes/channels.$channelId'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminUsageRouteImport } from './routes/admin.usage'
+import { Route as AdminSupportRouteImport } from './routes/admin.support'
+import { Route as AdminProviderHealthRouteImport } from './routes/admin.provider-health'
+import { Route as AdminFeatureFlagsRouteImport } from './routes/admin.feature-flags'
+import { Route as AdminBusinessesRouteImport } from './routes/admin.businesses'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminBusinessesIndexRouteImport } from './routes/admin.businesses.index'
+import { Route as AdminBusinessesBusinessIdRouteImport } from './routes/admin.businesses.$businessId'
 
 const WidgetPreviewRoute = WidgetPreviewRouteImport.update({
   id: '/widget-preview',
@@ -132,6 +143,11 @@ const AuditRoute = AuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccessDeniedRoute = AccessDeniedRouteImport.update({
   id: '/access-denied',
   path: '/access-denied',
@@ -141,6 +157,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const SettingsAiRoute = SettingsAiRouteImport.update({
   id: '/ai',
@@ -202,10 +223,57 @@ const ChannelsChannelIdRoute = ChannelsChannelIdRouteImport.update({
   path: '/$channelId',
   getParentRoute: () => ChannelsRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsageRoute = AdminUsageRouteImport.update({
+  id: '/usage',
+  path: '/usage',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProviderHealthRoute = AdminProviderHealthRouteImport.update({
+  id: '/provider-health',
+  path: '/provider-health',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFeatureFlagsRoute = AdminFeatureFlagsRouteImport.update({
+  id: '/feature-flags',
+  path: '/feature-flags',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBusinessesRoute = AdminBusinessesRouteImport.update({
+  id: '/businesses',
+  path: '/businesses',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBusinessesIndexRoute = AdminBusinessesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminBusinessesRoute,
+} as any)
+const AdminBusinessesBusinessIdRoute =
+  AdminBusinessesBusinessIdRouteImport.update({
+    id: '/$businessId',
+    path: '/$businessId',
+    getParentRoute: () => AdminBusinessesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
+  '/admin': typeof AdminRouteWithChildren
   '/audit': typeof AuditRoute
   '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
@@ -224,6 +292,13 @@ export interface FileRoutesByFullPath {
   '/studio': typeof StudioRoute
   '/verify-email': typeof VerifyEmailRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/businesses': typeof AdminBusinessesRouteWithChildren
+  '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/provider-health': typeof AdminProviderHealthRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/usage': typeof AdminUsageRoute
+  '/admin/users': typeof AdminUsersRoute
   '/channels/$channelId': typeof ChannelsChannelIdRoute
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
@@ -236,6 +311,9 @@ export interface FileRoutesByFullPath {
   '/onboarding/team': typeof OnboardingTeamRoute
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
+  '/admin/businesses/': typeof AdminBusinessesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -258,6 +336,12 @@ export interface FileRoutesByTo {
   '/studio': typeof StudioRoute
   '/verify-email': typeof VerifyEmailRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/provider-health': typeof AdminProviderHealthRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/usage': typeof AdminUsageRoute
+  '/admin/users': typeof AdminUsersRoute
   '/channels/$channelId': typeof ChannelsChannelIdRoute
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
@@ -270,11 +354,15 @@ export interface FileRoutesByTo {
   '/onboarding/team': typeof OnboardingTeamRoute
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
+  '/admin/businesses': typeof AdminBusinessesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
+  '/admin': typeof AdminRouteWithChildren
   '/audit': typeof AuditRoute
   '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
@@ -293,6 +381,13 @@ export interface FileRoutesById {
   '/studio': typeof StudioRoute
   '/verify-email': typeof VerifyEmailRoute
   '/widget-preview': typeof WidgetPreviewRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/businesses': typeof AdminBusinessesRouteWithChildren
+  '/admin/feature-flags': typeof AdminFeatureFlagsRoute
+  '/admin/provider-health': typeof AdminProviderHealthRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/usage': typeof AdminUsageRoute
+  '/admin/users': typeof AdminUsersRoute
   '/channels/$channelId': typeof ChannelsChannelIdRoute
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
@@ -305,12 +400,16 @@ export interface FileRoutesById {
   '/onboarding/team': typeof OnboardingTeamRoute
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
+  '/admin/businesses/': typeof AdminBusinessesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/access-denied'
+    | '/admin'
     | '/audit'
     | '/channels'
     | '/customers'
@@ -329,6 +428,13 @@ export interface FileRouteTypes {
     | '/studio'
     | '/verify-email'
     | '/widget-preview'
+    | '/admin/audit'
+    | '/admin/businesses'
+    | '/admin/feature-flags'
+    | '/admin/provider-health'
+    | '/admin/support'
+    | '/admin/usage'
+    | '/admin/users'
     | '/channels/$channelId'
     | '/chat/$businessId'
     | '/customers/$customerId'
@@ -341,6 +447,9 @@ export interface FileRouteTypes {
     | '/onboarding/team'
     | '/onboarding/workspace'
     | '/settings/ai'
+    | '/admin/'
+    | '/admin/businesses/$businessId'
+    | '/admin/businesses/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -363,6 +472,12 @@ export interface FileRouteTypes {
     | '/studio'
     | '/verify-email'
     | '/widget-preview'
+    | '/admin/audit'
+    | '/admin/feature-flags'
+    | '/admin/provider-health'
+    | '/admin/support'
+    | '/admin/usage'
+    | '/admin/users'
     | '/channels/$channelId'
     | '/chat/$businessId'
     | '/customers/$customerId'
@@ -375,10 +490,14 @@ export interface FileRouteTypes {
     | '/onboarding/team'
     | '/onboarding/workspace'
     | '/settings/ai'
+    | '/admin'
+    | '/admin/businesses/$businessId'
+    | '/admin/businesses'
   id:
     | '__root__'
     | '/'
     | '/access-denied'
+    | '/admin'
     | '/audit'
     | '/channels'
     | '/customers'
@@ -397,6 +516,13 @@ export interface FileRouteTypes {
     | '/studio'
     | '/verify-email'
     | '/widget-preview'
+    | '/admin/audit'
+    | '/admin/businesses'
+    | '/admin/feature-flags'
+    | '/admin/provider-health'
+    | '/admin/support'
+    | '/admin/usage'
+    | '/admin/users'
     | '/channels/$channelId'
     | '/chat/$businessId'
     | '/customers/$customerId'
@@ -409,11 +535,15 @@ export interface FileRouteTypes {
     | '/onboarding/team'
     | '/onboarding/workspace'
     | '/settings/ai'
+    | '/admin/'
+    | '/admin/businesses/$businessId'
+    | '/admin/businesses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccessDeniedRoute: typeof AccessDeniedRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuditRoute: typeof AuditRoute
   ChannelsRoute: typeof ChannelsRouteWithChildren
   CustomersRoute: typeof CustomersRouteWithChildren
@@ -571,6 +701,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/access-denied': {
       id: '/access-denied'
       path: '/access-denied'
@@ -584,6 +721,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/settings/ai': {
       id: '/settings/ai'
@@ -669,8 +813,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChannelsChannelIdRouteImport
       parentRoute: typeof ChannelsRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/usage': {
+      id: '/admin/usage'
+      path: '/usage'
+      fullPath: '/admin/usage'
+      preLoaderRoute: typeof AdminUsageRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/provider-health': {
+      id: '/admin/provider-health'
+      path: '/provider-health'
+      fullPath: '/admin/provider-health'
+      preLoaderRoute: typeof AdminProviderHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/feature-flags': {
+      id: '/admin/feature-flags'
+      path: '/feature-flags'
+      fullPath: '/admin/feature-flags'
+      preLoaderRoute: typeof AdminFeatureFlagsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/businesses': {
+      id: '/admin/businesses'
+      path: '/businesses'
+      fullPath: '/admin/businesses'
+      preLoaderRoute: typeof AdminBusinessesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/businesses/': {
+      id: '/admin/businesses/'
+      path: '/'
+      fullPath: '/admin/businesses/'
+      preLoaderRoute: typeof AdminBusinessesIndexRouteImport
+      parentRoute: typeof AdminBusinessesRoute
+    }
+    '/admin/businesses/$businessId': {
+      id: '/admin/businesses/$businessId'
+      path: '/$businessId'
+      fullPath: '/admin/businesses/$businessId'
+      preLoaderRoute: typeof AdminBusinessesBusinessIdRouteImport
+      parentRoute: typeof AdminBusinessesRoute
+    }
   }
 }
+
+interface AdminBusinessesRouteChildren {
+  AdminBusinessesBusinessIdRoute: typeof AdminBusinessesBusinessIdRoute
+  AdminBusinessesIndexRoute: typeof AdminBusinessesIndexRoute
+}
+
+const AdminBusinessesRouteChildren: AdminBusinessesRouteChildren = {
+  AdminBusinessesBusinessIdRoute: AdminBusinessesBusinessIdRoute,
+  AdminBusinessesIndexRoute: AdminBusinessesIndexRoute,
+}
+
+const AdminBusinessesRouteWithChildren = AdminBusinessesRoute._addFileChildren(
+  AdminBusinessesRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminBusinessesRoute: typeof AdminBusinessesRouteWithChildren
+  AdminFeatureFlagsRoute: typeof AdminFeatureFlagsRoute
+  AdminProviderHealthRoute: typeof AdminProviderHealthRoute
+  AdminSupportRoute: typeof AdminSupportRoute
+  AdminUsageRoute: typeof AdminUsageRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
+  AdminBusinessesRoute: AdminBusinessesRouteWithChildren,
+  AdminFeatureFlagsRoute: AdminFeatureFlagsRoute,
+  AdminProviderHealthRoute: AdminProviderHealthRoute,
+  AdminSupportRoute: AdminSupportRoute,
+  AdminUsageRoute: AdminUsageRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ChannelsRouteChildren {
   ChannelsChannelIdRoute: typeof ChannelsChannelIdRoute
@@ -711,6 +956,7 @@ const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccessDeniedRoute: AccessDeniedRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuditRoute: AuditRoute,
   ChannelsRoute: ChannelsRouteWithChildren,
   CustomersRoute: CustomersRouteWithChildren,
