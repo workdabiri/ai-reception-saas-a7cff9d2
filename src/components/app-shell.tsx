@@ -51,7 +51,11 @@ type NavSection = {
   items: NavItem[];
 };
 
-const MENU_CONFIG: { sections: NavSection[]; bottomItems: NavItem[] } = {
+const MENU_CONFIG: {
+  sections: NavSection[];
+  bottomItems: NavItem[];
+  extraItems: NavItem[];
+} = {
   sections: [
     {
       id: "workspace",
@@ -84,19 +88,50 @@ const MENU_CONFIG: { sections: NavSection[]; bottomItems: NavItem[] } = {
   bottomItems: [
     { id: "studio", to: "/studio", label: "Design Studio", icon: Sparkles },
     { id: "help", to: "/settings", label: "Help", icon: HelpCircle },
-    { id: "profile", to: "/settings", label: "Profile", icon: User },
+    { id: "profile", to: "/profile", label: "Profile", icon: User },
+  ],
+  // Items not in desktop sidebar, but user-facing routes that must be
+  // reachable from mobile More / utility menus.
+  extraItems: [
+    { id: "ai-settings", to: "/settings/ai", label: "AI Settings", icon: Bot },
+    { id: "role-preview", to: "/role-preview", label: "Role preview", icon: Shield },
+    { id: "notifications", to: "/notifications", label: "Notifications", icon: Bell },
   ],
 };
 
 const allMenuItems = () => MENU_CONFIG.sections.flatMap((section) => section.items);
 const menuItem = (id: string) => allMenuItems().find((item) => item.id === id)!;
+const extraItem = (id: string) =>
+  MENU_CONFIG.extraItems.find((item) => item.id === id)!;
+const bottomItem = (id: string) =>
+  MENU_CONFIG.bottomItems.find((item) => item.id === id)!;
 const mobilePrimaryItems = () => ["inbox", "channels", "customers", "dashboard"].map(menuItem);
-const mobileMoreItems = () => [
-  menuItem("members"),
-  menuItem("settings"),
-  menuItem("audit"),
-  menuItem("states"),
-  ...MENU_CONFIG.bottomItems,
+
+// Grouped More menu — every desktop sidebar destination plus extra user-facing
+// routes that don't appear in the sidebar today (AI Settings, Role preview,
+// Notifications, Profile).
+type MoreGroup = { id: string; title: string; items: NavItem[] };
+const mobileMoreGroups = (): MoreGroup[] => [
+  {
+    id: "workspace",
+    title: "Workspace",
+    items: [menuItem("dashboard"), menuItem("knowledge"), extraItem("role-preview")],
+  },
+  {
+    id: "management",
+    title: "Management",
+    items: [menuItem("members"), menuItem("settings"), extraItem("ai-settings")],
+  },
+  {
+    id: "trust",
+    title: "Trust & System",
+    items: [menuItem("audit"), menuItem("states"), extraItem("notifications")],
+  },
+  {
+    id: "account",
+    title: "Account",
+    items: [bottomItem("profile"), bottomItem("studio")],
+  },
 ];
 
 const STORAGE_KEY = "app.sidebar.collapsed";
