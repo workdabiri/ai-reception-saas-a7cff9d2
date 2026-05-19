@@ -46,10 +46,13 @@ type NavSection = {
   items: NavItem[];
 };
 
+// Single source of truth — every item here appears in ALL three viewports
+// (desktop sidebar, tablet collapsed rail, mobile More sheet). The mobile
+// bottom nav surfaces a curated 4-item primary set; everything else lives
+// in the "More" sheet so nothing is missing on smaller screens.
 const MENU_CONFIG: {
   sections: NavSection[];
   bottomItems: NavItem[];
-  extraItems: NavItem[];
 } = {
   sections: [
     {
@@ -61,6 +64,7 @@ const MENU_CONFIG: {
         { id: "channels", to: "/channels", label: "Channels", icon: Radio, badge: 8 },
         { id: "customers", to: "/customers", label: "Customers", icon: Users },
         { id: "knowledge", to: "/knowledge", label: "Knowledge", icon: BookOpen },
+        { id: "notifications", to: "/notifications", label: "Notifications", icon: Bell },
       ],
     },
     {
@@ -69,6 +73,7 @@ const MENU_CONFIG: {
       items: [
         { id: "members", to: "/members", label: "Members", icon: UserCog },
         { id: "settings", to: "/settings", label: "Settings", icon: Settings, exact: true },
+        { id: "ai-settings", to: "/settings/ai", label: "AI Settings", icon: Bot },
       ],
     },
     {
@@ -77,6 +82,7 @@ const MENU_CONFIG: {
       items: [
         { id: "audit", to: "/audit", label: "Audit log", icon: FileCheck2, badge: 2 },
         { id: "states", to: "/states", label: "States", icon: AlertCircle },
+        { id: "role-preview", to: "/role-preview", label: "Role preview", icon: Shield },
       ],
     },
   ],
@@ -85,47 +91,34 @@ const MENU_CONFIG: {
     { id: "help", to: "/settings", label: "Help", icon: HelpCircle },
     { id: "profile", to: "/profile", label: "Profile", icon: User },
   ],
-  // Items not in desktop sidebar, but user-facing routes that must be
-  // reachable from mobile More / utility menus.
-  extraItems: [
-    { id: "ai-settings", to: "/settings/ai", label: "AI Settings", icon: Bot },
-    { id: "role-preview", to: "/role-preview", label: "Role preview", icon: Shield },
-    { id: "notifications", to: "/notifications", label: "Notifications", icon: Bell },
-  ],
 };
 
 const allMenuItems = () => MENU_CONFIG.sections.flatMap((section) => section.items);
 const menuItem = (id: string) => allMenuItems().find((item) => item.id === id)!;
-const extraItem = (id: string) => MENU_CONFIG.extraItems.find((item) => item.id === id)!;
-const bottomItem = (id: string) => MENU_CONFIG.bottomItems.find((item) => item.id === id)!;
-const mobilePrimaryItems = () => ["inbox", "channels", "customers", "dashboard"].map(menuItem);
+const MOBILE_PRIMARY_IDS = ["inbox", "channels", "customers", "dashboard"] as const;
+const mobilePrimaryItems = () => MOBILE_PRIMARY_IDS.map(menuItem);
 
-// Grouped More menu — every desktop sidebar destination plus extra user-facing
-// routes that don't appear in the sidebar today (AI Settings, Role preview,
-// Notifications, Profile).
+// Mobile More mirrors the desktop sidebar exactly — every section item that
+// isn't in the bottom-nav primary set, plus the sidebar footer items.
 type MoreGroup = { id: string; title: string; items: NavItem[] };
-const mobileMoreGroups = (): MoreGroup[] => [
-  {
-    id: "workspace",
-    title: "Workspace",
-    items: [menuItem("dashboard"), menuItem("knowledge"), extraItem("role-preview")],
-  },
-  {
-    id: "management",
-    title: "Management",
-    items: [menuItem("members"), menuItem("settings"), extraItem("ai-settings")],
-  },
-  {
-    id: "trust",
-    title: "Trust & System",
-    items: [menuItem("audit"), menuItem("states"), extraItem("notifications")],
-  },
-  {
-    id: "account",
-    title: "Account",
-    items: [bottomItem("profile"), bottomItem("studio")],
-  },
-];
+const mobileMoreGroups = (): MoreGroup[] => {
+  const primary = new Set<string>(MOBILE_PRIMARY_IDS);
+  const sectionGroups = MENU_CONFIG.sections
+    .map((s) => ({
+      id: s.id,
+      title: s.title,
+      items: s.items.filter((it) => !primary.has(it.id)),
+    }))
+    .filter((g) => g.items.length > 0);
+  return [
+    ...sectionGroups,
+    {
+      id: "account",
+      title: "Account",
+      items: MENU_CONFIG.bottomItems.filter((it) => it.id !== "help"),
+    },
+  ];
+};
 
 const STORAGE_KEY = "app.sidebar.collapsed";
 
