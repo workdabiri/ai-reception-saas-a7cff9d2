@@ -9,6 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
+import { AdminShell } from "@/components/admin-shell";
 import { themeBootScript } from "@/components/theme-toggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -144,11 +145,17 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAuth = AUTH_ROUTE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+
+  let body: React.ReactNode;
+  if (isAuth) body = <Outlet />;
+  else if (isAdmin) body = <AdminShell><Outlet /></AdminShell>;
+  else body = <AppShell><Outlet /></AppShell>;
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={150}>
-        {isAuth ? <Outlet /> : <AppShell><Outlet /></AppShell>}
+        {body}
       </TooltipProvider>
     </QueryClientProvider>
   );
