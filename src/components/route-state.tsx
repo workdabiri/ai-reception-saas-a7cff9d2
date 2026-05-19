@@ -30,9 +30,9 @@ import { PageHeader, MockBanner } from "@/components/ui-bits";
 
 /** Read `?state=<name>` from the current URL. */
 export function useStateParam(): string | null {
-  const search = useRouterState({ select: (s) => s.location.search }) as
-    | Record<string, unknown>
-    | undefined;
+  const search = useRouterState({
+    select: (s) => s.location.search as Record<string, unknown>,
+  });
   const v = search?.state;
   return typeof v === "string" && v.length > 0 ? v : null;
 }
