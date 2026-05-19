@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- co-exports of constants/hooks/contexts alongside components are intentional in this file. */
 import { useEffect, useState } from "react";
 import { Moon, Sun, Monitor, MoonStar } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";

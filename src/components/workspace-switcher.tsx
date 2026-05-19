@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- co-exports of constants/hooks/contexts alongside components are intentional in this file. */
 import { useState } from "react";
 import { Check, ChevronsUpDown, Shield, Layers } from "lucide-react";
 import { workspaces, type Workspace, type WorkspaceRole } from "@/lib/mock-data";
