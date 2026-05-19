@@ -139,7 +139,7 @@ function Stepper({ currentIdx }: { currentIdx: number }) {
               className={cn(
                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-medium",
                 isCurrent && "border-primary bg-primary text-primary-foreground",
-                isDone && "border-success bg-success/15 text-success",
+                isDone && "border-success bg-success/15 text-foreground",
                 !isCurrent && !isDone && "border-border bg-surface text-muted-foreground",
               )}
             >
