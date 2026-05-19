@@ -17,6 +17,12 @@ import { Pill } from "@/components/ui/pill";
 import { ChannelIcon } from "@/components/channel-icon";
 import { ChannelStateTag } from "@/components/channel-state-tag";
 import type { ChannelKey, ChannelState } from "@/lib/channels";
+import {
+  useStateParam,
+  presets as statePresets,
+  RouteStatePage,
+  RouteSkeleton,
+} from "@/components/route-state";
 
 export const Route = createFileRoute("/channels/$channelId")({
   head: ({ params }) => ({
