@@ -10,7 +10,7 @@ import {
   AlertCircle,
   Search,
   Sparkles,
-  
+  Bell,
   Plus,
   Radio,
   PanelLeftClose,
@@ -19,6 +19,7 @@ import {
   ChevronsUpDown,
   Shield,
   User,
+  Bot,
   MoreHorizontal,
   X,
 } from "lucide-react";
