@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export const ONBOARDING_STEPS = [
+const ONBOARDING_STEPS = [
   { id: "workspace", label: "Workspace", path: "/onboarding/workspace" as const },
   { id: "profile", label: "Profile", path: "/onboarding/profile" as const },
   { id: "channel", label: "Channel", path: "/onboarding/channel" as const },
@@ -139,7 +139,7 @@ function Stepper({ currentIdx }: { currentIdx: number }) {
               className={cn(
                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] font-medium",
                 isCurrent && "border-primary bg-primary text-primary-foreground",
-                isDone && "border-success bg-success/15 text-success",
+                isDone && "border-success bg-success/15 text-foreground",
                 !isCurrent && !isDone && "border-border bg-surface text-muted-foreground",
               )}
             >

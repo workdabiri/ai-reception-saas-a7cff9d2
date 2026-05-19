@@ -603,7 +603,9 @@ function SetupChecklist({ steps }: { steps: { label: string; done: boolean; note
           <div className="flex items-center gap-2.5 min-w-0">
             <span
               className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] ${
-                s.done ? "bg-success/15 text-success" : "bg-muted text-muted-foreground"
+                s.done
+                  ? "bg-success/15 text-foreground ring-1 ring-success/30"
+                  : "bg-muted text-muted-foreground"
               }`}
             >
               {s.done ? <Check className="h-3 w-3" /> : null}

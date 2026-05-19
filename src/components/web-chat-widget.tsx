@@ -196,7 +196,7 @@ function Header({
 
   return (
     <div className="flex items-center gap-3 border-b border-border bg-surface px-4 py-3">
-      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/12 text-sm font-medium text-primary">
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/12 text-sm font-medium text-foreground ring-1 ring-primary/30">
         {initial}
       </div>
       <div className="min-w-0 flex-1">
@@ -357,7 +357,7 @@ function SubmittedBody() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col items-center gap-3 rounded-xl border border-success/25 bg-success/8 p-5 text-center">
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-success/15 text-success">
+        <div className="grid h-10 w-10 place-items-center rounded-full bg-success/15 text-foreground ring-1 ring-success/30">
           <Check className="h-5 w-5" />
         </div>
         <div>
@@ -407,7 +407,7 @@ function Bubble({
   return (
     <div className={cn("flex items-end gap-2", isLeft ? "justify-start" : "justify-end")}>
       {isLeft && (
-        <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/12 text-[11px] font-medium text-primary">
+        <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/12 text-[11px] font-medium text-foreground ring-1 ring-primary/30">
           {initial}
         </div>
       )}

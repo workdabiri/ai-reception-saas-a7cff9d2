@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- co-exports of constants/hooks/contexts alongside components are intentional in this file. */
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 

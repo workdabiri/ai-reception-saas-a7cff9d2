@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- co-exports of constants/hooks/contexts alongside components are intentional in this file. */
 // Route-level state preview helper for TASK-UX-009.
 //
 // Lets every product route render canned empty / loading / access-denied /

@@ -47,6 +47,12 @@ function NotificationsPage() {
   const [items, setItems] = useState<MockNotification[]>(mockNotifications);
   const [filter, setFilter] = useState<Filter>("all");
 
+  const filtered = useMemo(() => {
+    if (filter === "all") return items;
+    if (filter === "unread") return items.filter((n) => n.unread);
+    return items.filter((n) => n.category === filter);
+  }, [items, filter]);
+
   if (stateOverride === "empty") {
     return (
       <RouteStatePage title="Notifications">{statePresets.notificationsEmpty()}</RouteStatePage>
@@ -59,12 +65,6 @@ function NotificationsPage() {
       </RouteStatePage>
     );
   }
-
-  const filtered = useMemo(() => {
-    if (filter === "all") return items;
-    if (filter === "unread") return items.filter((n) => n.unread);
-    return items.filter((n) => n.category === filter);
-  }, [items, filter]);
 
   const unread = items.filter((n) => n.unread).length;
 

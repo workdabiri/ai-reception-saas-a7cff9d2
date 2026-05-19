@@ -41,7 +41,7 @@ function InvitePage() {
       >
         <div className="rounded-lg border border-border bg-surface-muted p-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-md bg-primary/10 text-primary">
+            <span className="grid h-9 w-9 place-items-center rounded-md bg-primary-soft text-primary">
               <Building2 className="h-4 w-4" />
             </span>
             <div className="min-w-0">

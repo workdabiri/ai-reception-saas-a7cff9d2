@@ -357,7 +357,9 @@ function KnowledgePage() {
                   <span
                     className={cn(
                       "mt-0.5 grid h-4 w-4 place-items-center rounded-full",
-                      r.done ? "bg-success/15 text-success" : "bg-muted text-muted-foreground",
+                      r.done
+                        ? "bg-success/15 text-foreground ring-1 ring-success/30"
+                        : "bg-muted text-muted-foreground",
                     )}
                   >
                     {r.done ? (

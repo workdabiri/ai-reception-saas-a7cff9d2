@@ -29,7 +29,7 @@ type AdminNavItem = {
   exact?: boolean;
 };
 
-export const ADMIN_NAV: AdminNavItem[] = [
+const ADMIN_NAV: AdminNavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/businesses", label: "Businesses", icon: Building2 },
   { to: "/admin/users", label: "Users", icon: Users },
