@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { PageHeader } from "@/components/ui-bits";
 import { useBusinessId } from "@/contexts/business-context";
@@ -416,7 +416,11 @@ function ConversationRow({ conversation: c }: { conversation: ConversationWithSu
     : "No customer linked";
 
   return (
-    <article className="flex items-center gap-3 px-4 py-3.5">
+    <Link
+      to="/inbox/$conversationId"
+      params={{ conversationId: c.id }}
+      className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-secondary/50"
+    >
       {/* Status indicator dot */}
       <div className="flex flex-col items-center gap-1 shrink-0">
         <div
@@ -462,7 +466,7 @@ function ConversationRow({ conversation: c }: { conversation: ConversationWithSu
           <span className="shrink-0 tabular-nums">{updatedAt}</span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
