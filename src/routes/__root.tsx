@@ -13,6 +13,7 @@ import { AdminShell } from "@/components/admin-shell";
 import { BusinessProvider } from "@/contexts/business-context";
 import { themeBootScript } from "@/components/theme-toggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -184,6 +185,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <BusinessProvider>
         <TooltipProvider delayDuration={150}>{body}</TooltipProvider>
+        <Toaster />
       </BusinessProvider>
     </QueryClientProvider>
   );

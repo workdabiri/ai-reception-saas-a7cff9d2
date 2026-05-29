@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useBusinessId } from "@/contexts/business-context";
 import { useConversation } from "@/hooks/use-conversations";
-import { useMessages } from "@/hooks/use-messages";
+import { useMessages, useCreateMessage } from "@/hooks/use-messages";
 import type {
   ConversationWithSummary,
   ConversationStatus,
@@ -9,6 +9,7 @@ import type {
   Message,
   MessageDirection,
   MessageSenderType,
+  ApiMessageDirection,
 } from "@/lib/api-types";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import {
@@ -18,7 +19,20 @@ import {
   RouteSkeleton,
   StateBanner,
 } from "@/components/route-state";
-import { ArrowLeft, AlertTriangle, RefreshCw, MessageSquare, Lock, Bot, Clock } from "lucide-react";
+import {
+  ArrowLeft,
+  AlertTriangle,
+  RefreshCw,
+  MessageSquare,
+  Lock,
+  Bot,
+  Clock,
+  Send,
+  Loader2,
+} from "lucide-react";
+import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 // ---------------------------------------------------------------------------
 // Route definition
@@ -299,6 +313,9 @@ function ConversationDetailPage() {
 
       {/* Message timeline */}
       {messages.length === 0 ? <EmptyMessagesState /> : <MessageTimeline messages={messages} />}
+
+      {/* Composer */}
+      {businessId && <MessageComposer businessId={businessId} conversationId={conversationId} />}
     </div>
   );
 }
@@ -422,6 +439,178 @@ function MessageBubble({ message: m }: { message: Message }) {
 
         {/* Timestamp */}
         <span className="block text-[10px] text-muted-foreground/60 tabular-nums">{timestamp}</span>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Message composer
+// ---------------------------------------------------------------------------
+
+interface ComposerMode {
+  direction: ApiMessageDirection;
+  label: string;
+  placeholder: string;
+  submitLabel: string;
+  pendingLabel: string;
+  tabCls: string;
+  activeTabCls: string;
+  btnCls: string;
+  icon: typeof Send;
+}
+
+const REPLY_MODE: ComposerMode = {
+  direction: "OUTBOUND",
+  label: "Reply",
+  placeholder: "Type your reply\u2026",
+  submitLabel: "Send reply",
+  pendingLabel: "Sending\u2026",
+  tabCls:
+    "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors",
+  activeTabCls: "bg-primary/10 text-foreground border-primary/30",
+  btnCls:
+    "inline-flex items-center gap-2 h-9 rounded-md bg-primary px-4 text-[12.5px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed",
+  icon: Send,
+};
+
+const NOTE_MODE: ComposerMode = {
+  direction: "INTERNAL",
+  label: "Note",
+  placeholder: "Add an internal note\u2026",
+  submitLabel: "Add note",
+  pendingLabel: "Adding\u2026",
+  tabCls: REPLY_MODE.tabCls,
+  activeTabCls: "bg-warning/10 text-foreground border-warning/30",
+  btnCls:
+    "inline-flex items-center gap-2 h-9 rounded-md bg-warning/90 px-4 text-[12.5px] font-medium text-warning-foreground shadow-soft transition hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed",
+  icon: Lock,
+};
+
+const INACTIVE_TAB_CLS = "bg-surface text-muted-foreground border-border hover:bg-secondary/50";
+
+function MessageComposer({
+  businessId,
+  conversationId,
+}: {
+  businessId: string;
+  conversationId: string;
+}) {
+  const [mode, setMode] = useState<"OUTBOUND" | "INTERNAL">("OUTBOUND");
+  const [content, setContent] = useState("");
+  const createMessage = useCreateMessage(businessId, conversationId);
+
+  const config = mode === "OUTBOUND" ? REPLY_MODE : NOTE_MODE;
+  const trimmed = content.trim();
+  const canSubmit = trimmed.length > 0 && !createMessage.isPending;
+
+  function handleSubmit() {
+    if (!canSubmit) return;
+
+    // Capture submitted direction before mutate — mode may change during pending
+    const submittedDirection = config.direction;
+    const successMessage = submittedDirection === "OUTBOUND" ? "Reply sent" : "Note added";
+
+    createMessage.mutate(
+      {
+        content: trimmed,
+        direction: submittedDirection,
+      },
+      {
+        onSuccess: () => {
+          setContent("");
+          toast.success(successMessage);
+        },
+        onError: (error) => {
+          // Keep content — don't lose the user's draft
+          const apiErr = error as {
+            isUnauthenticated?: boolean;
+            isForbidden?: boolean;
+            isValidationError?: boolean;
+          };
+
+          if (apiErr.isUnauthenticated) {
+            toast.error("Session expired. Please sign in again.");
+          } else if (apiErr.isForbidden) {
+            toast.error("You don\u2019t have permission to send messages.");
+          } else if (apiErr.isValidationError) {
+            toast.error("Message could not be sent. Please check your input.");
+          } else {
+            toast.error("Something went wrong. Please try again.");
+          }
+        },
+      },
+    );
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  }
+
+  const IconComponent = config.icon;
+
+  return (
+    <div className="rounded-xl border border-border bg-card shadow-soft p-4 space-y-3">
+      {/* Tab pills */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setMode("OUTBOUND")}
+          disabled={createMessage.isPending}
+          className={`${REPLY_MODE.tabCls} disabled:opacity-50 disabled:cursor-not-allowed ${mode === "OUTBOUND" ? REPLY_MODE.activeTabCls : INACTIVE_TAB_CLS}`}
+        >
+          <Send className="h-3 w-3" />
+          Reply
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("INTERNAL")}
+          disabled={createMessage.isPending}
+          className={`${NOTE_MODE.tabCls} disabled:opacity-50 disabled:cursor-not-allowed ${mode === "INTERNAL" ? NOTE_MODE.activeTabCls : INACTIVE_TAB_CLS}`}
+        >
+          <Lock className="h-3 w-3" />
+          Note
+        </button>
+      </div>
+
+      {/* Textarea */}
+      <Textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={config.placeholder}
+        rows={3}
+        maxLength={50000}
+        disabled={createMessage.isPending}
+        className="resize-none"
+      />
+
+      {/* Submit row */}
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-muted-foreground">
+          {mode === "INTERNAL" && (
+            <span className="inline-flex items-center gap-1">
+              <Lock className="h-3 w-3" />
+              Only visible to operators
+            </span>
+          )}
+        </span>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={!canSubmit}
+          className={config.btnCls}
+        >
+          {createMessage.isPending ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <IconComponent className="h-3.5 w-3.5" />
+          )}
+          {createMessage.isPending ? config.pendingLabel : config.submitLabel}
+        </button>
       </div>
     </div>
   );
