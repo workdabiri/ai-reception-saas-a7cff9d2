@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { keepPreviousData } from "@tanstack/react-query";
 import { PageHeader } from "@/components/ui-bits";
 import { useBusinessId } from "@/contexts/business-context";
 import { useConversations } from "@/hooks/use-conversations";
@@ -13,7 +14,7 @@ import {
   RouteSkeleton,
   StateBanner,
 } from "@/components/route-state";
-import { Plus, AlertTriangle, RefreshCw } from "lucide-react";
+import { Plus, AlertTriangle, RefreshCw, Loader2, MessageSquare } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Route definition
@@ -47,6 +48,18 @@ const STATUS_FILTERS: { id: StatusFilterValue; label: string }[] = [
   { id: "WAITING_OPERATOR", label: "Waiting (operator)" },
   { id: "ESCALATED", label: "Escalated" },
   { id: "RESOLVED", label: "Resolved" },
+];
+
+// ---------------------------------------------------------------------------
+// Channel filter config
+// ---------------------------------------------------------------------------
+
+type ChannelFilterValue = "all" | ChannelType;
+
+const CHANNEL_FILTERS: { id: ChannelFilterValue; label: string }[] = [
+  { id: "all", label: "All channels" },
+  { id: "INTERNAL", label: "Internal" },
+  { id: "WEBSITE_CHAT", label: "Web Chat" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -85,16 +98,67 @@ const CHANNEL_LABEL: Record<ChannelType, string> = {
 function InboxPage() {
   const stateOverride = useStateParam();
   const businessId = useBusinessId();
-  const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("all");
 
-  // Resolve filters
-  // Cursor pagination is deferred to R3B-2B.
+  // Filters
+  const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("all");
+  const [channelFilter, setChannelFilter] = useState<ChannelFilterValue>("all");
+
+  // Pagination accumulation
+  const [pages, setPages] = useState<ConversationWithSummary[]>([]);
+  const [cursor, setCursor] = useState<string | undefined>();
+
+  // Resolve filters for API call
   const filters = {
     status: statusFilter === "all" ? undefined : statusFilter,
+    channel: channelFilter === "all" ? undefined : channelFilter,
     limit: 25,
+    cursor,
   };
 
-  const { data, isLoading, isError, error, refetch } = useConversations(businessId, filters);
+  const { data, isLoading, isError, error, isFetching, refetch } = useConversations(
+    businessId,
+    filters,
+    { placeholderData: keepPreviousData },
+  );
+
+  // Accumulate pages when data arrives
+  useEffect(() => {
+    if (data?.data) {
+      if (!cursor) {
+        // First page or filter reset — replace
+        setPages(data.data);
+      } else {
+        // Subsequent page — append
+        setPages((prev) => [...prev, ...data.data]);
+      }
+    }
+  }, [data, cursor]);
+
+  // Reset filters, cursor, and accumulated pages
+  const resetFilters = useCallback(() => {
+    setStatusFilter("all");
+    setChannelFilter("all");
+    setCursor(undefined);
+    setPages([]);
+  }, []);
+
+  const handleStatusChange = useCallback((v: StatusFilterValue) => {
+    setStatusFilter(v);
+    setCursor(undefined);
+    setPages([]);
+  }, []);
+
+  const handleChannelChange = useCallback((v: ChannelFilterValue) => {
+    setChannelFilter(v);
+    setCursor(undefined);
+    setPages([]);
+  }, []);
+
+  const handleLoadMore = useCallback(() => {
+    if (data?.nextCursor) {
+      setCursor(data.nextCursor);
+    }
+  }, [data?.nextCursor]);
 
   // ── State override support ──────────────────────────────────────────────
   if (stateOverride === "empty") {
@@ -134,12 +198,17 @@ function InboxPage() {
     );
   }
 
-  // ── Loading state ───────────────────────────────────────────────────────
+  // ── Loading state (initial only) ───────────────────────────────────────
   if (isLoading) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
         <PageHeader title="Inbox" description="Operator inbox — manage customer conversations." />
-        <StatusFilterBar value={statusFilter} onChange={setStatusFilter} />
+        <FilterBar
+          statusValue={statusFilter}
+          channelValue={channelFilter}
+          onStatusChange={handleStatusChange}
+          onChannelChange={handleChannelChange}
+        />
         <LoadingSkeleton variant="conversation-list" count={6} />
       </div>
     );
@@ -193,9 +262,11 @@ function InboxPage() {
   }
 
   // ── Data loaded ─────────────────────────────────────────────────────────
-  const conversations = data?.data ?? [];
+  const conversations = pages.length > 0 ? pages : (data?.data ?? []);
+  const nextCursor = data?.nextCursor;
   const isEmpty = conversations.length === 0;
-  const isFilterEmpty = isEmpty && statusFilter !== "all";
+  const hasActiveFilter = statusFilter !== "all" || channelFilter !== "all";
+  const isFilterEmpty = isEmpty && hasActiveFilter;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
@@ -204,8 +275,9 @@ function InboxPage() {
         description="Operator inbox — manage customer conversations."
         action={
           <button
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95 shadow-soft transition-all"
-            title="New conversation (coming soon)"
+            disabled
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground shadow-soft transition-all opacity-50 cursor-not-allowed"
+            title="Coming soon"
           >
             <Plus className="h-3.5 w-3.5" />
             New conversation
@@ -213,15 +285,18 @@ function InboxPage() {
         }
       />
 
-      <StatusFilterBar value={statusFilter} onChange={setStatusFilter} />
+      <FilterBar
+        statusValue={statusFilter}
+        channelValue={channelFilter}
+        onStatusChange={handleStatusChange}
+        onChannelChange={handleChannelChange}
+      />
 
       {/* Empty state — no conversations at all */}
       {isEmpty && !isFilterEmpty && <InboxOperatorFirstEmpty />}
 
       {/* Empty state — filter returned nothing */}
-      {isFilterEmpty && (
-        <FilterNoMatchState label="conversations" onReset={() => setStatusFilter("all")} />
-      )}
+      {isFilterEmpty && <FilterNoMatchState label="conversations" onReset={resetFilters} />}
 
       {/* Conversation list */}
       {conversations.length > 0 && (
@@ -232,40 +307,87 @@ function InboxPage() {
         </div>
       )}
 
-      {/* Cursor pagination is deferred to R3B-2B. */}
+      {/* Load more pagination */}
+      {nextCursor && (
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={handleLoadMore}
+            disabled={isFetching}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-colors disabled:opacity-50"
+          >
+            {isFetching ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <MessageSquare className="h-3.5 w-3.5" />
+            )}
+            Load more conversations
+          </button>
+        </div>
+      )}
+
+      {/* Fetching indicator (when loading more) */}
+      {isFetching && !isLoading && !nextCursor && (
+        <div className="flex justify-center py-2">
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        </div>
+      )}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Status filter bar
+// Filter bar — combines status pills and channel pills
 // ---------------------------------------------------------------------------
 
-function StatusFilterBar({
-  value,
-  onChange,
+function FilterBar({
+  statusValue,
+  channelValue,
+  onStatusChange,
+  onChannelChange,
 }: {
-  value: StatusFilterValue;
-  onChange: (v: StatusFilterValue) => void;
+  statusValue: StatusFilterValue;
+  channelValue: ChannelFilterValue;
+  onStatusChange: (v: StatusFilterValue) => void;
+  onChannelChange: (v: ChannelFilterValue) => void;
 }) {
   return (
-    <div className="flex items-center gap-1 overflow-x-auto pb-1">
-      {STATUS_FILTERS.map((f) => {
-        const active = f.id === value;
-        return (
-          <button
-            key={f.id}
-            onClick={() => onChange(f.id)}
-            className={`shrink-0 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors ${
-              active
-                ? "bg-primary text-primary-foreground shadow-soft"
-                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-            }`}
-          >
-            {f.label}
-          </button>
-        );
-      })}
+    <div className="space-y-2">
+      <div className="flex items-center gap-1 overflow-x-auto pb-1">
+        {STATUS_FILTERS.map((f) => {
+          const active = f.id === statusValue;
+          return (
+            <button
+              key={f.id}
+              onClick={() => onStatusChange(f.id)}
+              className={`shrink-0 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors ${
+                active
+                  ? "bg-primary text-primary-foreground shadow-soft"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              {f.label}
+            </button>
+          );
+        })}
+      </div>
+      <div className="flex items-center gap-1 overflow-x-auto pb-1">
+        {CHANNEL_FILTERS.map((f) => {
+          const active = f.id === channelValue;
+          return (
+            <button
+              key={f.id}
+              onClick={() => onChannelChange(f.id)}
+              className={`shrink-0 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors ${
+                active
+                  ? "bg-primary/80 text-primary-foreground shadow-soft"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              {f.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -279,6 +401,9 @@ function ConversationRow({ conversation: c }: { conversation: ConversationWithSu
   const statusLabel = STATUS_LABEL[c.status] ?? c.status;
   const channelLabel = CHANNEL_LABEL[c.channel] ?? c.channel;
   const updatedAt = formatRelativeTime(c.updatedAt ?? c.createdAt);
+  const customerLabel = c.customerId
+    ? `Contact #${c.customerId.slice(0, 8)}`
+    : "No customer linked";
 
   return (
     <article className="flex items-center gap-3 px-4 py-3.5">
@@ -314,9 +439,15 @@ function ConversationRow({ conversation: c }: { conversation: ConversationWithSu
           <span className="inline-flex items-center gap-1 rounded border border-border bg-surface-muted/60 px-1.5 py-0.5 text-[10px] font-medium">
             {channelLabel}
           </span>
-          <span className="truncate">
-            {c.customerId ? `Customer ${c.customerId.slice(0, 8)}…` : "Unknown contact"}
-          </span>
+          <span className="truncate">{customerLabel}</span>
+          {c.messageCount > 0 && (
+            <>
+              <span className="opacity-50">·</span>
+              <span className="shrink-0 tabular-nums">
+                {c.messageCount} {c.messageCount === 1 ? "msg" : "msgs"}
+              </span>
+            </>
+          )}
           <span className="opacity-50">·</span>
           <span className="shrink-0 tabular-nums">{updatedAt}</span>
         </div>
