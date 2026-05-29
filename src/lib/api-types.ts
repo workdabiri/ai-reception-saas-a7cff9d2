@@ -212,9 +212,9 @@ export interface ListConversationsFilters {
   cursor?: UUID;
 }
 
-/** Filters for listing messages */
+/** Filters for listing messages — direction uses ApiMessageDirection (SYSTEM excluded at API boundary) */
 export interface ListMessagesFilters {
-  direction?: MessageDirection;
+  direction?: ApiMessageDirection;
   limit?: number;
   cursor?: UUID;
 }
@@ -267,6 +267,9 @@ export interface ContactMethod {
   createdAt: string;
   updatedAt: string;
 }
+
+/** Convenience alias for downstream compatibility */
+export type CustomerContactMethod = ContactMethod;
 
 /** Customer with contact methods */
 export interface CustomerWithContacts extends Customer {
