@@ -30,7 +30,7 @@ import {
   Send,
   Loader2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
@@ -152,6 +152,14 @@ function ConversationDetailPage() {
     error: msgsErr,
     refetch: refetchMsgs,
   } = useMessages(businessId, conversationId, { limit: 50 });
+
+  // Auto-scroll to bottom when messages change (initial load + after send)
+  // Must be declared before early returns to satisfy rules-of-hooks.
+  const timelineEndRef = useRef<HTMLDivElement>(null);
+  const messagesCount = messagesData?.data?.length ?? 0;
+  useEffect(() => {
+    timelineEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messagesCount]);
 
   // ── State override support ──────────────────────────────────────────────
   if (stateOverride === "empty") {
@@ -313,6 +321,9 @@ function ConversationDetailPage() {
 
       {/* Message timeline */}
       {messages.length === 0 ? <EmptyMessagesState /> : <MessageTimeline messages={messages} />}
+
+      {/* Scroll sentinel — auto-scroll target */}
+      <div ref={timelineEndRef} />
 
       {/* Composer */}
       {businessId && <MessageComposer businessId={businessId} conversationId={conversationId} />}
@@ -587,6 +598,17 @@ function MessageComposer({
         disabled={createMessage.isPending}
         className="resize-none"
       />
+
+      {/* Character counter — visible near limit */}
+      {content.length > 49000 && (
+        <div
+          className={`text-[10px] tabular-nums text-right ${
+            content.length > 49900 ? "text-destructive" : "text-muted-foreground"
+          }`}
+        >
+          {content.length.toLocaleString()} / 50,000
+        </div>
+      )}
 
       {/* Submit row */}
       <div className="flex items-center justify-between">
