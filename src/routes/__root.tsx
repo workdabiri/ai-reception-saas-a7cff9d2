@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { AdminShell } from "@/components/admin-shell";
+import { BusinessProvider } from "@/contexts/business-context";
 import { themeBootScript } from "@/components/theme-toggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -181,7 +182,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider delayDuration={150}>{body}</TooltipProvider>
+      <BusinessProvider>
+        <TooltipProvider delayDuration={150}>{body}</TooltipProvider>
+      </BusinessProvider>
     </QueryClientProvider>
   );
 }
