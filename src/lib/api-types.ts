@@ -55,6 +55,26 @@ export const CONVERSATION_STATUSES = [
 
 export type ConversationStatus = (typeof CONVERSATION_STATUSES)[number];
 
+/**
+ * Valid conversation status transitions.
+ * Mirrors backend src/domains/conversations/validation.ts VALID_TRANSITIONS.
+ * Backend is authoritative — this map is for UI filtering only.
+ */
+export const VALID_TRANSITIONS: Record<ConversationStatus, readonly ConversationStatus[]> = {
+  NEW: ["OPEN", "ASSIGNED"],
+  OPEN: ["ASSIGNED"],
+  ASSIGNED: ["WAITING_CUSTOMER", "ESCALATED", "RESOLVED"],
+  WAITING_CUSTOMER: ["WAITING_OPERATOR", "RESOLVED"],
+  WAITING_OPERATOR: ["ASSIGNED", "ESCALATED"],
+  ESCALATED: ["ASSIGNED", "RESOLVED"],
+  RESOLVED: ["OPEN"],
+} as const;
+
+/** Returns the valid next statuses for a given conversation status. */
+export function getValidNextStatuses(status: ConversationStatus): readonly ConversationStatus[] {
+  return VALID_TRANSITIONS[status] ?? [];
+}
+
 /** Message direction — matches backend enum */
 export const MESSAGE_DIRECTIONS = ["INBOUND", "OUTBOUND", "SYSTEM", "INTERNAL"] as const;
 
