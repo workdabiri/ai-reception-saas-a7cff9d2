@@ -46,8 +46,8 @@ https://dashboard.aiautomations.ae
 * UI routes should route to the UI deployment.
 * `VITE_API_BASE_URL=""` should be used so the UI calls same-origin `/api/*`.
 * Backend likely needs `AUTH_URL=https://dashboard.aiautomations.ae`.
-* OAuth OAuth redirect URI must include:
-  `https://dashboard.aiautomations.ae/api/auth/callback/OAuth`
+* Google OAuth redirect URI must include:
+  `https://dashboard.aiautomations.ae/api/auth/callback/google`
 
 ## 6. Open Implementation Subdecision
 
@@ -60,12 +60,12 @@ https://dashboard.aiautomations.ae
 ## 7. Required Access Before Implementation
 
 * DNS management access for `AiAutomations.ae` is required.
-* OAuth console access is required.
+* Google OAuth console access is required.
 * Vercel project/domain/env access is required.
 * If DNS access is unavailable, implementation must stop with:
   `INFRA_AUTH_1_BLOCKED_NEEDS_DNS_ACCESS`
-* If OAuth access is unavailable, implementation must stop with:
-  `INFRA_AUTH_1_BLOCKED_NEEDS_OAUTH_ACCESS`
+* If Google OAuth access is unavailable, implementation must stop with:
+  `INFRA_AUTH_1_BLOCKED_NEEDS_GOOGLE_OAUTH_ACCESS`
 
 ## 8. Security Requirements
 
@@ -99,7 +99,7 @@ https://dashboard.aiautomations.ae
 * No code implementation.
 * No DNS changes.
 * No Vercel env changes.
-* No OAuth OAuth changes.
+* No Google OAuth changes.
 * No redeploy.
 * No smoke run.
 * No R3C/R4 start.
@@ -110,7 +110,7 @@ https://dashboard.aiautomations.ae
 
 * INFRA-AUTH-1B targeted implementation design.
 * DNS access verification.
-* OAuth OAuth access verification.
+* Google OAuth access verification.
 * Vercel custom domain/env setup plan.
 * Browser auth smoke after implementation.
 * R3C/R4 only after CTO approval.
