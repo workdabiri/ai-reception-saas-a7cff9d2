@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useBusinessId } from "@/contexts/business-context";
-import { useConversation } from "@/hooks/use-conversations";
+import { useConversation, useChangeConversationStatus } from "@/hooks/use-conversations";
 import { useMessages, useCreateMessage } from "@/hooks/use-messages";
 import type {
   ConversationWithSummary,
@@ -11,6 +11,7 @@ import type {
   MessageSenderType,
   ApiMessageDirection,
 } from "@/lib/api-types";
+import { getValidNextStatuses } from "@/lib/api-types";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import {
   useStateParam,
@@ -29,10 +30,17 @@ import {
   Clock,
   Send,
   Loader2,
+  ChevronDown,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // ---------------------------------------------------------------------------
 // Route definition
@@ -300,7 +308,13 @@ function ConversationDetailPage() {
     return (
       <div className="mx-auto max-w-4xl px-4 py-8 lg:px-8 space-y-6">
         <BackLink />
-        {conversation && <ConversationHeader conversation={conversation} />}
+        {conversation && businessId && (
+          <ConversationHeader
+            conversation={conversation}
+            businessId={businessId}
+            conversationId={conversationId}
+          />
+        )}
         <ErrorCard
           title="Could not load messages"
           description="Something went wrong while fetching messages. Please try again."
@@ -317,7 +331,13 @@ function ConversationDetailPage() {
     <div className="mx-auto max-w-4xl px-4 py-8 lg:px-8 space-y-6">
       <BackLink />
 
-      {conversation && <ConversationHeader conversation={conversation} />}
+      {conversation && businessId && (
+        <ConversationHeader
+          conversation={conversation}
+          businessId={businessId}
+          conversationId={conversationId}
+        />
+      )}
 
       {/* Message timeline */}
       {messages.length === 0 ? <EmptyMessagesState /> : <MessageTimeline messages={messages} />}
@@ -351,7 +371,19 @@ function BackLink() {
 // Conversation header
 // ---------------------------------------------------------------------------
 
-function ConversationHeader({ conversation: c }: { conversation: ConversationWithSummary }) {
+function ConversationHeader({
+  conversation: c,
+  businessId,
+  conversationId,
+}: {
+  conversation: ConversationWithSummary;
+  businessId: string;
+  conversationId: string;
+}) {
+  const changeStatus = useChangeConversationStatus(businessId, conversationId);
+  const validNextStatuses = getValidNextStatuses(c.status);
+  const hasTransitions = validNextStatuses.length > 0;
+
   const statusTone = STATUS_TONE[c.status] ?? "bg-muted text-muted-foreground border-border";
   const statusLabel = STATUS_LABEL[c.status] ?? c.status;
   const channelLabel = CHANNEL_LABEL[c.channel] ?? c.channel;
@@ -361,6 +393,42 @@ function ConversationHeader({ conversation: c }: { conversation: ConversationWit
   const createdAt = formatRelativeTime(c.createdAt);
   const updatedAt = formatRelativeTime(c.updatedAt);
 
+  function handleStatusSelect(targetStatus: ConversationStatus) {
+    if (changeStatus.isPending) return;
+
+    changeStatus.mutate(
+      { status: targetStatus },
+      {
+        onSuccess: () => {
+          toast.success(`Status updated to ${STATUS_LABEL[targetStatus] ?? targetStatus}`);
+        },
+        onError: (error) => {
+          const apiErr = error as {
+            isUnauthenticated?: boolean;
+            isForbidden?: boolean;
+            isValidationError?: boolean;
+            message?: string;
+          };
+          if (apiErr.isUnauthenticated) {
+            toast.error("Session expired. Please sign in again.");
+          } else if (apiErr.isForbidden) {
+            toast.error(
+              "You don\u2019t have permission to change this conversation\u2019s status.",
+            );
+          } else if (apiErr.isValidationError) {
+            toast.error(
+              apiErr.message
+                ? `Cannot change status: ${apiErr.message}`
+                : "This status change is not allowed.",
+            );
+          } else {
+            toast.error("Failed to update status. Please try again.");
+          }
+        },
+      },
+    );
+  }
+
   return (
     <div className="rounded-xl border border-border bg-card shadow-soft p-5 space-y-3">
       {/* Title row */}
@@ -368,12 +436,51 @@ function ConversationHeader({ conversation: c }: { conversation: ConversationWit
         <h1 className="text-lg font-semibold text-foreground leading-tight">
           {c.subject ?? "No subject"}
         </h1>
-        <span
-          className={`shrink-0 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium ${statusTone}`}
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
-          {statusLabel}
-        </span>
+
+        {/* Status control */}
+        <div className="relative shrink-0">
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              id="status-dropdown-trigger"
+              disabled={!hasTransitions || changeStatus.isPending}
+              aria-label="Change conversation status"
+              className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors outline-none ${
+                hasTransitions && !changeStatus.isPending
+                  ? `${statusTone} hover:opacity-80 cursor-pointer`
+                  : `${statusTone} opacity-70 cursor-not-allowed`
+              }`}
+            >
+              {changeStatus.isPending ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <span className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
+              )}
+              {statusLabel}
+              {hasTransitions && !changeStatus.isPending && (
+                <ChevronDown className="h-3 w-3 opacity-60" />
+              )}
+            </DropdownMenuTrigger>
+            {hasTransitions && (
+              <DropdownMenuContent align="end" className="min-w-[160px]">
+                {validNextStatuses.map((s) => (
+                  <DropdownMenuItem
+                    key={s}
+                    id={`status-option-${s}`}
+                    onSelect={() => handleStatusSelect(s)}
+                    className="flex items-center gap-2 text-[12px] font-medium cursor-pointer"
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 shrink-0 rounded-full bg-current ${
+                        STATUS_TONE[s]?.match(/text-[^\s]+/)?.[0] ?? "text-foreground"
+                      }`}
+                    />
+                    {STATUS_LABEL[s] ?? s}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            )}
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Meta row */}
