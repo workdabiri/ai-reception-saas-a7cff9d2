@@ -39,6 +39,7 @@ import { Route as OnboardingDoneRouteImport } from './routes/onboarding.done'
 import { Route as OnboardingChannelRouteImport } from './routes/onboarding.channel'
 import { Route as OnboardingAiRouteImport } from './routes/onboarding.ai'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
+import { Route as InboxConversationIdRouteImport } from './routes/inbox.$conversationId'
 import { Route as DevPillGalleryRouteImport } from './routes/dev.pill-gallery'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
 import { Route as ChatBusinessIdRouteImport } from './routes/chat.$businessId'
@@ -203,6 +204,11 @@ const InviteTokenRoute = InviteTokenRouteImport.update({
   path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InboxConversationIdRoute = InboxConversationIdRouteImport.update({
+  id: '/$conversationId',
+  path: '/$conversationId',
+  getParentRoute: () => InboxRoute,
+} as any)
 const DevPillGalleryRoute = DevPillGalleryRouteImport.update({
   id: '/dev/pill-gallery',
   path: '/dev/pill-gallery',
@@ -278,7 +284,7 @@ export interface FileRoutesByFullPath {
   '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
-  '/inbox': typeof InboxRoute
+  '/inbox': typeof InboxRouteWithChildren
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
@@ -303,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
+  '/inbox/$conversationId': typeof InboxConversationIdRoute
   '/invite/$token': typeof InviteTokenRoute
   '/onboarding/ai': typeof OnboardingAiRoute
   '/onboarding/channel': typeof OnboardingChannelRoute
@@ -322,7 +329,7 @@ export interface FileRoutesByTo {
   '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
-  '/inbox': typeof InboxRoute
+  '/inbox': typeof InboxRouteWithChildren
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
@@ -346,6 +353,7 @@ export interface FileRoutesByTo {
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
+  '/inbox/$conversationId': typeof InboxConversationIdRoute
   '/invite/$token': typeof InviteTokenRoute
   '/onboarding/ai': typeof OnboardingAiRoute
   '/onboarding/channel': typeof OnboardingChannelRoute
@@ -367,7 +375,7 @@ export interface FileRoutesById {
   '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
-  '/inbox': typeof InboxRoute
+  '/inbox': typeof InboxRouteWithChildren
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
@@ -392,6 +400,7 @@ export interface FileRoutesById {
   '/chat/$businessId': typeof ChatBusinessIdRoute
   '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/dev/pill-gallery': typeof DevPillGalleryRoute
+  '/inbox/$conversationId': typeof InboxConversationIdRoute
   '/invite/$token': typeof InviteTokenRoute
   '/onboarding/ai': typeof OnboardingAiRoute
   '/onboarding/channel': typeof OnboardingChannelRoute
@@ -439,6 +448,7 @@ export interface FileRouteTypes {
     | '/chat/$businessId'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
+    | '/inbox/$conversationId'
     | '/invite/$token'
     | '/onboarding/ai'
     | '/onboarding/channel'
@@ -482,6 +492,7 @@ export interface FileRouteTypes {
     | '/chat/$businessId'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
+    | '/inbox/$conversationId'
     | '/invite/$token'
     | '/onboarding/ai'
     | '/onboarding/channel'
@@ -527,6 +538,7 @@ export interface FileRouteTypes {
     | '/chat/$businessId'
     | '/customers/$customerId'
     | '/dev/pill-gallery'
+    | '/inbox/$conversationId'
     | '/invite/$token'
     | '/onboarding/ai'
     | '/onboarding/channel'
@@ -548,7 +560,7 @@ export interface RootRouteChildren {
   ChannelsRoute: typeof ChannelsRouteWithChildren
   CustomersRoute: typeof CustomersRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
-  InboxRoute: typeof InboxRoute
+  InboxRoute: typeof InboxRouteWithChildren
   KnowledgeRoute: typeof KnowledgeRoute
   LoginRoute: typeof LoginRoute
   MembersRoute: typeof MembersRoute
@@ -785,6 +797,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inbox/$conversationId': {
+      id: '/inbox/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/inbox/$conversationId'
+      preLoaderRoute: typeof InboxConversationIdRouteImport
+      parentRoute: typeof InboxRoute
+    }
     '/dev/pill-gallery': {
       id: '/dev/pill-gallery'
       path: '/dev/pill-gallery'
@@ -941,6 +960,16 @@ const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
   CustomersRouteChildren,
 )
 
+interface InboxRouteChildren {
+  InboxConversationIdRoute: typeof InboxConversationIdRoute
+}
+
+const InboxRouteChildren: InboxRouteChildren = {
+  InboxConversationIdRoute: InboxConversationIdRoute,
+}
+
+const InboxRouteWithChildren = InboxRoute._addFileChildren(InboxRouteChildren)
+
 interface SettingsRouteChildren {
   SettingsAiRoute: typeof SettingsAiRoute
 }
@@ -961,7 +990,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChannelsRoute: ChannelsRouteWithChildren,
   CustomersRoute: CustomersRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
-  InboxRoute: InboxRoute,
+  InboxRoute: InboxRouteWithChildren,
   KnowledgeRoute: KnowledgeRoute,
   LoginRoute: LoginRoute,
   MembersRoute: MembersRoute,
@@ -988,3 +1017,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -5,15 +5,19 @@ import {
   createRootRouteWithContext,
   useRouter,
   useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AppShell } from "@/components/app-shell";
 import { AdminShell } from "@/components/admin-shell";
 import { BusinessProvider } from "@/contexts/business-context";
 import { themeBootScript } from "@/components/theme-toggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { useAuthSession } from "@/hooks/use-auth-session";
+import { Loader2 } from "lucide-react";
 
 import appCss from "../styles.css?url";
 
@@ -160,6 +164,64 @@ const AUTH_ROUTE_PREFIXES = [
   "/widget-preview",
 ];
 
+// ---------------------------------------------------------------------------
+// Auth gate — blocks protected routes until session is confirmed.
+// ---------------------------------------------------------------------------
+
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const { isLoading, isAuthenticated, error } = useAuthSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate({ to: "/login", replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <p className="text-[13px] text-muted-foreground">Checking session…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="max-w-sm text-center">
+          <h1 className="text-xl font-medium tracking-tight text-foreground">Session error</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            We couldn't verify your session. Please try signing in again.
+          </p>
+          <div className="mt-6">
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Go to sign in
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    // Navigate effect will fire — render nothing until redirect completes.
+    return null;
+  }
+
+  return <>{children}</>;
+}
+
+// ---------------------------------------------------------------------------
+// Root component
+// ---------------------------------------------------------------------------
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -167,19 +229,26 @@ function RootComponent() {
   const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
 
   let body: React.ReactNode;
-  if (isAuth) body = <Outlet />;
-  else if (isAdmin)
+  if (isAuth) {
+    // Public auth routes render without session check.
+    body = <Outlet />;
+  } else if (isAdmin) {
     body = (
-      <AdminShell>
-        <Outlet />
-      </AdminShell>
+      <AuthGate>
+        <AdminShell>
+          <Outlet />
+        </AdminShell>
+      </AuthGate>
     );
-  else
+  } else {
     body = (
-      <AppShell>
-        <Outlet />
-      </AppShell>
+      <AuthGate>
+        <AppShell>
+          <Outlet />
+        </AppShell>
+      </AuthGate>
     );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
