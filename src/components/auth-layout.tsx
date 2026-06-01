@@ -33,7 +33,7 @@ export function AuthLayout({
       </main>
 
       <footer className="px-5 pb-8 text-center text-[12px] text-muted-foreground sm:px-8">
-        Prototype · Mock data · No real authentication
+        AI Reception · Secure operator workspace
       </footer>
     </div>
   );
@@ -75,35 +75,37 @@ function ProductPreviewPanel() {
     <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
       <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
         <span className="inline-flex h-5 items-center gap-1 rounded-full border border-border px-2 text-[10.5px] font-medium uppercase tracking-wide">
-          <span className="h-1.5 w-1.5 rounded-full bg-warning" />
-          Mock data
+          <span className="h-1.5 w-1.5 rounded-full bg-success" />
+          Secure
         </span>
-        <span className="text-foreground">Tehran Dental Clinic</span>
+        <span className="text-foreground">Operator workspace</span>
       </div>
 
       <div className="mt-5 space-y-3">
         <div className="rounded-lg border border-border bg-surface px-4 py-3">
           <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
             <InboxIcon className="h-3.5 w-3.5" />
-            <span>Inbox · 4 waiting</span>
+            <span>Unified inbox</span>
           </div>
           <p className="mt-1.5 text-[13.5px] font-medium text-foreground">
-            "Hi, do you have availability tomorrow morning for a cleaning?"
+            All customer conversations in one place
           </p>
-          <p className="mt-1 text-[12px] text-muted-foreground">Sara M. · Web Chat · 2 min ago</p>
+          <p className="mt-1 text-[12px] text-muted-foreground">
+            Email · Web Chat · WhatsApp · SMS
+          </p>
         </div>
 
         <div className="rounded-lg border border-ai/30 bg-ai/5 px-4 py-3">
           <div className="flex items-center gap-2 text-[12px] font-medium text-foreground">
             <Sparkles className="h-3.5 w-3.5 text-ai" />
-            AI draft · ready for review
+            AI-assisted drafting
           </div>
           <p className="mt-1.5 text-[13px] leading-snug text-foreground">
-            "Hi Sara — we have 9:30 AM open tomorrow. Want me to book it?"
+            AI prepares reply drafts — operators review and send every message.
           </p>
           <div className="mt-3 flex gap-2">
             <span className="inline-flex h-7 items-center rounded-md bg-primary px-3 text-[12px] font-medium text-primary-foreground">
-              Send
+              Review
             </span>
             <span className="inline-flex h-7 items-center rounded-md border border-border bg-surface px-3 text-[12px] font-medium text-foreground">
               Edit
