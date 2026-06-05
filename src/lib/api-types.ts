@@ -425,7 +425,17 @@ export type JsonValue =
 
 /**
  * Domain representation of a tenant audit event.
- * Matches backend AuditEventIdentity.
+ * Matches backend AuditEventIdentity exactly.
+ *
+ * Type notes:
+ * - id: UUID primary key — always a UUID, UUID alias used.
+ * - businessId: string | null — typed as string (not UUID alias) to mirror
+ *   backend AuditEventIdentity which uses string | null.
+ * - actorUserId: string | null — typed as string (not UUID alias) because
+ *   backend types it as string | null. In practice USER actors will have
+ *   UUID actorUserIds, but the contract does not enforce this here.
+ * - targetId: string | null — typed as string (not UUID alias) because
+ *   backend accepts any string up to 160 chars as targetId; not always UUID.
  *
  * NOTE: actorUserId is the only actor identity field — no display name.
  * GET /api/identity/users/:userId is currently a placeholder (501).
@@ -434,12 +444,12 @@ export type JsonValue =
  */
 export interface AuditEvent {
   id: UUID;
-  businessId: UUID | null;
+  businessId: string | null;
   actorType: AuditActorType;
-  actorUserId: UUID | null;
+  actorUserId: string | null;
   action: string;
   targetType: string | null;
-  targetId: UUID | null;
+  targetId: string | null;
   result: AuditResult;
   metadata: JsonValue | null;
   createdAt: string; // ISO 8601
