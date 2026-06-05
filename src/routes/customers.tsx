@@ -1,34 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Avatar, ChannelChip, PageHeader } from "@/components/ui-bits";
-import { ChannelIcon } from "@/components/channel-icon";
-import {
-  customers,
-  conversations,
-  members,
-  channelLabel,
-  type InboxStatus,
-  type Channel,
-} from "@/lib/mock-data";
+import { useMemo, useState, useCallback, useRef } from "react";
+import { Avatar, PageHeader } from "@/components/ui-bits";
+import { useBusinessId } from "@/contexts/business-context";
+import { useCustomers } from "@/hooks/use-customers";
+import type { Customer, CustomerStatus } from "@/lib/api-types";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
 import {
   Search,
-  Download,
   Shield,
   Users,
   ChevronRight,
   AlertTriangle,
-  MessageCircle,
+  RefreshCw,
+  Loader2,
 } from "lucide-react";
-import type { ChannelKey } from "@/lib/mock-data";
 import { CustomersOperatorFirstEmpty, FilterNoMatchState } from "@/components/empty-states";
 import {
   useStateParam,
   presets as statePresets,
   RouteStatePage,
   RouteSkeleton,
+  StateBanner,
 } from "@/components/route-state";
 
-const channelToKey = (c: Channel): ChannelKey => (c === "webform" ? "webchat" : (c as ChannelKey));
+// ---------------------------------------------------------------------------
+// Route definition
+// ---------------------------------------------------------------------------
 
 export const Route = createFileRoute("/customers")({
   head: () => ({
@@ -36,104 +33,146 @@ export const Route = createFileRoute("/customers")({
       { title: "Customers — AI Reception" },
       {
         name: "description",
-        content: "Reception customer directory with channel and conversation context.",
+        content: "Reception customer directory with contact and status context.",
       },
     ],
   }),
   component: CustomersPage,
 });
 
-const statusLabel: Record<InboxStatus, string> = {
-  new: "New",
-  open: "Open",
-  waiting: "Waiting",
-  "needs-followup": "Needs follow-up",
-  closed: "Closed",
+// ---------------------------------------------------------------------------
+// Status filter config (API CustomerStatus enum)
+// ---------------------------------------------------------------------------
+
+type StatusFilterValue = "all" | CustomerStatus;
+
+const STATUS_FILTERS: { id: StatusFilterValue; label: string }[] = [
+  { id: "all", label: "All statuses" },
+  { id: "ACTIVE", label: "Active" },
+  { id: "ARCHIVED", label: "Archived" },
+];
+
+const STATUS_TONE: Record<CustomerStatus, string> = {
+  ACTIVE: "bg-success/10 text-foreground border-success/30",
+  ARCHIVED: "bg-surface-muted text-muted-foreground border-border",
 };
 
-const statusTone: Record<InboxStatus, string> = {
-  new: "bg-info/12 text-foreground border-info/30",
-  open: "bg-info/10 text-foreground border-info/25",
-  waiting: "bg-warning/12 text-foreground border-warning/30",
-  "needs-followup": "bg-attention/12 text-foreground border-attention/30",
-  closed: "bg-success/8 text-foreground border-success/25",
+const STATUS_LABEL: Record<CustomerStatus, string> = {
+  ACTIVE: "Active",
+  ARCHIVED: "Archived",
 };
 
-type Row = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  initials: string;
-  tags: string[];
-  lastSeen: string;
-  lastSubject: string;
-  status: InboxStatus | null;
-  assignee: string | null;
-  primaryChannel: Channel;
-  lastInboundChannel: Channel;
-  openConversations: number;
-  unreadMessages: number;
-  needsFollowUp: boolean;
-};
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
-function buildRows(): Row[] {
-  return customers.map((c) => {
-    const convs = conversations.filter((cv) => cv.customerId === c.id);
-    const last = convs[0];
-    const assignee = last?.assignee
-      ? (members.find((m) => m.id === last.assignee)?.name ?? null)
-      : null;
-    return {
-      id: c.id,
-      name: c.name,
-      email: c.email,
-      phone: c.phone,
-      initials: c.initials,
-      tags: c.tags,
-      lastSeen: c.lastSeen,
-      lastSubject: last?.subject ?? "—",
-      status: last?.inboxStatus ?? null,
-      assignee,
-      primaryChannel: c.primaryChannel,
-      lastInboundChannel: c.lastInboundChannel,
-      openConversations: c.openConversations,
-      unreadMessages: c.unreadMessages,
-      needsFollowUp: c.needsFollowUp,
-    };
-  });
+/** Derive initials from displayName (up to 2 chars). */
+function initials(displayName: string): string {
+  const parts = displayName.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return displayName.slice(0, 2).toUpperCase();
 }
+
+/** Format an ISO timestamp as a relative string. */
+function formatRelativeTime(iso: string): string {
+  try {
+    const date = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60_000);
+    if (diffMin < 1) return "just now";
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr}h ago`;
+    const diffDay = Math.floor(diffHr / 24);
+    if (diffDay < 7) return `${diffDay}d ago`;
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  } catch {
+    return iso;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Page component
+// ---------------------------------------------------------------------------
 
 function CustomersPage() {
   const stateOverride = useStateParam();
+  const businessId = useBusinessId();
+
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | InboxStatus>("all");
-  const [channelFilter, setChannelFilter] = useState<"all" | Channel>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("all");
 
-  const rows = useMemo(buildRows, []);
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return rows.filter((r) => {
-      if (statusFilter !== "all" && r.status !== statusFilter) return false;
-      if (channelFilter !== "all" && r.primaryChannel !== channelFilter) return false;
-      if (!q) return true;
-      return (
-        r.name.toLowerCase().includes(q) ||
-        r.email.toLowerCase().includes(q) ||
-        r.lastSubject.toLowerCase().includes(q)
-      );
-    });
-  }, [rows, query, statusFilter, channelFilter]);
+  // Pagination
+  const [cursor, setCursor] = useState<string | undefined>();
+  const [pages, setPages] = useState<Customer[]>([]);
+  const lastKnownNextCursor = useRef<string | null>(null);
 
-  const totals = useMemo(
+  const filters = useMemo(
     () => ({
-      open: rows.reduce((a, r) => a + r.openConversations, 0),
-      unread: rows.reduce((a, r) => a + r.unreadMessages, 0),
-      followUp: rows.filter((r) => r.needsFollowUp).length,
+      search: query.trim() || undefined,
+      status: statusFilter === "all" ? undefined : statusFilter,
+      limit: 25,
+      cursor,
     }),
-    [rows],
+    [query, statusFilter, cursor],
   );
 
+  const { data, isLoading, isError, error, isFetching, refetch } = useCustomers(
+    businessId,
+    filters,
+  );
+
+  // Accumulate pages
+  const dataItems = data?.data;
+  const prevDataItems = useRef<Customer[] | undefined>();
+  if (dataItems && dataItems !== prevDataItems.current) {
+    prevDataItems.current = dataItems;
+    if (!cursor) {
+      setPages(dataItems);
+    } else {
+      setPages((prev) => {
+        const seen = new Set(prev.map((item) => item.id));
+        const next = dataItems.filter((item) => !seen.has(item.id));
+        return [...prev, ...next];
+      });
+    }
+  }
+
+  if (data?.nextCursor !== undefined) {
+    lastKnownNextCursor.current = data.nextCursor;
+  }
+
+  const handleStatusChange = useCallback((v: StatusFilterValue) => {
+    setStatusFilter(v);
+    setCursor(undefined);
+    setPages([]);
+    lastKnownNextCursor.current = null;
+  }, []);
+
+  const handleSearchChange = useCallback((q: string) => {
+    setQuery(q);
+    setCursor(undefined);
+    setPages([]);
+    lastKnownNextCursor.current = null;
+  }, []);
+
+  const handleLoadMore = useCallback(() => {
+    const next = data?.nextCursor ?? lastKnownNextCursor.current;
+    if (next) setCursor(next);
+  }, [data?.nextCursor]);
+
+  const handleReset = useCallback(() => {
+    setQuery("");
+    setStatusFilter("all");
+    setCursor(undefined);
+    setPages([]);
+    lastKnownNextCursor.current = null;
+  }, []);
+
+  const isInitialLoading = isLoading && pages.length === 0;
+
+  // ── State override support ──────────────────────────────────────────────
   if (stateOverride === "empty") {
     return (
       <RouteStatePage title="Customers" description="Reception directory.">
@@ -154,33 +193,112 @@ function CustomersPage() {
     );
   }
 
+  // ── No businessId ───────────────────────────────────────────────────────
+  if (!businessId) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8 space-y-6">
+        <PageHeader
+          title="Customers"
+          description="Reception directory — who's reaching out and their contact details."
+        />
+        <StateBanner
+          icon={AlertTriangle}
+          tone="warning"
+          title="No business configured"
+          description="Set VITE_DEV_BUSINESS_ID in your .env file to connect to the backend API."
+        />
+      </div>
+    );
+  }
+
+  // ── Loading state (initial) ─────────────────────────────────────────────
+  if (isInitialLoading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8 space-y-6">
+        <PageHeader
+          title="Customers"
+          description="Reception directory — who's reaching out and their contact details."
+        />
+        <LoadingSkeleton variant="table-rows" count={6} />
+      </div>
+    );
+  }
+
+  // ── Error state ─────────────────────────────────────────────────────────
+  if (isError) {
+    const apiErr = error as { isUnauthenticated?: boolean; isForbidden?: boolean } | undefined;
+
+    if (apiErr?.isUnauthenticated) {
+      return (
+        <RouteStatePage title="Customers">{statePresets.profileSessionExpired()}</RouteStatePage>
+      );
+    }
+    if (apiErr?.isForbidden) {
+      return (
+        <RouteStatePage title="Customers">{statePresets.customersAccessDenied()}</RouteStatePage>
+      );
+    }
+
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8 space-y-6">
+        <PageHeader
+          title="Customers"
+          description="Reception directory — who's reaching out and their contact details."
+        />
+        <div className="rounded-2xl border border-border bg-card shadow-soft">
+          <div className="mx-auto flex w-full max-w-[360px] flex-col items-center px-6 py-16 text-center">
+            <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-destructive/10">
+              <AlertTriangle className="h-7 w-7 text-destructive" />
+            </div>
+            <h3 className="mb-1.5 text-[16px] font-medium leading-tight text-foreground">
+              Could not load customers
+            </h3>
+            <p className="mb-5 text-[13px] leading-[1.5] text-muted-foreground">
+              Something went wrong while fetching the customer list. Please try again.
+            </p>
+            <button
+              onClick={() => refetch()}
+              className="inline-flex items-center gap-2 h-9 rounded-md bg-primary px-3 text-[12.5px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              Try again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Data loaded ─────────────────────────────────────────────────────────
+  const customers = pages.length > 0 ? pages : (data?.data ?? []);
+  const showLoadMore =
+    data?.nextCursor ?? (isFetching && cursor ? lastKnownNextCursor.current : null);
+  const isEmpty = customers.length === 0;
+  const hasActiveFilter = query.trim() !== "" || statusFilter !== "all";
+  const isFilterEmpty = isEmpty && hasActiveFilter;
+
   return (
     <>
       <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-8">
         <PageHeader
           title="Customers"
-          description="Reception directory — who's reaching out, from which channel, and what needs follow-up."
-          action={
-            <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary">
-              <Download className="h-3.5 w-3.5" /> Export (mock)
-            </button>
-          }
+          description="Reception directory — who's reaching out and their contact details."
         />
 
-        {/* Reception summary */}
+        {/* Summary card */}
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <SummaryCard label="Customers" value={rows.length} accent="var(--color-primary)" />
-          <SummaryCard label="Open conversations" value={totals.open} accent="var(--color-info)" />
+          <SummaryCard label="Customers" value={customers.length} accent="var(--color-primary)" />
           <SummaryCard
-            label="Unread messages"
-            value={totals.unread}
-            accent="var(--color-attention)"
+            label="Active"
+            value={customers.filter((c) => c.status === "ACTIVE").length}
+            accent="var(--color-success)"
           />
           <SummaryCard
-            label="Need follow-up"
-            value={totals.followUp}
-            accent="var(--color-attention)"
+            label="Archived"
+            value={customers.filter((c) => c.status === "ARCHIVED").length}
+            accent="var(--color-muted-foreground)"
           />
+          <SummaryCard label="Showing" value={customers.length} accent="var(--color-info)" />
         </div>
 
         <div className="workspace-scoped-callout mt-4 flex items-start gap-2 px-4 py-3">
@@ -188,8 +306,8 @@ function CustomersPage() {
           <div>
             <div className="workspace-scoped-callout-title">Workspace-scoped data</div>
             <div className="workspace-scoped-callout-body">
-              Visible only to permitted members of this workspace. Server verifies membership. Mock
-              data — no real PII shown.
+              Visible only to permitted members of this workspace. Server verifies membership on
+              every tenant-scoped request.
             </div>
           </div>
         </div>
@@ -202,49 +320,25 @@ function CustomersPage() {
                 <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search by name, email, subject…"
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  placeholder="Search by name…"
                   className="h-9 w-full rounded-lg border border-input bg-surface pl-8 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
               <FilterSelect
                 value={statusFilter}
-                onChange={(v) => setStatusFilter(v as "all" | InboxStatus)}
-                options={[
-                  { value: "all", label: "All statuses" },
-                  ...(Object.keys(statusLabel) as InboxStatus[]).map((s) => ({
-                    value: s,
-                    label: statusLabel[s],
-                  })),
-                ]}
-              />
-              <FilterSelect
-                value={channelFilter}
-                onChange={(v) => setChannelFilter(v as "all" | Channel)}
-                options={[
-                  { value: "all", label: "All channels" },
-                  { value: "email", label: "Email" },
-                  { value: "webform", label: "Web form" },
-                ]}
+                onChange={(v) => handleStatusChange(v as StatusFilterValue)}
+                options={STATUS_FILTERS.map((f) => ({ value: f.id, label: f.label }))}
               />
             </div>
-            <div className="text-xs text-muted-foreground">
-              {filtered.length} of {rows.length} customers
-            </div>
+            <div className="text-xs text-muted-foreground">{customers.length} customers</div>
           </div>
 
-          {filtered.length === 0 ? (
-            rows.length === 0 ? (
-              <CustomersOperatorFirstEmpty />
+          {isEmpty ? (
+            isFilterEmpty ? (
+              <FilterNoMatchState label="customers" onReset={handleReset} />
             ) : (
-              <FilterNoMatchState
-                label="customers"
-                onReset={() => {
-                  setQuery("");
-                  setStatusFilter("all");
-                  setChannelFilter("all");
-                }}
-              />
+              <CustomersOperatorFirstEmpty />
             )
           ) : (
             <>
@@ -254,96 +348,15 @@ function CustomersPage() {
                   <thead className="bg-surface-muted text-left">
                     <tr className="text-[11px] uppercase tracking-wider text-muted-foreground">
                       <th className="px-4 py-3 font-medium">Customer</th>
-                      <th className="px-3 py-3 font-medium">Primary channel</th>
-                      <th className="px-3 py-3 font-medium">Last inbound</th>
-                      <th className="px-3 py-3 font-medium text-center">Open</th>
-                      <th className="px-3 py-3 font-medium text-center">Unread</th>
                       <th className="px-3 py-3 font-medium">Status</th>
-                      <th className="px-3 py-3 font-medium">Follow-up</th>
-                      <th className="px-3 py-3 font-medium">Assigned</th>
-                      <th className="px-4 py-3 font-medium text-right">Last seen</th>
+                      <th className="px-3 py-3 font-medium">Notes</th>
+                      <th className="px-4 py-3 font-medium text-right">Created</th>
                       <th className="w-8 px-2"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    {filtered.map((r) => (
-                      <tr key={r.id} className="group hover:bg-surface-muted/60">
-                        <td className="px-4 py-3">
-                          <Link
-                            to="/customers/$customerId"
-                            params={{ customerId: r.id }}
-                            className="flex items-center gap-3"
-                          >
-                            <Avatar initials={r.initials} />
-                            <div className="min-w-0">
-                              <div className="font-medium group-hover:underline">{r.name}</div>
-                              <div className="truncate text-xs text-muted-foreground">
-                                {r.email}
-                              </div>
-                            </div>
-                          </Link>
-                        </td>
-                        <td className="px-3 py-3">
-                          <ChannelChip
-                            channel={r.primaryChannel}
-                            label={channelLabel[r.primaryChannel]}
-                          />
-                        </td>
-                        <td className="px-3 py-3">
-                          <div className="flex items-center gap-2">
-                            <ChannelIcon channel={channelToKey(r.lastInboundChannel)} size={22} />
-                            <span className="text-xs text-muted-foreground">{r.lastSeen}</span>
-                          </div>
-                        </td>
-                        <td className="px-3 py-3 text-center text-sm tabular-nums">
-                          {r.openConversations}
-                        </td>
-                        <td className="px-3 py-3 text-center">
-                          {r.unreadMessages > 0 ? (
-                            <span className="inline-flex min-w-[22px] justify-center rounded-full bg-primary px-2 py-1 text-[11px] font-medium tabular-nums text-primary-foreground">
-                              {r.unreadMessages}
-                            </span>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">0</span>
-                          )}
-                        </td>
-                        <td className="px-3 py-3">
-                          {r.status ? (
-                            <span
-                              className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[r.status]}`}
-                            >
-                              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-                              {statusLabel[r.status]}
-                            </span>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td className="px-3 py-3">
-                          {r.needsFollowUp ? (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[11px] font-medium text-foreground">
-                              <AlertTriangle className="h-3 w-3" /> Yes
-                            </span>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td className="px-3 py-3 text-xs text-muted-foreground">
-                          {r.assignee ?? <span className="italic">Unassigned</span>}
-                        </td>
-                        <td className="px-4 py-3 text-right text-xs text-muted-foreground">
-                          {r.lastSeen}
-                        </td>
-                        <td className="px-2 text-muted-foreground">
-                          <Link
-                            to="/customers/$customerId"
-                            params={{ customerId: r.id }}
-                            className="grid h-7 w-7 place-items-center rounded-md hover:bg-secondary"
-                          >
-                            <ChevronRight className="h-4 w-4" />
-                          </Link>
-                        </td>
-                      </tr>
+                    {customers.map((c) => (
+                      <CustomerRow key={c.id} customer={c} />
                     ))}
                   </tbody>
                 </table>
@@ -351,45 +364,26 @@ function CustomersPage() {
 
               {/* Mobile card list */}
               <ul className="md:hidden divide-y divide-border">
-                {filtered.map((r) => (
-                  <li key={r.id}>
+                {customers.map((c) => (
+                  <li key={c.id}>
                     <Link
                       to="/customers/$customerId"
-                      params={{ customerId: r.id }}
+                      params={{ customerId: c.id }}
                       className="flex items-start gap-3 px-4 py-4 hover:bg-surface-muted/60"
                     >
-                      <Avatar initials={r.initials} />
+                      <Avatar initials={initials(c.displayName)} />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="truncate text-sm font-medium">{r.name}</span>
+                          <span className="truncate text-sm font-medium">{c.displayName}</span>
                           <span className="shrink-0 text-[11px] text-muted-foreground">
-                            {r.lastSeen}
+                            {formatRelativeTime(c.createdAt)}
                           </span>
                         </div>
-                        <p className="mt-1 truncate text-xs text-muted-foreground">
-                          {r.lastSubject}
-                        </p>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <ChannelChip
-                            channel={r.primaryChannel}
-                            label={channelLabel[r.primaryChannel]}
-                          />
-                          {r.status && (
-                            <span
-                              className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-medium ${statusTone[r.status]}`}
-                            >
-                              {statusLabel[r.status]}
-                            </span>
-                          )}
-                          {r.unreadMessages > 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-[10px] font-medium tabular-nums text-primary-foreground">
-                              <MessageCircle className="h-2.5 w-2.5" />
-                              {r.unreadMessages}
-                            </span>
-                          )}
-                          {r.needsFollowUp && (
-                            <span className="inline-flex items-center gap-1 rounded-md border border-warning/30 bg-warning/10 px-2 py-1 text-[10px] font-medium text-foreground">
-                              <AlertTriangle className="h-2.5 w-2.5" /> Follow-up
+                          <StatusChip status={c.status} />
+                          {c.notes && (
+                            <span className="text-[11px] text-muted-foreground truncate max-w-[180px]">
+                              {c.notes}
                             </span>
                           )}
                         </div>
@@ -402,8 +396,83 @@ function CustomersPage() {
             </>
           )}
         </div>
+
+        {/* Load more pagination */}
+        {showLoadMore && (
+          <div className="flex justify-center pt-4">
+            <button
+              onClick={handleLoadMore}
+              disabled={isFetching}
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-colors disabled:opacity-50"
+            >
+              {isFetching ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Users className="h-3.5 w-3.5" />
+              )}
+              Load more customers
+            </button>
+          </div>
+        )}
       </div>
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Customer table row (desktop)
+// ---------------------------------------------------------------------------
+
+function CustomerRow({ customer: c }: { customer: Customer }) {
+  return (
+    <tr className="group hover:bg-surface-muted/60">
+      <td className="px-4 py-3">
+        <Link
+          to="/customers/$customerId"
+          params={{ customerId: c.id }}
+          className="flex items-center gap-3"
+        >
+          <Avatar initials={initials(c.displayName)} />
+          <div className="min-w-0">
+            <div className="font-medium group-hover:underline">{c.displayName}</div>
+            {c.locale && <div className="truncate text-xs text-muted-foreground">{c.locale}</div>}
+          </div>
+        </Link>
+      </td>
+      <td className="px-3 py-3">
+        <StatusChip status={c.status} />
+      </td>
+      <td className="px-3 py-3 text-xs text-muted-foreground max-w-[200px] truncate">
+        {c.notes ?? <span className="italic">—</span>}
+      </td>
+      <td className="px-4 py-3 text-right text-xs text-muted-foreground">
+        {formatRelativeTime(c.createdAt)}
+      </td>
+      <td className="px-2 text-muted-foreground">
+        <Link
+          to="/customers/$customerId"
+          params={{ customerId: c.id }}
+          className="grid h-7 w-7 place-items-center rounded-md hover:bg-secondary"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Link>
+      </td>
+    </tr>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Shared sub-components
+// ---------------------------------------------------------------------------
+
+function StatusChip({ status }: { status: CustomerStatus }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium ${STATUS_TONE[status]}`}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+      {STATUS_LABEL[status]}
+    </span>
   );
 }
 

@@ -1,51 +1,47 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { Avatar, PageHeader } from "@/components/ui-bits";
-import {
-  customers,
-  conversations,
-  members,
-  channelLabel,
-  type Customer,
-  type InboxStatus,
-  type Message,
-} from "@/lib/mock-data";
+import { useBusinessId } from "@/contexts/business-context";
+import { useCustomer } from "@/hooks/use-customers";
+import type { ContactMethod, ContactMethodType } from "@/lib/api-types";
 import {
   Mail,
   Phone,
   Shield,
   StickyNote,
   ArrowLeft,
-  ChevronRight,
   MessageSquare,
   Clock,
-  Tag,
-  Plus,
   Lock,
-  Inbox as InboxIcon,
+  Globe,
+  AlertTriangle,
+  RefreshCw,
+  Loader2,
 } from "lucide-react";
+import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { presets as statePresets, RouteStatePage, StateBanner } from "@/components/route-state";
+
+// ---------------------------------------------------------------------------
+// Route definition
+//
+// We use a component-level hook (useCustomer) rather than a TanStack Router
+// loader because loaders cannot call React hooks. The loader pattern used in
+// the mock version (synchronous find) does not apply to async API calls.
+// The notFoundComponent handles the 404 case separately.
+// ---------------------------------------------------------------------------
 
 export const Route = createFileRoute("/customers/$customerId")({
-  head: ({ params }) => {
-    const c = customers.find((x) => x.id === params.customerId);
-    const name = c?.name ?? "Customer";
-    return {
-      meta: [
-        { title: `${name} — Customers — AI Reception` },
-        { name: "description", content: `Reception profile for ${name}.` },
-      ],
-    };
-  },
-  loader: ({ params }): { customer: Customer } => {
-    const customer = customers.find((c) => c.id === params.customerId);
-    if (!customer) throw notFound();
-    return { customer };
-  },
+  head: () => ({
+    meta: [
+      { title: "Customer — Customers — AI Reception" },
+      { name: "description", content: "Reception profile for this customer." },
+    ],
+  }),
   notFoundComponent: () => (
     <>
       <div className="mx-auto max-w-3xl px-6 py-16 text-center">
         <h1 className="text-xl font-medium tracking-tight">Customer not found</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          This profile doesn't exist in the current workspace.
+          This profile doesn&apos;t exist in the current workspace.
         </p>
         <Link
           to="/customers"
@@ -59,84 +55,188 @@ export const Route = createFileRoute("/customers/$customerId")({
   component: CustomerProfilePage,
 });
 
-const statusLabel: Record<InboxStatus, string> = {
-  new: "New",
-  open: "Open",
-  waiting: "Waiting",
-  "needs-followup": "Needs follow-up",
-  closed: "Closed",
-};
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
-const statusTone: Record<InboxStatus, string> = {
-  new: "bg-info/12 text-foreground border-info/30",
-  open: "bg-info/10 text-foreground border-info/25",
-  waiting: "bg-warning/12 text-foreground border-warning/30",
-  "needs-followup": "bg-attention/12 text-foreground border-attention/30",
-  closed: "bg-success/8 text-foreground border-success/25",
-};
+/** Derive initials from displayName (up to 2 chars). */
+function initials(displayName: string): string {
+  const parts = displayName.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return displayName.slice(0, 2).toUpperCase();
+}
 
-// Mock internal notes per customer (kept here to stay UI-only)
-const mockNotesByCustomer: Record<
-  string,
-  { id: string; author: string; time: string; body: string }[]
-> = {
-  c1: [
-    {
-      id: "n1",
-      author: "Priya Raman",
-      time: "Today · 10:46",
-      body: "Prefers morning appointments. Sensitive about scheduling changes.",
-    },
-    {
-      id: "n2",
-      author: "Daniel Cho",
-      time: "Last week",
-      body: "VIP — long-time patient, family of four also booked here.",
-    },
-  ],
-  c3: [
-    {
-      id: "n1",
-      author: "Priya Raman",
-      time: "Today · 09:18",
-      body: "Billing dispute — pinged Daniel for ledger review.",
-    },
-  ],
-};
+/** Format an ISO timestamp as a relative string. */
+function formatRelativeTime(iso: string): string {
+  try {
+    const date = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60_000);
+    if (diffMin < 1) return "just now";
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr}h ago`;
+    const diffDay = Math.floor(diffHr / 24);
+    if (diffDay < 7) return `${diffDay}d ago`;
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  } catch {
+    return iso;
+  }
+}
+
+/** Icon for a contact method type. */
+function ContactMethodIcon({ type }: { type: ContactMethodType }) {
+  if (type === "EMAIL") return <Mail className="h-3.5 w-3.5 text-muted-foreground" />;
+  if (type === "PHONE" || type === "WHATSAPP")
+    return <Phone className="h-3.5 w-3.5 text-muted-foreground" />;
+  return <Globe className="h-3.5 w-3.5 text-muted-foreground" />;
+}
+
+/** Human-readable label for a contact method type. */
+function contactMethodLabel(type: ContactMethodType): string {
+  const map: Record<ContactMethodType, string> = {
+    EMAIL: "Email",
+    PHONE: "Phone",
+    WHATSAPP: "WhatsApp",
+    INSTAGRAM: "Instagram",
+    TELEGRAM: "Telegram",
+    WEBSITE_CHAT: "Web Chat",
+    CUSTOM: "Contact",
+  };
+  return map[type] ?? type;
+}
+
+// ---------------------------------------------------------------------------
+// Page component
+// ---------------------------------------------------------------------------
 
 function CustomerProfilePage() {
-  // useLoaderData() is only called when the loader returned successfully.
-  // Type assertion required: TanStack Router does not propagate the loader
-  // return type through useLoaderData() when the loader can throw notFound().
-  // The notFoundComponent handles the missing-customer case separately.
-  const { customer } = Route.useLoaderData() as { customer: Customer };
-  const linked = conversations.filter((c) => c.customerId === customer.id);
-  const notes = mockNotesByCustomer[customer.id] ?? [];
+  const { customerId } = useParams({ from: "/customers/$customerId" });
+  const businessId = useBusinessId();
 
-  // Recent messages (customer-authored, latest first)
-  const recentMessages = linked
-    .flatMap((c) =>
-      c.messages
-        .filter((m) => m.author === "customer" || m.author === "operator")
-        .map((m) => ({ ...m, conversationId: c.id, subject: c.subject })),
-    )
-    .slice(0, 6);
+  const {
+    data: customer,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useCustomer(businessId, customerId);
 
-  // Timeline = audit-related events across this customer's conversations
-  const timeline = linked
-    .flatMap((c) =>
-      c.messages
-        .filter(
-          (m) =>
-            m.author === "system-assignment" ||
-            m.author === "system-status" ||
-            m.author === "system-classification" ||
-            m.author === "operator",
-        )
-        .map((m) => ({ ...m, conversationId: c.id, subject: c.subject })),
-    )
-    .reverse()
-    .slice(0, 8);
+  // ── No businessId ───────────────────────────────────────────────────────
+  if (!businessId) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
+        <Link
+          to="/customers"
+          className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Customers
+        </Link>
+        <PageHeader title="Customer" />
+        <StateBanner
+          icon={AlertTriangle}
+          tone="warning"
+          title="No business configured"
+          description="Set VITE_DEV_BUSINESS_ID in your .env file to connect to the backend API."
+        />
+      </div>
+    );
+  }
+
+  // ── Loading ─────────────────────────────────────────────────────────────
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
+        <Link
+          to="/customers"
+          className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Customers
+        </Link>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading customer…
+        </div>
+        <LoadingSkeleton variant="card" />
+      </div>
+    );
+  }
+
+  // ── Error ───────────────────────────────────────────────────────────────
+  if (isError || !customer) {
+    const apiErr = error as
+      | { isUnauthenticated?: boolean; isForbidden?: boolean; isNotFound?: boolean }
+      | undefined;
+
+    if (apiErr?.isUnauthenticated) {
+      return (
+        <RouteStatePage title="Customer">{statePresets.profileSessionExpired()}</RouteStatePage>
+      );
+    }
+    if (apiErr?.isForbidden) {
+      return (
+        <RouteStatePage title="Customer">{statePresets.customersAccessDenied()}</RouteStatePage>
+      );
+    }
+    if (apiErr?.isNotFound) {
+      return (
+        <>
+          <div className="mx-auto max-w-3xl px-6 py-16 text-center">
+            <h1 className="text-xl font-medium tracking-tight">Customer not found</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              This profile doesn&apos;t exist in the current workspace.
+            </p>
+            <Link
+              to="/customers"
+              className="mt-5 inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to customers
+            </Link>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
+        <Link
+          to="/customers"
+          className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Customers
+        </Link>
+        <div className="rounded-2xl border border-border bg-card shadow-soft">
+          <div className="mx-auto flex w-full max-w-[360px] flex-col items-center px-6 py-16 text-center">
+            <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-destructive/10">
+              <AlertTriangle className="h-7 w-7 text-destructive" />
+            </div>
+            <h3 className="mb-1.5 text-[16px] font-medium leading-tight text-foreground">
+              Could not load customer
+            </h3>
+            <p className="mb-5 text-[13px] leading-[1.5] text-muted-foreground">
+              Something went wrong while fetching this customer profile. Please try again.
+            </p>
+            <button
+              onClick={() => refetch()}
+              className="inline-flex items-center gap-2 h-9 rounded-md bg-primary px-3 text-[12.5px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              Try again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Data loaded ─────────────────────────────────────────────────────────
+  const contactMethods = customer.contactMethods ?? [];
+  const emailMethods = contactMethods.filter((m) => m.type === "EMAIL");
+  const phoneMethods = contactMethods.filter((m) => m.type === "PHONE" || m.type === "WHATSAPP");
+  const otherMethods = contactMethods.filter(
+    (m) => m.type !== "EMAIL" && m.type !== "PHONE" && m.type !== "WHATSAPP",
+  );
 
   return (
     <>
@@ -150,13 +250,10 @@ function CustomerProfilePage() {
 
         <div className="mt-3">
           <PageHeader
-            title={customer.name}
-            description={`${linked.length} conversation${linked.length === 1 ? "" : "s"} · last seen ${customer.lastSeen}`}
+            title={customer.displayName}
+            description={`Created ${formatRelativeTime(customer.createdAt)} · ${customer.status === "ACTIVE" ? "Active" : "Archived"}`}
             action={
               <div className="flex items-center gap-2">
-                <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary">
-                  <Tag className="h-3.5 w-3.5" /> Manage tags
-                </button>
                 <Link
                   to="/inbox"
                   className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
@@ -168,191 +265,161 @@ function CustomerProfilePage() {
           />
         </div>
 
-        {/* Visibility warning */}
+        {/* Visibility notice */}
         <div className="mt-5 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-[12px] text-foreground">
           <Shield className="mt-1 h-4 w-4 shrink-0" />
           <div>
             <span className="font-medium">Visible only inside this workspace.</span> Customer data
-            and notes are workspace-scoped to permitted members. Mock data — no real PII shown.
+            and notes are workspace-scoped to permitted members. Server verifies membership on every
+            request.
           </div>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
-          {/* Sidebar: identity + tags + notes */}
+          {/* Sidebar: identity + contact methods + notes */}
           <aside className="space-y-6">
             <Card>
               <div className="flex items-center gap-3">
-                <Avatar initials={customer.initials} tone="primary" />
+                <Avatar initials={initials(customer.displayName)} tone="primary" />
                 <div className="min-w-0">
-                  <h2 className="truncate text-sm font-medium">{customer.name}</h2>
-                  <p className="text-xs text-muted-foreground">Reception contact</p>
+                  <h2 className="truncate text-sm font-medium">{customer.displayName}</h2>
+                  <p className="text-xs text-muted-foreground">
+                    {customer.status === "ACTIVE" ? "Active customer" : "Archived"}
+                  </p>
                 </div>
               </div>
+
+              {/* Contact methods */}
               <div className="mt-4 space-y-2 text-xs">
-                <ContactRow icon={Mail} value={customer.email} note="primary" />
-                <ContactRow icon={Phone} value={customer.phone} note="placeholder" />
+                {contactMethods.length === 0 ? (
+                  <p className="text-xs text-muted-foreground italic">
+                    No contact methods on file.
+                  </p>
+                ) : (
+                  <>
+                    {emailMethods.map((m) => (
+                      <ContactRow key={m.id} method={m} />
+                    ))}
+                    {phoneMethods.map((m) => (
+                      <ContactRow key={m.id} method={m} />
+                    ))}
+                    {otherMethods.map((m) => (
+                      <ContactRow key={m.id} method={m} />
+                    ))}
+                  </>
+                )}
               </div>
-              <div className="mt-4 border-t border-border pt-4">
-                <SectionTitle>Tags</SectionTitle>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {customer.tags.length === 0 && (
-                    <span className="text-xs text-muted-foreground">No tags yet.</span>
-                  )}
-                  {customer.tags.map((t: string) => (
-                    <span
-                      key={t}
-                      className="rounded-md border border-border bg-surface-muted px-2 py-1 text-[11px] font-medium"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                  <button className="rounded-md border border-dashed border-border px-2 py-1 text-[11px] font-medium text-muted-foreground hover:bg-secondary">
-                    + Tag
-                  </button>
+
+              {/* Locale */}
+              {customer.locale && (
+                <div className="mt-4 border-t border-border pt-4">
+                  <SectionTitle>Locale</SectionTitle>
+                  <p className="mt-1 text-xs text-muted-foreground">{customer.locale}</p>
                 </div>
-              </div>
+              )}
             </Card>
 
+            {/* Notes card */}
             <Card>
               <div className="flex items-center justify-between">
-                <SectionTitle>Internal notes</SectionTitle>
-                <button className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline">
-                  <Plus className="h-3 w-3" /> Add note
-                </button>
+                <SectionTitle>Notes</SectionTitle>
               </div>
               <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
                 <Lock className="h-3 w-3" />
                 Private to this workspace · never shared with the customer
               </div>
-              <ul className="mt-3 space-y-2">
-                {notes.length === 0 && (
-                  <li className="rounded-lg border border-dashed border-border bg-surface-muted/40 px-3 py-4 text-center text-xs text-muted-foreground">
-                    No notes yet. Add context your team should know.
-                  </li>
-                )}
-                {notes.map((n) => (
-                  <li
-                    key={n.id}
-                    className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-foreground"
-                  >
-                    <div className="mb-1 flex items-center justify-between text-[11px]">
-                      <span className="inline-flex items-center gap-2 font-medium">
-                        <StickyNote className="h-3 w-3" />
-                        {n.author}
-                      </span>
-                      <span className="opacity-70 tabular-nums">{n.time}</span>
+              <div className="mt-3">
+                {customer.notes ? (
+                  <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs text-foreground">
+                    <div className="mb-1 flex items-center gap-2 text-[11px] font-medium">
+                      <StickyNote className="h-3 w-3" />
+                      Internal note
                     </div>
-                    <p className="leading-snug">{n.body}</p>
-                  </li>
-                ))}
-              </ul>
+                    <p className="leading-snug">{customer.notes}</p>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-border bg-surface-muted/40 px-3 py-4 text-center text-xs text-muted-foreground">
+                    No notes yet.
+                  </div>
+                )}
+              </div>
             </Card>
           </aside>
 
-          {/* Main: linked convos + recent messages + timeline */}
+          {/* Main: metadata */}
           <div className="space-y-6">
+            {/* Customer metadata */}
+            <Card>
+              <SectionTitle>Customer details</SectionTitle>
+              <dl className="mt-3 divide-y divide-border text-sm">
+                <MetaRow label="ID" value={customer.id} mono />
+                <MetaRow label="Display name" value={customer.displayName} />
+                <MetaRow
+                  label="Status"
+                  value={customer.status === "ACTIVE" ? "Active" : "Archived"}
+                />
+                <MetaRow label="Locale" value={customer.locale ?? "—"} />
+                <MetaRow label="Created" value={new Date(customer.createdAt).toLocaleString()} />
+                <MetaRow label="Updated" value={new Date(customer.updatedAt).toLocaleString()} />
+              </dl>
+            </Card>
+
+            {/* Contact methods detail */}
+            <Card>
+              <div className="flex items-center justify-between">
+                <SectionTitle>Contact methods</SectionTitle>
+                <span className="text-[11px] text-muted-foreground">
+                  {contactMethods.length} total
+                </span>
+              </div>
+              {contactMethods.length === 0 ? (
+                <EmptyInline text="No contact methods on file." />
+              ) : (
+                <ul className="mt-3 divide-y divide-border overflow-hidden rounded-lg border border-border">
+                  {contactMethods.map((m) => (
+                    <li key={m.id} className="flex items-center gap-3 px-3 py-3">
+                      <ContactMethodIcon type={m.type} />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-medium truncate">{m.value}</div>
+                        <div className="mt-0.5 text-[11px] text-muted-foreground">
+                          {contactMethodLabel(m.type)}
+                          {m.label && ` · ${m.label}`}
+                          {m.isPrimary && (
+                            <span className="ml-2 rounded-sm bg-primary/10 px-1 text-[10px] font-medium text-foreground">
+                              Primary
+                            </span>
+                          )}
+                          {m.verified && (
+                            <span className="ml-2 rounded-sm bg-success/10 px-1 text-[10px] font-medium text-foreground">
+                              Verified
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Card>
+
+            {/* Linked conversations placeholder */}
             <Card>
               <div className="flex items-center justify-between">
                 <SectionTitle>Linked conversations</SectionTitle>
-                <span className="text-[11px] text-muted-foreground">{linked.length} total</span>
               </div>
-              {linked.length === 0 ? (
-                <div className="mt-3 grid place-items-center rounded-lg border border-dashed border-border bg-surface-muted/40 px-6 py-10 text-center">
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-muted-foreground">
-                    <InboxIcon className="h-4 w-4" />
-                  </div>
-                  <p className="mt-2 text-xs font-medium">No linked conversations</p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
-                    New messages from this customer will appear here.
-                  </p>
-                </div>
-              ) : (
-                <ul className="mt-3 divide-y divide-border overflow-hidden rounded-lg border border-border">
-                  {linked.map((c) => {
-                    const a = c.assignee ? members.find((m) => m.id === c.assignee)?.name : null;
-                    return (
-                      <li key={c.id}>
-                        <Link
-                          to="/inbox"
-                          className="flex items-center gap-3 px-3 py-3 hover:bg-surface-muted"
-                        >
-                          <div className="min-w-0 flex-1">
-                            <div className="truncate text-sm font-medium">{c.subject}</div>
-                            <div className="mt-1 truncate text-[11px] text-muted-foreground">
-                              {channelLabel[c.channel]} · {c.updated} ·{" "}
-                              {a ? `Assigned to ${a}` : "Unassigned"}
-                            </div>
-                          </div>
-                          <span
-                            className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[c.inboxStatus]}`}
-                          >
-                            {statusLabel[c.inboxStatus]}
-                          </span>
-                          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </Card>
-
-            <Card>
-              <SectionTitle>Recent messages</SectionTitle>
-              {recentMessages.length === 0 ? (
-                <EmptyInline text="No recent messages." />
-              ) : (
-                <ul className="mt-3 space-y-2">
-                  {recentMessages.map((m) => (
-                    <li
-                      key={`${m.conversationId}-${m.id}`}
-                      className="rounded-lg border border-border bg-card p-3"
-                    >
-                      <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                        <span className="inline-flex items-center gap-2 font-medium text-foreground">
-                          <MessageBadge author={m.author} />
-                          {m.authorName}
-                        </span>
-                        <span className="tabular-nums">{m.time}</span>
-                      </div>
-                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground/90">
-                        {m.body}
-                      </p>
-                      <div className="mt-2 truncate text-[11px] text-muted-foreground">
-                        in <span className="font-medium text-foreground">{m.subject}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Card>
-
-            <Card>
-              <SectionTitle>Timeline</SectionTitle>
-              <div className="mt-1 text-[11px] text-muted-foreground">
-                Audit-related events for this customer (workspace-scoped).
+              <div className="mt-3 grid place-items-center rounded-lg border border-dashed border-border bg-surface-muted/40 px-6 py-8 text-center">
+                <Clock className="h-6 w-6 text-muted-foreground mb-2" />
+                <p className="text-xs font-medium">Conversation history coming soon</p>
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  Customer-scoped conversation listing is planned for S0 inbox wiring.
+                </p>
+                <Link
+                  to="/inbox"
+                  className="mt-3 inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary"
+                >
+                  <MessageSquare className="h-3.5 w-3.5" /> Go to inbox
+                </Link>
               </div>
-              {timeline.length === 0 ? (
-                <EmptyInline text="No activity yet." />
-              ) : (
-                <ol className="relative mt-4 space-y-4 border-l border-border pl-5">
-                  {timeline.map((e) => (
-                    <li key={`${e.conversationId}-${e.id}`} className="relative">
-                      <span className="absolute -left-[22px] top-1 grid h-3 w-3 place-items-center rounded-full bg-card ring-2 ring-border">
-                        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      </span>
-                      <div className="flex items-center gap-2 text-[11px] text-muted-foreground tabular-nums">
-                        <Clock className="h-3 w-3" />
-                        {e.time}
-                      </div>
-                      <div className="mt-1 text-sm">
-                        {timelineLabel(e)}{" "}
-                        <span className="text-muted-foreground">in {e.subject}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              )}
             </Card>
           </div>
         </div>
@@ -361,22 +428,32 @@ function CustomerProfilePage() {
   );
 }
 
-function timelineLabel(m: Message) {
-  if (m.author === "operator") return `${m.authorName} sent a reply`;
-  return m.body;
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
+function ContactRow({ method }: { method: ContactMethod }) {
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      <ContactMethodIcon type={method.type} />
+      <span className="truncate">{method.value}</span>
+      <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground">
+        {contactMethodLabel(method.type)}
+      </span>
+    </div>
+  );
 }
 
-function MessageBadge({ author }: { author: Message["author"] }) {
-  if (author === "operator")
-    return (
-      <span className="rounded-sm bg-primary/15 px-1 text-[10px] font-medium uppercase tracking-wider text-foreground ring-1 ring-inset ring-primary/30">
-        Op
-      </span>
-    );
+function MetaRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <span className="rounded-sm bg-secondary px-1 text-[10px] font-medium uppercase tracking-wider text-secondary-foreground">
-      Cust
-    </span>
+    <div className="flex items-baseline gap-4 py-2">
+      <dt className="w-28 shrink-0 text-xs text-muted-foreground">{label}</dt>
+      <dd
+        className={`min-w-0 truncate text-xs ${mono ? "font-mono text-[11px] text-muted-foreground" : ""}`}
+      >
+        {value}
+      </dd>
+    </div>
   );
 }
 
@@ -389,28 +466,6 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
     <h3 className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
       {children}
     </h3>
-  );
-}
-
-function ContactRow({
-  icon: Icon,
-  value,
-  note,
-}: {
-  icon: typeof Mail;
-  value: string;
-  note?: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 text-xs">
-      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-      <span className="truncate">{value}</span>
-      {note && (
-        <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground">
-          {note}
-        </span>
-      )}
-    </div>
   );
 }
 
