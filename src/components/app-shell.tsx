@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { useBusinessContext } from "@/contexts/business-context";
 import {
   LayoutDashboard,
   Inbox,
@@ -22,6 +23,8 @@ import {
   Bot,
   MoreHorizontal,
   X,
+  Loader2,
+  Building2,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationCenter } from "@/components/notification-center";
@@ -137,6 +140,11 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const mobilePrimary = mobilePrimaryItems();
   const moreGroups = mobileMoreGroups();
+  const {
+    isLoading: businessLoading,
+    isEmpty: noBusinesses,
+    error: businessError,
+  } = useBusinessContext();
 
   const isInbox = (path: string) => path === "/inbox" || path.startsWith("/inbox/");
 
@@ -241,7 +249,47 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
             </div>
           </header>
 
-          <main className="flex-1 min-w-0 pb-16 md:pb-0">{children ?? <Outlet />}</main>
+          <main className="flex-1 min-w-0 pb-16 md:pb-0">
+            {businessLoading ? (
+              <div className="flex min-h-[60vh] items-center justify-center">
+                <div className="flex flex-col items-center gap-3">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  <p className="text-[13px] text-muted-foreground">Loading workspace…</p>
+                </div>
+              </div>
+            ) : businessError ? (
+              <div className="flex min-h-[60vh] items-center justify-center px-4">
+                <div className="max-w-sm text-center">
+                  <Building2 className="mx-auto h-10 w-10 text-muted-foreground/60" />
+                  <h2 className="mt-4 text-lg font-medium text-foreground">
+                    Workspace unavailable
+                  </h2>
+                  <p className="mt-2 text-[13px] text-muted-foreground">
+                    We couldn't load your workspaces. Please try refreshing the page.
+                  </p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                  >
+                    Refresh
+                  </button>
+                </div>
+              </div>
+            ) : noBusinesses ? (
+              <div className="flex min-h-[60vh] items-center justify-center px-4">
+                <div className="max-w-sm text-center">
+                  <Building2 className="mx-auto h-10 w-10 text-muted-foreground/60" />
+                  <h2 className="mt-4 text-lg font-medium text-foreground">No workspace</h2>
+                  <p className="mt-2 text-[13px] text-muted-foreground">
+                    You're not a member of any workspace yet. Ask your team admin for an invitation,
+                    or create a new workspace.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              (children ?? <Outlet />)
+            )}
+          </main>
         </div>
 
         {/* Mobile bottom nav */}

@@ -39,6 +39,34 @@ export interface ApiErrorEnvelope {
 export type UUID = string;
 
 // ---------------------------------------------------------------------------
+// Business / Tenancy domain
+// ---------------------------------------------------------------------------
+
+/**
+ * Business status — matches backend BUSINESS_STATUS_VALUES (UPPERCASE).
+ */
+export const BUSINESS_STATUSES = ["ACTIVE", "SUSPENDED", "ARCHIVED"] as const;
+export type BusinessStatus = (typeof BUSINESS_STATUSES)[number];
+
+/**
+ * Domain representation of a business workspace.
+ * Matches backend BusinessIdentity.
+ *
+ * Returned by GET /api/businesses (authenticated, no tenant scope).
+ */
+export interface BusinessIdentity {
+  id: UUID;
+  name: string;
+  slug: string;
+  status: BusinessStatus;
+  timezone: string;
+  locale: string;
+  createdByUserId: UUID;
+  createdAt: string; // ISO 8601
+  updatedAt: string; // ISO 8601
+}
+
+// ---------------------------------------------------------------------------
 // Conversation domain
 // ---------------------------------------------------------------------------
 

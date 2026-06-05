@@ -6,6 +6,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 // ---------------------------------------------------------------------------
 
 export interface AuthUser {
+  /** Internal user UUID — threaded from Auth.js JWT `token.sub` into `session.user.id` */
+  id?: string | null;
   name?: string | null;
   email?: string | null;
   image?: string | null;
