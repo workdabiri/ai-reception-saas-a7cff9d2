@@ -394,3 +394,79 @@ export interface ListMembershipsFilters {
   /** Include REMOVED/LEFT memberships. Defaults to false. */
   includeRemoved?: boolean;
 }
+
+// ---------------------------------------------------------------------------
+// Audit domain
+// ---------------------------------------------------------------------------
+
+/**
+ * Audit actor type — matches backend AUDIT_ACTOR_TYPE_VALUES (UPPERCASE).
+ */
+export const AUDIT_ACTOR_TYPES = ["USER", "SYSTEM", "AI_RECEPTIONIST"] as const;
+export type AuditActorType = (typeof AUDIT_ACTOR_TYPES)[number];
+
+/**
+ * Audit result — matches backend AUDIT_RESULT_VALUES (UPPERCASE).
+ */
+export const AUDIT_RESULTS = ["SUCCESS", "DENIED", "FAILED"] as const;
+export type AuditResult = (typeof AUDIT_RESULTS)[number];
+
+/**
+ * JSON-compatible value (mirrors backend JsonValue).
+ * Used for unstructured audit metadata.
+ */
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+/**
+ * Domain representation of a tenant audit event.
+ * Matches backend AuditEventIdentity exactly.
+ *
+ * Type notes:
+ * - id: UUID primary key — always a UUID, UUID alias used.
+ * - businessId: string | null — typed as string (not UUID alias) to mirror
+ *   backend AuditEventIdentity which uses string | null.
+ * - actorUserId: string | null — typed as string (not UUID alias) because
+ *   backend types it as string | null. In practice USER actors will have
+ *   UUID actorUserIds, but the contract does not enforce this here.
+ * - targetId: string | null — typed as string (not UUID alias) because
+ *   backend accepts any string up to 160 chars as targetId; not always UUID.
+ *
+ * NOTE: actorUserId is the only actor identity field — no display name.
+ * GET /api/identity/users/:userId is currently a placeholder (501).
+ * NOTE: workspace name is not returned — the request is scoped to businessId.
+ * NOTE: details text is not returned — compose from action + targetType.
+ */
+export interface AuditEvent {
+  id: UUID;
+  businessId: string | null;
+  actorType: AuditActorType;
+  actorUserId: string | null;
+  action: string;
+  targetType: string | null;
+  targetId: string | null;
+  result: AuditResult;
+  metadata: JsonValue | null;
+  createdAt: string; // ISO 8601
+}
+
+/**
+ * Client-side UI filters for the audit events list.
+ * These are NOT the backend query params — they are applied locally on the
+ * fetched array. The backend supports: actorUserId, action, targetType,
+ * targetId, result, actorType, limit. This MVP fetches with limit=100
+ * and filters entirely client-side.
+ */
+export interface ListAuditEventsFilters {
+  actorType?: AuditActorType;
+  result?: AuditResult;
+  /** Client-side date range label */
+  dateRange?: "All time" | "Today" | "Last 7 days" | "Last 30 days";
+  /** Client-side free-text search */
+  query?: string;
+}
