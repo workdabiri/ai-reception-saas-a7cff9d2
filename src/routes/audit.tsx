@@ -1,13 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { PageHeader, MockBanner } from "@/components/ui-bits";
-import {
-  auditEvents,
-  workspaces,
-  type AuditEvent,
-  type AuditActorType,
-  type AuditResult,
-} from "@/lib/mock-data";
+import { PageHeader } from "@/components/ui-bits";
+import { useBusinessId } from "@/contexts/business-context";
+import { useAuditEvents } from "@/hooks/use-audit-events";
+import type { AuditActorType, AuditResult, AuditEvent } from "@/lib/api-types";
 import {
   Download,
   Search,
@@ -29,6 +25,7 @@ import {
   presets as statePresets,
   RouteStatePage,
   RouteSkeleton,
+  StateBanner,
 } from "@/components/route-state";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
@@ -45,47 +42,209 @@ export const Route = createFileRoute("/audit")({
   component: AuditPage,
 });
 
-const actorTypes: ("All" | AuditActorType)[] = ["All", "User", "System", "AI Receptionist"];
-const results: ("All" | AuditResult)[] = ["All", "Success", "Denied", "Failed"];
+// ---------------------------------------------------------------------------
+// Local display types (no mock-data dependency)
+// ---------------------------------------------------------------------------
+
+/** Display-layer actor type label. Normalised from API UPPERCASE enum. */
+type DisplayActorType = "User" | "System" | "AI Receptionist";
+
+/** Display-layer result label. Normalised from API UPPERCASE enum. */
+type DisplayResult = "Success" | "Denied" | "Failed";
+
+// ---------------------------------------------------------------------------
+// Display normalisation helpers
+// ---------------------------------------------------------------------------
+
+function normaliseActorType(t: AuditActorType): DisplayActorType {
+  const map: Record<AuditActorType, DisplayActorType> = {
+    USER: "User",
+    SYSTEM: "System",
+    AI_RECEPTIONIST: "AI Receptionist",
+  };
+  return map[t];
+}
+
+function normaliseResult(r: AuditResult): DisplayResult {
+  const map: Record<AuditResult, DisplayResult> = {
+    SUCCESS: "Success",
+    DENIED: "Denied",
+    FAILED: "Failed",
+  };
+  return map[r];
+}
+
+/**
+ * Derives a display label from the dot-notation action string.
+ * "member.role_changed" → "Member role changed"
+ */
+function actionLabel(action: string): string {
+  return action
+    .replace(/\./g, " ")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/**
+ * Composes a target description from targetType + targetId.
+ * Shows type + first 8 chars of ID, or "—" when both are null.
+ */
+function targetLabel(targetType: string | null, targetId: string | null): string {
+  if (!targetType && !targetId) return "—";
+  const type = targetType ?? "entity";
+  const id = targetId ? targetId.slice(0, 8) + "…" : "";
+  return id ? `${type} / ${id}` : type;
+}
+
+/**
+ * Actor display label. Shows role label for non-user actors;
+ * truncated UUID for USER actors (name not available from API).
+ */
+function actorLabel(actorType: AuditActorType, actorUserId: string | null): string {
+  if (actorType === "SYSTEM") return "System";
+  if (actorType === "AI_RECEPTIONIST") return "AI Receptionist";
+  // USER — show truncated UUID; name not available (identity service is 501)
+  return actorUserId ? actorUserId.slice(0, 8) + "…" : "Unknown user";
+}
+
+/**
+ * Format an ISO timestamp for the table (compact) and detail panel (full).
+ */
+function formatTimestamp(iso: string): { compact: string; full: string } {
+  try {
+    const d = new Date(iso);
+    const compact = d.toLocaleString(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const full = d.toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return { compact, full };
+  } catch {
+    return { compact: "—", full: iso };
+  }
+}
+
+/**
+ * Returns true if the event's createdAt falls within the date range.
+ */
+function matchesDateRange(
+  createdAt: string,
+  range: "All time" | "Today" | "Last 7 days" | "Last 30 days",
+): boolean {
+  if (range === "All time") return true;
+  const now = Date.now();
+  const ts = new Date(createdAt).getTime();
+  const dayMs = 86_400_000;
+  if (range === "Today") return now - ts < dayMs;
+  if (range === "Last 7 days") return now - ts < 7 * dayMs;
+  if (range === "Last 30 days") return now - ts < 30 * dayMs;
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// Row type — derived from API shape (no name/email/workspace)
+// ---------------------------------------------------------------------------
+
+type Row = {
+  id: string;
+  compactTime: string;
+  fullTime: string;
+  iso: string;
+  actorLabel: string;
+  displayActorType: DisplayActorType;
+  actionRaw: string;
+  actionDisplay: string;
+  targetDisplay: string;
+  displayResult: DisplayResult;
+  metadata: AuditEvent["metadata"];
+};
+
+function toRow(e: AuditEvent): Row {
+  const { compact, full } = formatTimestamp(e.createdAt);
+  return {
+    id: e.id,
+    compactTime: compact,
+    fullTime: full,
+    iso: e.createdAt,
+    actorLabel: actorLabel(e.actorType, e.actorUserId),
+    displayActorType: normaliseActorType(e.actorType),
+    actionRaw: e.action,
+    actionDisplay: actionLabel(e.action),
+    targetDisplay: targetLabel(e.targetType, e.targetId),
+    displayResult: normaliseResult(e.result),
+    metadata: e.metadata,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Filter options
+// ---------------------------------------------------------------------------
+
+const actorTypes: ("All" | DisplayActorType)[] = ["All", "User", "System", "AI Receptionist"];
+const results: ("All" | DisplayResult)[] = ["All", "Success", "Denied", "Failed"];
 const dateRanges = ["All time", "Today", "Last 7 days", "Last 30 days"] as const;
 
+// ---------------------------------------------------------------------------
+// Page component
+// ---------------------------------------------------------------------------
+
 function AuditPage() {
+  const stateOverride = useStateParam();
+  const businessId = useBusinessId();
+
+  // Fetch real audit events — disabled until businessId is available.
+  const { data: events, isLoading, error } = useAuditEvents(businessId);
+
+  // Map to display rows
+  const rows: Row[] = useMemo(() => (events ?? []).map(toRow), [events]);
+
+  // Client-side filter state
   const [actorType, setActorType] = useState<(typeof actorTypes)[number]>("All");
   const [result, setResult] = useState<(typeof results)[number]>("All");
-  const [actionFilter, setActionFilter] = useState<string>("All");
   const [dateRange, setDateRange] = useState<(typeof dateRanges)[number]>("All time");
-  const [workspace, setWorkspace] = useState<string>("All");
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState<string | null>(auditEvents[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
 
+  // Derive action options from real data
   const allActions = useMemo(
-    () => ["All", ...Array.from(new Set(auditEvents.map((e) => e.actionLabel)))],
-    [],
+    () => ["All", ...Array.from(new Set(rows.map((r) => r.actionDisplay)))],
+    [rows],
   );
+  const [actionFilter, setActionFilter] = useState<string>("All");
 
+  // Apply client-side filters
   const filtered = useMemo(() => {
-    return auditEvents.filter((e) => {
-      if (actorType !== "All" && e.actorType !== actorType) return false;
-      if (result !== "All" && e.result !== result) return false;
-      if (actionFilter !== "All" && e.actionLabel !== actionFilter) return false;
-      if (workspace !== "All" && e.workspace !== workspace) return false;
+    return rows.filter((r) => {
+      if (actorType !== "All" && r.displayActorType !== actorType) return false;
+      if (result !== "All" && r.displayResult !== result) return false;
+      if (actionFilter !== "All" && r.actionDisplay !== actionFilter) return false;
+      if (!matchesDateRange(r.iso, dateRange)) return false;
       if (query) {
         const q = query.toLowerCase();
         if (
-          !e.actor.toLowerCase().includes(q) &&
-          !e.target.toLowerCase().includes(q) &&
-          !e.actionLabel.toLowerCase().includes(q)
+          !r.actorLabel.toLowerCase().includes(q) &&
+          !r.actionDisplay.toLowerCase().includes(q) &&
+          !r.targetDisplay.toLowerCase().includes(q)
         )
           return false;
       }
       return true;
     });
-  }, [actorType, result, actionFilter, workspace, query]);
-  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  }, [rows, actorType, result, actionFilter, dateRange, query]);
 
-  const selected = filtered.find((e) => e.id === selectedId) ?? filtered[0] ?? null;
+  const selected = filtered.find((r) => r.id === selectedId) ?? filtered[0] ?? null;
 
-  const stateOverride = useStateParam();
+  // Dev-state overrides
   if (stateOverride === "empty") {
     return (
       <RouteStatePage title="Audit log" description="Workspace activity & security events.">
@@ -107,6 +266,56 @@ function AuditPage() {
     );
   }
 
+  // No businessId — VITE_DEV_BUSINESS_ID not set
+  if (!businessId) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
+        <PageHeader
+          title="Audit log"
+          description="A trustworthy record of who did what, where, and what the server allowed."
+        />
+        <StateBanner
+          icon={AlertTriangle}
+          tone="warning"
+          title="No business configured"
+          description="Set VITE_DEV_BUSINESS_ID in your .env.local file to load audit events."
+        />
+      </div>
+    );
+  }
+
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <RouteStatePage title="Audit log" description="Loading audit events…">
+        <RouteSkeleton variant="table" />
+      </RouteStatePage>
+    );
+  }
+
+  // Error states
+  if (error) {
+    const e = error as { isForbidden?: boolean; isUnauthenticated?: boolean };
+    if (e.isUnauthenticated) {
+      return (
+        <RouteStatePage title="Audit log">{statePresets.profileSessionExpired()}</RouteStatePage>
+      );
+    }
+    if (e.isForbidden) {
+      return <RouteStatePage title="Audit log">{statePresets.auditAccessDenied()}</RouteStatePage>;
+    }
+    return <RouteStatePage title="Audit log">{statePresets.auditError()}</RouteStatePage>;
+  }
+
+  // Empty state
+  if (rows.length === 0) {
+    return (
+      <RouteStatePage title="Audit log" description="Workspace activity & security events.">
+        {statePresets.auditEmpty()}
+      </RouteStatePage>
+    );
+  }
+
   return (
     <>
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8 space-y-6">
@@ -119,8 +328,6 @@ function AuditPage() {
             </button>
           }
         />
-
-        <MockBanner />
 
         {/* Security states strip */}
         <SecurityStatesStrip />
@@ -161,12 +368,6 @@ function AuditPage() {
               onChange={(v) => setDateRange(v as typeof dateRange)}
               options={dateRanges as readonly string[]}
             />
-            <FilterSelect
-              label="Workspace"
-              value={workspace}
-              onChange={setWorkspace}
-              options={["All", ...workspaces.map((w) => w.name)]}
-            />
           </div>
         </div>
 
@@ -180,7 +381,6 @@ function AuditPage() {
                   <tr>
                     <th className="px-4 py-3 font-medium">Time</th>
                     <th className="px-4 py-3 font-medium">Actor</th>
-                    <th className="px-4 py-3 font-medium">Workspace</th>
                     <th className="px-4 py-3 font-medium">Action</th>
                     <th className="px-4 py-3 font-medium">Target</th>
                     <th className="px-4 py-3 font-medium">Result</th>
@@ -188,39 +388,41 @@ function AuditPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {filtered.map((e) => (
+                  {filtered.map((r) => (
                     <tr
-                      key={e.id}
-                      onClick={() => setSelectedId(e.id)}
+                      key={r.id}
+                      onClick={() => setSelectedId(r.id)}
                       className={`cursor-pointer hover:bg-surface-muted/60 ${
-                        selected?.id === e.id ? "bg-primary-soft/30" : ""
+                        selected?.id === r.id ? "bg-primary-soft/30" : ""
                       }`}
                     >
                       <td className="px-4 py-3 whitespace-nowrap text-muted-foreground tabular-nums">
-                        {e.time}
+                        {r.compactTime}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <ActorIcon type={e.actorType} />
+                          <ActorIcon type={r.displayActorType} />
                           <div className="min-w-0">
-                            <div className="font-medium truncate">{e.actor}</div>
-                            <div className="text-[11px] text-muted-foreground">{e.actorType}</div>
+                            {/* Name not available — show truncated actorUserId or type label */}
+                            <div className="font-medium truncate font-mono text-[11px]">
+                              {r.actorLabel}
+                            </div>
+                            <div className="text-[11px] text-muted-foreground">
+                              {r.displayActorType}
+                            </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
-                        {e.workspace}
-                      </td>
                       <td className="px-4 py-3">
                         <span className="rounded-md border border-border bg-surface px-2 py-1 text-[11px] font-medium">
-                          {e.actionLabel}
+                          {r.actionDisplay}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-foreground/90 max-w-[260px] truncate">
-                        {e.target}
+                      <td className="px-4 py-3 text-foreground/90 max-w-[260px] truncate font-mono text-[11px]">
+                        {r.targetDisplay}
                       </td>
                       <td className="px-4 py-3">
-                        <ResultBadge result={e.result} />
+                        <ResultBadge result={r.displayResult} />
                       </td>
                       <td className="px-4 py-3 text-right text-muted-foreground">
                         <button className="text-xs hover:text-foreground">Details</button>
@@ -229,7 +431,7 @@ function AuditPage() {
                   ))}
                   {filtered.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="p-6">
+                      <td colSpan={6} className="p-6">
                         <EmptyAuditState />
                       </td>
                     </tr>
@@ -240,33 +442,35 @@ function AuditPage() {
 
             {/* Mobile cards */}
             <ul className="sm:hidden divide-y divide-border">
-              {filtered.map((e) => (
-                <li key={e.id}>
+              {filtered.map((r) => (
+                <li key={r.id}>
                   <button
                     onClick={() => {
-                      setSelectedId(e.id);
+                      setSelectedId(r.id);
                       setMobileDetailOpen(true);
                     }}
                     className={`flex w-full items-start gap-3 px-4 py-4 text-left transition ${
-                      selected?.id === e.id ? "bg-primary-soft/30" : "hover:bg-surface-muted/60"
+                      selected?.id === r.id ? "bg-primary-soft/30" : "hover:bg-surface-muted/60"
                     }`}
                   >
-                    <ActorIcon type={e.actorType} />
+                    <ActorIcon type={r.displayActorType} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-sm font-medium">{e.actor}</span>
+                        <span className="truncate text-sm font-mono text-[11px] font-medium">
+                          {r.actorLabel}
+                        </span>
                         <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
-                          {e.time}
+                          {r.compactTime}
                         </span>
                       </div>
                       <div className="mt-1 truncate text-[12px] text-muted-foreground">
-                        {e.actionLabel} · {e.target}
+                        {r.actionDisplay} · {r.targetDisplay}
                       </div>
-                      <div className="mt-1 truncate text-[11px] text-muted-foreground">
-                        {e.workspace} · {e.actorType}
+                      <div className="mt-1 text-[11px] text-muted-foreground">
+                        {r.displayActorType}
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-2">
-                        <ResultBadge result={e.result} />
+                        <ResultBadge result={r.displayResult} />
                         <span className="text-[11px] font-medium text-primary">View details →</span>
                       </div>
                     </div>
@@ -281,15 +485,14 @@ function AuditPage() {
             </ul>
 
             <div className="border-t border-border bg-surface-muted/40 px-4 py-2 text-[11px] text-muted-foreground">
-              Showing {filtered.length} of {auditEvents.length} mock events · Retention is a planned
-              capability.
+              Showing {filtered.length} of {rows.length} events · Server-side retention applies.
             </div>
           </div>
 
           {/* Detail panel — tablet & desktop */}
           <aside className="hidden sm:block lg:sticky lg:top-6 lg:self-start">
             {selected ? (
-              <DetailPanel event={selected} onClose={() => setSelectedId(null)} />
+              <DetailPanel row={selected} onClose={() => setSelectedId(null)} />
             ) : (
               <div className="rounded-xl border border-dashed border-border bg-surface-muted/40 p-6 text-center text-sm text-muted-foreground">
                 Select an event to view details.
@@ -303,12 +506,16 @@ function AuditPage() {
       <Sheet open={mobileDetailOpen} onOpenChange={setMobileDetailOpen}>
         <SheetContent side="bottom" className="h-[85vh] overflow-y-auto p-0 sm:hidden">
           <SheetTitle className="sr-only">Audit event details</SheetTitle>
-          {selected && <DetailPanel event={selected} onClose={() => setMobileDetailOpen(false)} />}
+          {selected && <DetailPanel row={selected} onClose={() => setMobileDetailOpen(false)} />}
         </SheetContent>
       </Sheet>
     </>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
 
 function FilterSelect({
   label,
@@ -337,7 +544,7 @@ function FilterSelect({
   );
 }
 
-function ActorIcon({ type }: { type: AuditActorType }) {
+function ActorIcon({ type }: { type: DisplayActorType }) {
   const map = {
     User: { Icon: UserIcon, cls: "bg-secondary text-secondary-foreground" },
     System: { Icon: Cog, cls: "bg-muted text-muted-foreground" },
@@ -351,7 +558,7 @@ function ActorIcon({ type }: { type: AuditActorType }) {
   );
 }
 
-function ResultBadge({ result }: { result: AuditResult }) {
+function ResultBadge({ result }: { result: DisplayResult }) {
   const map = {
     Success: {
       Icon: ShieldCheck,
@@ -379,13 +586,22 @@ function ResultBadge({ result }: { result: AuditResult }) {
   );
 }
 
-function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => void }) {
+function DetailPanel({ row, onClose }: { row: Row; onClose: () => void }) {
+  const metadataStr = useMemo(() => {
+    if (row.metadata === null || row.metadata === undefined) return null;
+    try {
+      return JSON.stringify(row.metadata, null, 2);
+    } catch {
+      return String(row.metadata);
+    }
+  }, [row.metadata]);
+
   return (
     <div className="rounded-xl border border-border bg-card shadow-card">
       <div className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
         <div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Event</div>
-          <div className="mt-1 text-sm font-medium">{event.actionLabel}</div>
+          <div className="mt-1 text-sm font-medium">{row.actionDisplay}</div>
         </div>
         <button
           onClick={onClose}
@@ -398,52 +614,44 @@ function DetailPanel({ event, onClose }: { event: AuditEvent; onClose: () => voi
 
       <div className="space-y-4 px-5 py-4">
         <DetailRow label="Result">
-          <ResultBadge result={event.result} />
+          <ResultBadge result={row.displayResult} />
         </DetailRow>
         <DetailRow label="Actor">
           <div className="flex items-center gap-2">
-            <ActorIcon type={event.actorType} />
+            <ActorIcon type={row.displayActorType} />
             <div>
-              <div className="text-sm font-medium">{event.actor}</div>
-              <div className="text-[11px] text-muted-foreground">{event.actorType}</div>
+              {/* Name not available — show truncated actorUserId or type label */}
+              <div className="font-mono text-[11px] font-medium">{row.actorLabel}</div>
+              <div className="text-[11px] text-muted-foreground">{row.displayActorType}</div>
             </div>
           </div>
         </DetailRow>
-        <DetailRow label="Workspace">
-          <div className="inline-flex items-center gap-2 text-sm">
-            <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
-            {event.workspace}
-          </div>
+        <DetailRow label="Action">
+          <div className="font-mono text-[11px] text-foreground/90">{row.actionRaw}</div>
         </DetailRow>
         <DetailRow label="Target">
-          <div className="text-sm text-foreground/90">{event.target}</div>
+          <div className="font-mono text-[11px] text-foreground/90">{row.targetDisplay}</div>
         </DetailRow>
         <DetailRow label="Timestamp">
           <div className="inline-flex items-center gap-2 text-sm tabular-nums text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" /> <span className="tabular-nums">{event.time}</span>
-            <span className="text-[11px] opacity-70">· {event.iso}</span>
+            <Clock className="h-3.5 w-3.5" />
+            <span className="tabular-nums">{row.fullTime}</span>
           </div>
         </DetailRow>
-        <DetailRow label="Details">
-          <p className="text-sm text-foreground/90">{event.details}</p>
-        </DetailRow>
-        <DetailRow label="Metadata">
-          <div className="rounded-lg border border-border bg-surface-muted/60 p-3">
-            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-[11px]">
-              {Object.entries(event.metadata).map(([k, v]) => (
-                <div key={k} className="contents">
-                  <dt className="text-muted-foreground">{k}</dt>
-                  <dd className="truncate text-foreground/90">{v}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </DetailRow>
+        {metadataStr && (
+          <DetailRow label="Metadata">
+            <div className="rounded-lg border border-border bg-surface-muted/60 p-3">
+              <pre className="whitespace-pre-wrap font-mono text-[11px] text-foreground/90 break-all">
+                {metadataStr}
+              </pre>
+            </div>
+          </DetailRow>
+        )}
       </div>
 
       <div className="border-t border-border bg-surface-muted/40 px-5 py-3 text-[11px] text-muted-foreground">
         <Lock className="mr-1 inline h-3 w-3" />
-        Audit entries are immutable in production. Mock data shown.
+        Audit entries are immutable. Server is the source of truth.
       </div>
     </div>
   );

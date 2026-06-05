@@ -394,3 +394,63 @@ export interface ListMembershipsFilters {
   /** Include REMOVED/LEFT memberships. Defaults to false. */
   includeRemoved?: boolean;
 }
+
+// ---------------------------------------------------------------------------
+// Audit domain
+// ---------------------------------------------------------------------------
+
+/**
+ * Audit actor type — matches backend AUDIT_ACTOR_TYPE_VALUES (UPPERCASE).
+ */
+export const AUDIT_ACTOR_TYPES = ["USER", "SYSTEM", "AI_RECEPTIONIST"] as const;
+export type AuditActorType = (typeof AUDIT_ACTOR_TYPES)[number];
+
+/**
+ * Audit result — matches backend AUDIT_RESULT_VALUES (UPPERCASE).
+ */
+export const AUDIT_RESULTS = ["SUCCESS", "DENIED", "FAILED"] as const;
+export type AuditResult = (typeof AUDIT_RESULTS)[number];
+
+/**
+ * JSON-compatible value (mirrors backend JsonValue).
+ * Used for unstructured audit metadata.
+ */
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+/**
+ * Domain representation of a tenant audit event.
+ * Matches backend AuditEventIdentity.
+ *
+ * NOTE: actorUserId is the only actor identity field — no display name.
+ * GET /api/identity/users/:userId is currently a placeholder (501).
+ * NOTE: workspace name is not returned — the request is scoped to businessId.
+ * NOTE: details text is not returned — compose from action + targetType.
+ */
+export interface AuditEvent {
+  id: UUID;
+  businessId: UUID | null;
+  actorType: AuditActorType;
+  actorUserId: UUID | null;
+  action: string;
+  targetType: string | null;
+  targetId: UUID | null;
+  result: AuditResult;
+  metadata: JsonValue | null;
+  createdAt: string; // ISO 8601
+}
+
+/** Filters for listing audit events (all optional, applied client-side) */
+export interface ListAuditEventsFilters {
+  actorType?: AuditActorType;
+  result?: AuditResult;
+  /** Client-side date range label */
+  dateRange?: "All time" | "Today" | "Last 7 days" | "Last 30 days";
+  /** Client-side free-text search */
+  query?: string;
+}
