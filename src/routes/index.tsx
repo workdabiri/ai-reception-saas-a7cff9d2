@@ -16,12 +16,12 @@ import {
   Clock3,
   TrendingUp,
   TrendingDown,
+  AlertCircle,
 } from "lucide-react";
 import { Avatar, ChannelChip, MockBanner, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
 import {
   channelLabel,
-  todaysQueue,
   recentMessages,
   operatorLoad,
   draftQueue,
@@ -29,6 +29,8 @@ import {
 } from "@/lib/mock-data";
 import { useBusinessContext } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
+import { useConversations } from "@/hooks/use-conversations";
+import type { ConversationStatus, ChannelType } from "@/lib/api-types";
 import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -180,6 +182,62 @@ const deltaStyles = {
   flat: "text-muted-foreground",
 };
 
+// ---------------------------------------------------------------------------
+// Queue helpers
+// ---------------------------------------------------------------------------
+
+/** Map real ConversationStatus to a StatusChip-compatible key */
+const CONV_STATUS_CHIP: Record<ConversationStatus, string> = {
+  NEW: "new",
+  OPEN: "open",
+  ASSIGNED: "open",
+  WAITING_CUSTOMER: "waiting",
+  WAITING_OPERATOR: "waiting",
+  ESCALATED: "urgent",
+  RESOLVED: "closed",
+};
+
+/** Map real ChannelType to a display label */
+const CHANNEL_DISPLAY: Record<ChannelType, string> = {
+  WEBSITE_CHAT: "Web Chat",
+  INTERNAL: "Internal",
+};
+
+/** Statuses that should appear in the attention queue (non-resolved) */
+const ACTIVE_STATUSES: ReadonlySet<ConversationStatus> = new Set([
+  "NEW",
+  "OPEN",
+  "ASSIGNED",
+  "WAITING_CUSTOMER",
+  "WAITING_OPERATOR",
+  "ESCALATED",
+]);
+
+/** Calculate human-readable relative wait time from an ISO string. Returns "—" on invalid input. */
+function calcWait(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  const ms = Date.parse(iso);
+  if (!Number.isFinite(ms)) return "—";
+  const diff = Math.max(0, Date.now() - ms);
+  const mins = Math.floor(diff / 60_000);
+  if (mins < 60) return `${mins}m`;
+  const hrs = Math.floor(diff / 3_600_000);
+  if (hrs < 24) return `${hrs}h`;
+  const days = Math.floor(diff / 86_400_000);
+  return `${days}d`;
+}
+
+/** Sort key: oldest waiting first. Returns 0 on invalid dates so they sink to bottom. */
+function queueSortKey(iso: string | null | undefined): number {
+  if (!iso) return Number.MAX_SAFE_INTEGER;
+  const ms = Date.parse(iso);
+  return Number.isFinite(ms) ? ms : Number.MAX_SAFE_INTEGER;
+}
+
+// ---------------------------------------------------------------------------
+// Dashboard
+// ---------------------------------------------------------------------------
+
 function DashboardPage() {
   const { businessId, businesses } = useBusinessContext();
   const activeBusiness = businesses.find((b) => b.id === businessId) ?? businesses[0];
@@ -191,6 +249,12 @@ function DashboardPage() {
     error: auditError,
   } = useAuditEvents(businessId);
 
+  const {
+    data: conversationsData,
+    isLoading: conversationsLoading,
+    error: conversationsError,
+  } = useConversations(businessId, { limit: 8 });
+
   // Whether the current user lacks audit.read (403 = OPERATOR or VIEWER)
   const auditForbidden = auditError?.isForbidden ?? false;
 
@@ -198,6 +262,15 @@ function DashboardPage() {
   const recentAuditEvents = [...(auditData ?? [])]
     .sort((a, b) => auditTimeMs(b.createdAt) - auditTimeMs(a.createdAt))
     .slice(0, 5);
+
+  // Active queue: filter resolved, sort oldest-waiting first.
+  const queueRows = [...(conversationsData?.data ?? [])]
+    .filter((c) => ACTIVE_STATUSES.has(c.status))
+    .sort(
+      (a, b) =>
+        queueSortKey(a.lastMessageAt ?? a.updatedAt ?? a.createdAt) -
+        queueSortKey(b.lastMessageAt ?? b.updatedAt ?? b.createdAt),
+    );
 
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-8 lg:py-8 space-y-6">
@@ -309,7 +382,7 @@ function DashboardPage() {
               <div className="flex items-center gap-2">
                 <h2 className="text-[13px] font-medium tracking-tight">Today's attention queue</h2>
                 <span className="rounded-full bg-secondary px-2 py-1 text-[10px] font-medium text-muted-foreground ring-1 ring-inset ring-border">
-                  {todaysQueue.length} items
+                  {conversationsLoading ? "…" : `${queueRows.length} items`}
                 </span>
               </div>
               <p className="text-[11.5px] text-muted-foreground">
@@ -317,7 +390,11 @@ function DashboardPage() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <button className="hidden sm:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[11.5px] font-medium text-foreground/80 hover:bg-secondary">
+              <button
+                aria-disabled="true"
+                className="hidden sm:inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[11.5px] font-medium text-foreground/40 cursor-not-allowed select-none"
+                title="Filter coming soon"
+              >
                 <Filter className="h-3 w-3" /> Filter
               </button>
               <Link
@@ -329,45 +406,105 @@ function DashboardPage() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
-              <thead className="bg-surface-muted/60 text-[10.5px] uppercase tracking-wider text-muted-foreground">
-                <tr>
-                  <th className="px-5 py-3 text-left font-medium">Customer</th>
-                  <th className="px-3 py-3 text-left font-medium">Subject</th>
-                  <th className="px-3 py-3 text-left font-medium">Channel</th>
-                  <th className="px-3 py-3 text-left font-medium">Status</th>
-                  <th className="px-3 py-3 text-left font-medium">Waiting</th>
-                  <th className="px-5 py-3 text-left font-medium">Assignee</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {todaysQueue.map((q) => (
-                  <tr key={q.id} className="group transition hover:bg-surface-muted/40">
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-3">
-                        <Avatar initials={q.initials} size="sm" />
-                        <span className="font-medium">{q.customer}</span>
-                      </div>
-                    </td>
-                    <td className="px-3 py-3 text-foreground/80 max-w-[220px] truncate">
-                      {q.subject}
-                    </td>
-                    <td className="px-3 py-3">
-                      <ChannelChip channel={q.channel} label={channelLabel[q.channel]} />
-                    </td>
-                    <td className="px-3 py-3">
-                      <StatusChip status={q.status} />
-                    </td>
-                    <td className="px-3 py-3 text-muted-foreground font-mono-tab text-[12px]">
-                      {q.waiting}
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground">
-                      {q.assignee ?? <span className="italic text-foreground/80">Unassigned</span>}
-                    </td>
-                  </tr>
+            {conversationsLoading ? (
+              /* Loading skeleton */
+              <div className="divide-y divide-border">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-4 px-5 py-3">
+                    <div className="h-7 w-7 rounded-full bg-secondary animate-pulse shrink-0" />
+                    <div className="flex-1 space-y-1.5">
+                      <div className="h-2.5 w-1/3 rounded bg-secondary animate-pulse" />
+                      <div className="h-2 w-1/2 rounded bg-secondary animate-pulse" />
+                    </div>
+                    <div className="h-5 w-16 rounded-full bg-secondary animate-pulse" />
+                    <div className="h-5 w-10 rounded bg-secondary animate-pulse" />
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            ) : conversationsError ? (
+              /* Error state */
+              <div className="flex flex-col items-center justify-center gap-2 px-5 py-8 text-center">
+                <div className="grid h-9 w-9 place-items-center rounded-full bg-destructive/10 ring-1 ring-destructive/20">
+                  <AlertCircle className="h-4 w-4 text-destructive" />
+                </div>
+                <p className="text-[12px] font-medium text-foreground">Could not load queue</p>
+                <p className="text-[11px] text-muted-foreground max-w-[200px] leading-relaxed">
+                  {conversationsError.message ?? "An error occurred loading conversations."}
+                </p>
+              </div>
+            ) : queueRows.length === 0 ? (
+              /* Empty state */
+              <div className="flex flex-col items-center justify-center gap-2 px-5 py-8 text-center">
+                <div className="grid h-9 w-9 place-items-center rounded-full bg-success/10 ring-1 ring-success/20">
+                  <CheckCircle2 className="h-4 w-4 text-success" />
+                </div>
+                <p className="text-[12px] font-medium text-foreground">Queue is clear</p>
+                <p className="text-[11px] text-muted-foreground">
+                  No active conversations in the queue.
+                </p>
+              </div>
+            ) : (
+              <table className="w-full text-[13px]">
+                <thead className="bg-surface-muted/60 text-[10.5px] uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="px-5 py-3 text-left font-medium">Customer</th>
+                    <th className="px-3 py-3 text-left font-medium">Subject</th>
+                    <th className="px-3 py-3 text-left font-medium">Channel</th>
+                    <th className="px-3 py-3 text-left font-medium">Status</th>
+                    <th className="px-3 py-3 text-left font-medium">Waiting</th>
+                    <th className="px-5 py-3 text-left font-medium">Assignee</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {queueRows.map((conv) => {
+                    const chipKey = CONV_STATUS_CHIP[conv.status] ?? "open";
+                    const channelDisplay = CHANNEL_DISPLAY[conv.channel] ?? conv.channel;
+                    const customerLabel = conv.customerId
+                      ? `Customer \u2022 ${conv.customerId.slice(0, 8)}`
+                      : "Unknown customer";
+                    const customerInitials = conv.customerId
+                      ? conv.customerId.slice(0, 2).toUpperCase()
+                      : "??";
+                    const waitIso = conv.lastMessageAt ?? conv.updatedAt ?? conv.createdAt;
+                    return (
+                      <tr key={conv.id} className="group transition hover:bg-surface-muted/40">
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-3">
+                            <Avatar initials={customerInitials} size="sm" />
+                            <span className="font-medium text-muted-foreground text-[12px]">
+                              {customerLabel}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-foreground/80 max-w-[220px] truncate">
+                          {conv.subject ?? "No subject"}
+                        </td>
+                        <td className="px-3 py-3">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground ring-1 ring-inset ring-border">
+                            {channelDisplay}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3">
+                          <StatusChip
+                            status={chipKey as Parameters<typeof StatusChip>[0]["status"]}
+                          />
+                        </td>
+                        <td className="px-3 py-3 text-muted-foreground font-mono-tab text-[12px]">
+                          {calcWait(waitIso)}
+                        </td>
+                        <td className="px-5 py-3 text-muted-foreground">
+                          {conv.assignedUserId ? (
+                            <span className="text-foreground/80">Assigned</span>
+                          ) : (
+                            <span className="italic text-foreground/60">Unassigned</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
