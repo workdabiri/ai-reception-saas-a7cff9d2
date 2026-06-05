@@ -25,10 +25,11 @@ import {
   recentMessages,
   operatorLoad,
   draftQueue,
-  auditEvents,
-  currentWorkspace,
   channelOverview,
 } from "@/lib/mock-data";
+import { useBusinessContext } from "@/contexts/business-context";
+import { useAuditEvents } from "@/hooks/use-audit-events";
+import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -126,6 +127,42 @@ const toneAccent: Record<Tone, string> = {
   success: "var(--color-success)",
 };
 
+// ---------------------------------------------------------------------------
+// Audit display helpers
+// ---------------------------------------------------------------------------
+
+/** Derives 2-char initials from actorType for the audit avatar. */
+function auditActorInitials(actorType: string): string {
+  if (actorType === "AI_RECEPTIONIST") return "AI";
+  if (actorType === "SYSTEM") return "SY";
+  return "US"; // USER
+}
+
+/**
+ * Formats a raw action string (e.g. "member.invited") for display.
+ * Capitalises the verb fragment and replaces dots with spaces.
+ */
+function formatAction(action: string): string {
+  const parts = action.split(".");
+  // e.g. "member.invited" → "member invited"
+  return parts.join(" ");
+}
+
+/** Formats an ISO timestamp to a short local time string. */
+function fmtAuditTime(iso: string): string {
+  try {
+    return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return "";
+  }
+}
+
+/** Parses an ISO timestamp to ms-since-epoch for sort comparisons. Returns 0 on invalid input. */
+function auditTimeMs(iso: string): number {
+  const value = Date.parse(iso);
+  return Number.isFinite(value) ? value : 0;
+}
+
 const deltaStyles = {
   up: "text-foreground/80",
   down: "text-muted-foreground",
@@ -133,6 +170,24 @@ const deltaStyles = {
 };
 
 function DashboardPage() {
+  const { businessId, businesses } = useBusinessContext();
+  const activeBusiness = businesses.find((b) => b.id === businessId) ?? businesses[0];
+  const businessName = activeBusiness?.name;
+
+  const {
+    data: auditData,
+    isLoading: auditLoading,
+    error: auditError,
+  } = useAuditEvents(businessId);
+
+  // Whether the current user lacks audit.read (403 = OPERATOR or VIEWER)
+  const auditForbidden = auditError?.isForbidden ?? false;
+
+  // Latest 5 events for the dashboard panel, sorted defensively by createdAt.
+  const recentAuditEvents = [...(auditData ?? [])]
+    .sort((a, b) => auditTimeMs(b.createdAt) - auditTimeMs(a.createdAt))
+    .slice(0, 5);
+
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-8 lg:py-8 space-y-6">
       {/* Command bar header — neutral, premium */}
@@ -149,12 +204,8 @@ function DashboardPage() {
                   Live
                 </span>
                 <span className="truncate text-foreground/80 font-medium">
-                  {currentWorkspace.name}
+                  {businessName ?? "—"}
                 </span>
-                <span aria-hidden className="opacity-50">
-                  ·
-                </span>
-                <span>{currentWorkspace.role}</span>
               </div>
               <h1 className="mt-1 truncate text-[20px] font-medium tracking-tight leading-tight text-foreground">
                 Operations <span className="text-muted-foreground">Command Center</span>
@@ -570,7 +621,7 @@ function DashboardPage() {
         <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card">
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
-              <h2 className="text-[13px] font-medium tracking-tight">Trust & access</h2>
+              <h2 className="text-[13px] font-medium tracking-tight">Trust &amp; access</h2>
               <p className="text-[11.5px] text-muted-foreground">Recent audit activity.</p>
             </div>
             <Link
@@ -580,30 +631,65 @@ function DashboardPage() {
               Full log <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
-          <ul className="divide-y divide-border">
-            {auditEvents.slice(0, 5).map((e) => (
-              <li key={e.id} className="flex items-center gap-3 px-5 py-3">
-                <div className="grid h-7 w-7 place-items-center rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground ring-1 ring-border">
-                  {e.actor
-                    .split(" ")
-                    .map((p) => p[0])
-                    .slice(0, 2)
-                    .join("")}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[12px] truncate">
-                    <span className="font-medium">{e.actor}</span>{" "}
-                    <span className="text-muted-foreground">{e.actionLabel.toLowerCase()}</span>{" "}
-                    <span className="text-foreground/80">{e.target}</span>
+
+          {/* Permission gate: OPERATOR + VIEWER lack audit.read */}
+          {auditForbidden ? (
+            <div className="flex flex-col items-center justify-center gap-2 px-5 py-8 text-center">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-secondary ring-1 ring-border">
+                <Lock className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <p className="text-[12px] font-medium text-foreground">Audit log restricted</p>
+              <p className="text-[11px] text-muted-foreground max-w-[180px] leading-relaxed">
+                Audit access requires Owner or Admin role.
+              </p>
+            </div>
+          ) : auditLoading ? (
+            <div className="divide-y divide-border">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3 px-5 py-3">
+                  <div className="h-7 w-7 rounded-full bg-secondary animate-pulse" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-2.5 w-3/4 rounded bg-secondary animate-pulse" />
+                    <div className="h-2 w-1/2 rounded bg-secondary animate-pulse" />
                   </div>
-                  <div className="text-[10.5px] text-muted-foreground tabular-nums">{e.time}</div>
                 </div>
-                <StatusChip
-                  status={e.result === "Denied" || e.result === "Failed" ? "access-denied" : "open"}
-                />
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+          ) : recentAuditEvents.length === 0 ? (
+            <div className="px-5 py-8 text-center text-[12px] text-muted-foreground">
+              No audit events yet.
+            </div>
+          ) : (
+            <ul className="divide-y divide-border">
+              {recentAuditEvents.map((e) => (
+                <li key={e.id} className="flex items-center gap-3 px-5 py-3">
+                  <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground ring-1 ring-border">
+                    {auditActorInitials(e.actorType)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[12px] truncate">
+                      <span className="font-medium">
+                        {e.actorType === "AI_RECEPTIONIST"
+                          ? "AI Receptionist"
+                          : e.actorType === "SYSTEM"
+                            ? "System"
+                            : "User"}
+                      </span>{" "}
+                      <span className="text-muted-foreground">{formatAction(e.action)}</span>
+                    </div>
+                    <div className="text-[10.5px] text-muted-foreground tabular-nums">
+                      {fmtAuditTime(e.createdAt)}
+                    </div>
+                  </div>
+                  <StatusChip
+                    status={
+                      e.result === "DENIED" || e.result === "FAILED" ? "access-denied" : "open"
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="lg:col-span-3 rounded-xl border border-border bg-card shadow-card p-5">
