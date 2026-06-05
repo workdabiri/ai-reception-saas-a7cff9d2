@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, MockBanner } from "@/components/ui-bits";
-import { currentWorkspace } from "@/lib/mock-data";
+import { useBusinessId } from "@/contexts/business-context";
+import { useBusiness } from "@/hooks/use-business";
 import {
   Mail,
   MessageSquare,
@@ -78,24 +79,70 @@ const futureIntegrations = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Locale + status display helpers
+// ---------------------------------------------------------------------------
+
+const LOCALE_LABELS: Record<string, string> = {
+  en: "English",
+  fa: "Persian / Farsi",
+};
+
+function localeLabel(locale: string): string {
+  return LOCALE_LABELS[locale] ?? locale;
+}
+
+const STATUS_DISPLAY = {
+  ACTIVE: { label: "Active", className: "border-success/25 bg-success/10 text-foreground" },
+  SUSPENDED: { label: "Suspended", className: "border-warning/25 bg-warning/10 text-foreground" },
+  ARCHIVED: { label: "Archived", className: "border-border bg-secondary text-muted-foreground" },
+} as const;
+
+function statusDisplay(status: string) {
+  return (
+    STATUS_DISPLAY[status as keyof typeof STATUS_DISPLAY] ?? {
+      label: status,
+      className: "border-border bg-secondary text-muted-foreground",
+    }
+  );
+}
+
 function SettingsPage() {
+  const businessId = useBusinessId();
+  const {
+    data: business,
+    isLoading: businessLoading,
+    error: businessError,
+  } = useBusiness(businessId);
+
   const stateOverride = useStateParam();
   if (stateOverride === "access-denied") {
     return <RouteStatePage title="Settings">{statePresets.settingsAccessDenied()}</RouteStatePage>;
   }
-  if (stateOverride === "loading") {
+  if (stateOverride === "loading" || businessLoading) {
     return (
       <RouteStatePage title="Settings" description="Loading settings…">
         <RouteSkeleton variant="settings" />
       </RouteStatePage>
     );
   }
+  if (!businessId) {
+    return <RouteStatePage title="Settings">{statePresets.settingsAccessDenied()}</RouteStatePage>;
+  }
+  // Derive display values — fallback to “—” when business hasn’t loaded or API returned an error
+  const bName = business?.name ?? (businessError ? "—" : "");
+  const bSlug = business?.slug ?? (businessError ? "—" : "");
+  const bLocale = business?.locale ? localeLabel(business.locale) : businessError ? "—" : "";
+  const bTimezone = business?.timezone ?? (businessError ? "—" : "");
+  const bStatus = business?.status;
+  const bStatusDisplay = bStatus ? statusDisplay(bStatus) : null;
+
   return (
     <>
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 space-y-6">
         <PageHeader
           title="Settings"
-          description="Configure how this workspace receives and processes customer conversations. All data is mock — MVP is async and human-review-first."
+          description="Configure how this workspace receives and processes customer conversations. Business profile is live — other sections are static MVP placeholders."
         />
         <MockBanner />
 
@@ -171,36 +218,23 @@ function SettingsPage() {
               title="Business profile"
               description="Identity used across customer-facing surfaces and audit records."
             >
-              <Field label="Business name" value={currentWorkspace.name} />
-              <Field label="Workspace slug" value="tehran-dental" suffix=".airec.app" />
-              <Select
-                label="Locale"
-                value="Persian / English"
-                options={[
-                  "Persian / English",
-                  "English (United States)",
-                  "English (UK)",
-                  "Español",
-                  "Français",
-                ]}
-              />
-              <Select
-                label="Timezone"
-                value="Asia/Tehran"
-                options={[
-                  "Asia/Tehran",
-                  "Asia/Dubai",
-                  "Europe/London",
-                  "America/New_York",
-                  "Asia/Singapore",
-                ]}
-              />
+              <Field label="Business name" value={bName} readOnly />
+              <Field label="Workspace slug" value={bSlug} suffix=".airec.app" readOnly />
+              <Field label="Locale" value={bLocale} readOnly />
+              <Field label="Timezone" value={bTimezone} readOnly />
               <div className="grid gap-2 mb-1 sm:grid-cols-[180px_1fr] sm:items-center">
                 <label className="text-xs font-medium text-muted-foreground">Status</label>
                 <div>
-                  <span className="inline-flex items-center gap-2 rounded-md border border-success/25 bg-success/10 px-2 py-1 text-[11px] font-medium text-foreground">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
-                  </span>
+                  {bStatusDisplay ? (
+                    <span
+                      className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${bStatusDisplay.className}`}
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                      {bStatusDisplay.label}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">—</span>
+                  )}
                 </div>
               </div>
             </Section>
@@ -212,7 +246,7 @@ function SettingsPage() {
               title="Workspace settings"
               description="How this workspace is shared and how conversations are routed to operators."
             >
-              <Field label="Active workspace" value={currentWorkspace.name} readOnly />
+              <Field label="Active workspace" value={bName} readOnly />
               <Select
                 label="Workspace visibility"
                 value="Private — invite only"
