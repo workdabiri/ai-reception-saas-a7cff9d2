@@ -131,11 +131,22 @@ const toneAccent: Record<Tone, string> = {
 // Audit display helpers
 // ---------------------------------------------------------------------------
 
-/** Derives 2-char initials from actorType for the audit avatar. */
-function auditActorInitials(actorType: string): string {
+/** Derives 2-char initials for the audit avatar.
+ * For USER actors with enriched display info, derives from user name.
+ * Falls back to type-based initials when actorUser is absent.
+ */
+function auditActorInitials(actorType: string, actorUserName?: string): string {
   if (actorType === "AI_RECEPTIONIST") return "AI";
   if (actorType === "SYSTEM") return "SY";
-  return "US"; // USER
+  // USER
+  if (actorUserName) {
+    const parts = actorUserName.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] ?? "?").toUpperCase() + (parts[1][0] ?? "").toUpperCase();
+    }
+    return (actorUserName[0] ?? "?").toUpperCase() + (actorUserName[1] ?? "").toUpperCase();
+  }
+  return "US"; // USER — no name available
 }
 
 /**
@@ -664,7 +675,7 @@ function DashboardPage() {
               {recentAuditEvents.map((e) => (
                 <li key={e.id} className="flex items-center gap-3 px-5 py-3">
                   <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground ring-1 ring-border">
-                    {auditActorInitials(e.actorType)}
+                    {auditActorInitials(e.actorType, e.actorUser?.name)}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-[12px] truncate">
@@ -673,7 +684,7 @@ function DashboardPage() {
                           ? "AI Receptionist"
                           : e.actorType === "SYSTEM"
                             ? "System"
-                            : "User"}
+                            : (e.actorUser?.name ?? "User")}
                       </span>{" "}
                       <span className="text-muted-foreground">{formatAction(e.action)}</span>
                     </div>
