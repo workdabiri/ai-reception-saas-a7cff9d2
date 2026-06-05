@@ -304,7 +304,7 @@ function MembersPage() {
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
         <PageHeader
           title="Members & access"
-          description="Manage who can see and act inside this workspace. Roles are illustrated in the prototype; enforcement is a planned capability."
+          description="Manage who can see and act inside this workspace. Server-side membership and RBAC checks are authoritative; this view is informational."
           action={
             <div className="flex items-center gap-2">
               <button
@@ -408,17 +408,17 @@ function MembersPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem onClick={() => setChangeRole(m)}>
-                        <UserCog className="mr-2 h-4 w-4" /> Change role
+                        <UserCog className="mr-2 h-4 w-4" /> Change role (mock)
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Mail className="mr-2 h-4 w-4" /> Resend invite
+                        <Mail className="mr-2 h-4 w-4" /> Resend invite (mock)
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive focus:text-destructive"
                         onClick={() => setRemoveRow(m)}
                       >
-                        <UserMinus className="mr-2 h-4 w-4" /> Remove from workspace
+                        <UserMinus className="mr-2 h-4 w-4" /> Remove from workspace (mock)
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -452,17 +452,17 @@ function MembersPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem onClick={() => setChangeRole(m)}>
-                          <UserCog className="mr-2 h-4 w-4" /> Change role
+                          <UserCog className="mr-2 h-4 w-4" /> Change role (mock)
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                          <Mail className="mr-2 h-4 w-4" /> Resend invite
+                          <Mail className="mr-2 h-4 w-4" /> Resend invite (mock)
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"
                           onClick={() => setRemoveRow(m)}
                         >
-                          <UserMinus className="mr-2 h-4 w-4" /> Remove
+                          <UserMinus className="mr-2 h-4 w-4" /> Remove (mock)
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -632,8 +632,8 @@ function MembersPage() {
               never trusted for authorization.
             </li>
             <li className="flex gap-2">
-              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Suspended members keep records but
-              cannot access the workspace. Auth planned.
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Expired, declined, removed, and
+              left memberships remain visible only when included by the backend query.
             </li>
             <li className="flex gap-2">
               <Check className="mt-1 h-3.5 w-3.5 text-success" /> Role changes are written to the
