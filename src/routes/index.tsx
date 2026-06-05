@@ -186,8 +186,11 @@ const deltaStyles = {
 // Queue helpers
 // ---------------------------------------------------------------------------
 
+/** Subset of StatusChip-compatible keys used by the queue mapping below */
+type QueueChipStatus = "new" | "open" | "waiting" | "urgent" | "closed";
+
 /** Map real ConversationStatus to a StatusChip-compatible key */
-const CONV_STATUS_CHIP: Record<ConversationStatus, string> = {
+const CONV_STATUS_CHIP: Record<ConversationStatus, QueueChipStatus> = {
   NEW: "new",
   OPEN: "open",
   ASSIGNED: "open",
@@ -485,9 +488,7 @@ function DashboardPage() {
                           </span>
                         </td>
                         <td className="px-3 py-3">
-                          <StatusChip
-                            status={chipKey as Parameters<typeof StatusChip>[0]["status"]}
-                          />
+                          <StatusChip status={chipKey} />
                         </td>
                         <td className="px-3 py-3 text-muted-foreground font-mono-tab text-[12px]">
                           {calcWait(waitIso)}
