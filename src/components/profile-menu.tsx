@@ -37,7 +37,7 @@ function businessInitials(name: string): string {
 const statusLabel: Record<BusinessIdentity["status"], string> = {
   ACTIVE: "Active",
   SUSPENDED: "Suspended",
-  TRIAL: "Trial",
+  ARCHIVED: "Archived",
 };
 
 const roleTone: Record<string, string> = {

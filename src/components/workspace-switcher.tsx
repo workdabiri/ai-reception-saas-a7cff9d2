@@ -19,13 +19,13 @@ function businessInitials(name: string): string {
 const statusTone: Record<BusinessIdentity["status"], string> = {
   ACTIVE: "bg-success",
   SUSPENDED: "bg-destructive",
-  TRIAL: "bg-warning",
+  ARCHIVED: "bg-muted",
 };
 
 const statusLabel: Record<BusinessIdentity["status"], string> = {
   ACTIVE: "Active",
   SUSPENDED: "Suspended",
-  TRIAL: "Trial",
+  ARCHIVED: "Archived",
 };
 
 // ---------------------------------------------------------------------------
