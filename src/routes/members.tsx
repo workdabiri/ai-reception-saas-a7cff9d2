@@ -317,7 +317,7 @@ function MembersPage() {
                 onClick={() => setInvite(true)}
                 className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
               >
-                <Plus className="h-3.5 w-3.5" /> Invite member
+                <Plus className="h-3.5 w-3.5" /> Invite member (mock)
               </button>
             </div>
           }
@@ -500,7 +500,7 @@ function MembersPage() {
               </p>
             </div>
             <span className="inline-flex items-center gap-1 rounded-md border border-dashed border-border bg-surface-muted px-2 py-1 text-[11px] text-muted-foreground">
-              <Info className="h-3 w-3" /> Planned capability
+              <Info className="h-3 w-3" /> Informational
             </span>
           </div>
           {/* Desktop/tablet matrix */}
