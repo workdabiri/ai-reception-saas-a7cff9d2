@@ -66,7 +66,11 @@ const BusinessContext = createContext<BusinessContextValue>({
 // ---------------------------------------------------------------------------
 
 function getDevBusinessId(): string | undefined {
-  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_DEV_BUSINESS_ID) {
+  if (
+    typeof import.meta !== "undefined" &&
+    import.meta.env?.DEV &&
+    import.meta.env?.VITE_DEV_BUSINESS_ID
+  ) {
     return import.meta.env.VITE_DEV_BUSINESS_ID;
   }
   return undefined;
