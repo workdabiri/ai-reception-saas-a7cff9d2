@@ -98,6 +98,19 @@ function initialsFromUserId(userId: string): string {
 }
 
 /**
+ * Derive 1-2 initials from a display name.
+ * "John Doe" → "JD"; "Alice" → "AL" (first two chars).
+ */
+function initialsFromName(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] ?? "?").toUpperCase() + (parts[1][0] ?? "").toUpperCase();
+  }
+  // Single word — first two chars
+  return (name[0] ?? "?").toUpperCase() + (name[1] ?? "").toUpperCase();
+}
+
+/**
  * Format an ISO date string as a relative-ish label.
  * Honest fallback — shows the calendar date, not a fake "X min ago".
  */
@@ -115,12 +128,10 @@ function formatJoinedAt(joinedAt: string | null): string {
 }
 
 // Row type driven by the real API shape.
-// NOTE: name and email are absent from the memberships API response.
-// userId is the only user identity we have until /api/identity/users/:userId
-// is implemented on the backend.
 type Row = {
   id: string; // membership ID
-  userId: string; // user UUID (only identity available)
+  userId: string; // user UUID (always available)
+  displayName: string; // user.name if present, else truncated userId
   displayRole: DisplayRole;
   apiStatus: MembershipStatus;
   initials: string;
@@ -202,9 +213,10 @@ function MembersPage() {
   const rows: Row[] = (memberships ?? []).map((m) => ({
     id: m.id,
     userId: m.userId,
+    displayName: m.user?.name ?? m.userId.slice(0, 8) + "\u2026",
     displayRole: normaliseRole(m.role),
     apiStatus: m.status,
-    initials: initialsFromUserId(m.userId),
+    initials: m.user?.name ? initialsFromName(m.user.name) : initialsFromUserId(m.userId),
     joinedLabel: formatJoinedAt(m.joinedAt),
   }));
 
@@ -374,9 +386,11 @@ function MembersPage() {
                 <div className="flex items-center gap-3 min-w-0">
                   <Avatar initials={m.initials} />
                   <div className="min-w-0">
-                    {/* Name not available — show role as primary identity label */}
-                    <div className="truncate font-medium">{m.displayRole}</div>
-                    <div className="truncate text-[11px] text-muted-foreground">Member</div>
+                    {/* Prefer user.name from enriched response; fall back to truncated userId */}
+                    <div className="truncate font-medium">{m.displayName}</div>
+                    <div className="truncate text-[11px] text-muted-foreground">
+                      {m.displayRole}
+                    </div>
                   </div>
                 </div>
                 {/* Email not available from memberships API — show truncated userId */}
@@ -437,9 +451,7 @@ function MembersPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      {/* Name not available — show role as primary identity label */}
-                      <div className="truncate text-sm font-medium">{m.displayRole}</div>
-                      {/* Email not available — show truncated userId */}
+                      <div className="truncate text-sm font-medium">{m.displayName}</div>
                       <div className="truncate font-mono text-[11px] text-muted-foreground">
                         {m.userId.slice(0, 8)}&hellip;
                       </div>
@@ -691,10 +703,8 @@ function MembersPage() {
             <DialogDescription>
               {changeRole && (
                 <>
-                  Update role for member{" "}
-                  <span className="font-mono text-[11px] font-medium text-foreground">
-                    {changeRole.userId.slice(0, 8)}&hellip;
-                  </span>{" "}
+                  Update role for{" "}
+                  <span className="font-medium text-foreground">{changeRole.displayName}</span>{" "}
                   (currently{" "}
                   <span className="font-medium text-foreground">{changeRole.displayRole}</span>).
                 </>
@@ -748,11 +758,8 @@ function MembersPage() {
             <DialogDescription>
               {removeRow && (
                 <>
-                  Member{" "}
-                  <span className="font-mono text-[11px] font-medium text-foreground">
-                    {removeRow.userId.slice(0, 8)}&hellip;
-                  </span>{" "}
-                  will lose access to this workspace immediately.
+                  <span className="font-medium text-foreground">{removeRow.displayName}</span> will
+                  lose access to this workspace immediately.
                 </>
               )}
             </DialogDescription>

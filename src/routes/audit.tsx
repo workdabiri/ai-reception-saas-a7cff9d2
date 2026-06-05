@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/ui-bits";
 import { useBusinessId } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
-import type { AuditActorType, AuditResult, AuditEvent } from "@/lib/api-types";
+import type { AuditActorType, AuditResult, AuditEvent, UserDisplayInfo } from "@/lib/api-types";
 import {
   Download,
   Search,
@@ -98,13 +98,18 @@ function targetLabel(targetType: string | null, targetId: string | null): string
 
 /**
  * Actor display label. Shows role label for non-user actors;
- * truncated UUID for USER actors (name not available from API).
+ * prefers actorUser.name for USER actors, falls back to truncated actorUserId.
  */
-function actorLabel(actorType: AuditActorType, actorUserId: string | null): string {
+function actorLabel(
+  actorType: AuditActorType,
+  actorUserId: string | null,
+  actorUser?: UserDisplayInfo,
+): string {
   if (actorType === "SYSTEM") return "System";
   if (actorType === "AI_RECEPTIONIST") return "AI Receptionist";
-  // USER — show truncated UUID; name not available (identity service is 501)
-  return actorUserId ? actorUserId.slice(0, 8) + "…" : "Unknown user";
+  // USER — prefer resolved name; fall back to truncated UUID
+  if (actorUser?.name) return actorUser.name;
+  return actorUserId ? actorUserId.slice(0, 8) + "\u2026" : "Unknown user";
 }
 
 /**
@@ -160,6 +165,8 @@ type Row = {
   fullTime: string;
   iso: string;
   actorLabel: string;
+  /** True when actorLabel is a real name (not a UUID fallback) — controls font rendering. */
+  isUserWithName: boolean;
   displayActorType: DisplayActorType;
   actionRaw: string;
   actionDisplay: string;
@@ -175,7 +182,8 @@ function toRow(e: AuditEvent): Row {
     compactTime: compact,
     fullTime: full,
     iso: e.createdAt,
-    actorLabel: actorLabel(e.actorType, e.actorUserId),
+    actorLabel: actorLabel(e.actorType, e.actorUserId, e.actorUser),
+    isUserWithName: e.actorType === "USER" && !!e.actorUser?.name,
     displayActorType: normaliseActorType(e.actorType),
     actionRaw: e.action,
     actionDisplay: actionLabel(e.action),
@@ -403,8 +411,10 @@ function AuditPage() {
                         <div className="flex items-center gap-2">
                           <ActorIcon type={r.displayActorType} />
                           <div className="min-w-0">
-                            {/* Name not available — show truncated actorUserId or type label */}
-                            <div className="font-medium truncate font-mono text-[11px]">
+                            {/* Prefer actorUser.name when available; fall back to truncated UUID */}
+                            <div
+                              className={`font-medium truncate text-[11px] ${r.isUserWithName ? "" : "font-mono"}`}
+                            >
                               {r.actorLabel}
                             </div>
                             <div className="text-[11px] text-muted-foreground">
@@ -456,7 +466,9 @@ function AuditPage() {
                     <ActorIcon type={r.displayActorType} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-sm font-mono text-[11px] font-medium">
+                        <span
+                          className={`truncate text-[11px] font-medium ${r.isUserWithName ? "" : "font-mono"}`}
+                        >
                           {r.actorLabel}
                         </span>
                         <span className="shrink-0 text-[11px] text-muted-foreground tabular-nums">
@@ -620,8 +632,10 @@ function DetailPanel({ row, onClose }: { row: Row; onClose: () => void }) {
           <div className="flex items-center gap-2">
             <ActorIcon type={row.displayActorType} />
             <div>
-              {/* Name not available — show truncated actorUserId or type label */}
-              <div className="font-mono text-[11px] font-medium">{row.actorLabel}</div>
+              {/* Prefer actorUser.name when available; fall back to truncated UUID */}
+              <div className={`text-[11px] font-medium ${row.isUserWithName ? "" : "font-mono"}`}>
+                {row.actorLabel}
+              </div>
               <div className="text-[11px] text-muted-foreground">{row.displayActorType}</div>
             </div>
           </div>

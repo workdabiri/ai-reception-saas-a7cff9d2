@@ -48,6 +48,16 @@ export type UUID = string;
 export const BUSINESS_STATUSES = ["ACTIVE", "SUSPENDED", "ARCHIVED"] as const;
 export type BusinessStatus = (typeof BUSINESS_STATUSES)[number];
 
+/** Tenant-safe user display info — a read-only subset returned from enriched list APIs.
+ * Intentionally excludes email and other PII fields.
+ * Matches backend UserDisplayInfo in src/domains/identity/types.ts.
+ */
+export interface UserDisplayInfo {
+  id: UUID;
+  name: string;
+  avatarUrl: string | null;
+}
+
 /**
  * Domain representation of a business workspace.
  * Matches backend BusinessIdentity.
@@ -401,9 +411,9 @@ export type MembershipStatus = (typeof MEMBERSHIP_STATUSES)[number];
  * Domain representation of a business membership.
  * Matches backend BusinessMembershipIdentity.
  *
- * NOTE: Does NOT contain user name or email — those are resolved via
- * GET /api/identity/users/:userId which is currently a placeholder (501).
- * Display layer must handle name/email absence with honest fallbacks.
+ * user is optional — present when the backend includes the related user
+ * record via Prisma join (all list queries from PR #75 onward).
+ * Fallback to userId-based display when absent.
  */
 export interface BusinessMembership {
   id: UUID;
@@ -415,6 +425,8 @@ export interface BusinessMembership {
   joinedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Resolved user display info — present from PR #75 enrichment. */
+  user?: UserDisplayInfo;
 }
 
 /** Filters for listing business memberships */
@@ -465,8 +477,8 @@ export type JsonValue =
  * - targetId: string | null — typed as string (not UUID alias) because
  *   backend accepts any string up to 160 chars as targetId; not always UUID.
  *
- * NOTE: actorUserId is the only actor identity field — no display name.
- * GET /api/identity/users/:userId is currently a placeholder (501).
+ * actorUser is optional — present from PR #75 enrichment for USER-type actors.
+ * Fallback to actorUserId-based display when absent.
  * NOTE: workspace name is not returned — the request is scoped to businessId.
  * NOTE: details text is not returned — compose from action + targetType.
  */
@@ -481,6 +493,8 @@ export interface AuditEvent {
   result: AuditResult;
   metadata: JsonValue | null;
   createdAt: string; // ISO 8601
+  /** Resolved actor display info — present from PR #75 enrichment for USER actors. */
+  actorUser?: UserDisplayInfo;
 }
 
 /**
