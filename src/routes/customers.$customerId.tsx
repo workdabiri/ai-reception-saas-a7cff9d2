@@ -2,7 +2,14 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { Avatar, PageHeader } from "@/components/ui-bits";
 import { useBusinessId } from "@/contexts/business-context";
 import { useCustomer } from "@/hooks/use-customers";
-import type { ContactMethod, ContactMethodType } from "@/lib/api-types";
+import { useConversations } from "@/hooks/use-conversations";
+import type {
+  ContactMethod,
+  ContactMethodType,
+  ConversationStatus,
+  ConversationWithSummary,
+  ChannelType,
+} from "@/lib/api-types";
 import {
   Mail,
   Phone,
@@ -16,6 +23,8 @@ import {
   AlertTriangle,
   RefreshCw,
   Loader2,
+  Inbox as InboxIcon,
+  ChevronRight,
 } from "lucide-react";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { presets as statePresets, RouteStatePage, StateBanner } from "@/components/route-state";
@@ -108,6 +117,35 @@ function contactMethodLabel(type: ContactMethodType): string {
 }
 
 // ---------------------------------------------------------------------------
+// Conversation status config (replicates inbox route pattern)
+// ---------------------------------------------------------------------------
+
+const CONV_STATUS_TONE: Record<ConversationStatus, string> = {
+  NEW: "bg-info/12 text-foreground border-info/30",
+  OPEN: "bg-info/10 text-foreground border-info/25",
+  ASSIGNED: "bg-primary/10 text-foreground border-primary/25",
+  WAITING_CUSTOMER: "bg-warning/12 text-foreground border-warning/30",
+  WAITING_OPERATOR: "bg-warning/10 text-foreground border-warning/25",
+  ESCALATED: "bg-destructive/10 text-foreground border-destructive/25",
+  RESOLVED: "bg-success/10 text-foreground border-success/25",
+};
+
+const CONV_STATUS_LABEL: Record<ConversationStatus, string> = {
+  NEW: "New",
+  OPEN: "Open",
+  ASSIGNED: "Assigned",
+  WAITING_CUSTOMER: "Waiting (customer)",
+  WAITING_OPERATOR: "Waiting (operator)",
+  ESCALATED: "Escalated",
+  RESOLVED: "Resolved",
+};
+
+const CHANNEL_LABEL: Record<ChannelType, string> = {
+  INTERNAL: "Internal",
+  WEBSITE_CHAT: "Web Chat",
+};
+
+// ---------------------------------------------------------------------------
 // Page component
 // ---------------------------------------------------------------------------
 
@@ -122,6 +160,12 @@ function CustomerProfilePage() {
     error,
     refetch,
   } = useCustomer(businessId, customerId);
+
+  // Fetch customer-scoped conversations (read-only, capped at 10)
+  const { data: conversationsData, isLoading: isConversationsLoading } = useConversations(
+    businessId,
+    { customerId, limit: 10 },
+  );
 
   // ── No businessId ───────────────────────────────────────────────────────
   if (!businessId) {
@@ -402,25 +446,12 @@ function CustomerProfilePage() {
               )}
             </Card>
 
-            {/* Linked conversations placeholder */}
-            <Card>
-              <div className="flex items-center justify-between">
-                <SectionTitle>Linked conversations</SectionTitle>
-              </div>
-              <div className="mt-3 grid place-items-center rounded-lg border border-dashed border-border bg-surface-muted/40 px-6 py-8 text-center">
-                <Clock className="h-6 w-6 text-muted-foreground mb-2" />
-                <p className="text-xs font-medium">Conversation history coming soon</p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  Customer-scoped conversation listing is planned for S0 inbox wiring.
-                </p>
-                <Link
-                  to="/inbox"
-                  className="mt-3 inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-xs font-medium hover:bg-secondary"
-                >
-                  <MessageSquare className="h-3.5 w-3.5" /> Go to inbox
-                </Link>
-              </div>
-            </Card>
+            {/* Linked conversations */}
+            <LinkedConversationsCard
+              conversations={conversationsData?.data ?? []}
+              isLoading={isConversationsLoading}
+              hasCustomer={!!customer}
+            />
           </div>
         </div>
       </div>
@@ -474,5 +505,73 @@ function EmptyInline({ text }: { text: string }) {
     <div className="mt-3 rounded-lg border border-dashed border-border bg-surface-muted/40 px-4 py-6 text-center text-xs text-muted-foreground">
       {text}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Linked conversations card (customer-scoped, read-only)
+// ---------------------------------------------------------------------------
+
+function LinkedConversationsCard({
+  conversations,
+  isLoading,
+  hasCustomer,
+}: {
+  conversations: ConversationWithSummary[];
+  isLoading: boolean;
+  hasCustomer: boolean;
+}) {
+  return (
+    <Card>
+      <div className="flex items-center justify-between">
+        <SectionTitle>Linked conversations</SectionTitle>
+        {conversations.length > 0 && (
+          <span className="text-[11px] text-muted-foreground">{conversations.length} shown</span>
+        )}
+      </div>
+
+      {isLoading && hasCustomer ? (
+        <div className="mt-3">
+          <LoadingSkeleton variant="conversation-list" count={3} />
+        </div>
+      ) : conversations.length === 0 ? (
+        <div className="mt-3 grid place-items-center rounded-lg border border-dashed border-border bg-surface-muted/40 px-6 py-10 text-center">
+          <div className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-muted-foreground">
+            <InboxIcon className="h-4 w-4" />
+          </div>
+          <p className="mt-2 text-xs font-medium">No linked conversations</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            New messages from this customer will appear here.
+          </p>
+        </div>
+      ) : (
+        <ul className="mt-3 divide-y divide-border overflow-hidden rounded-lg border border-border">
+          {conversations.map((c) => (
+            <li key={c.id}>
+              <Link
+                to="/inbox/$conversationId"
+                params={{ conversationId: c.id }}
+                className="flex items-center gap-3 px-3 py-3 hover:bg-surface-muted"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">{c.subject ?? "No subject"}</div>
+                  <div className="mt-1 truncate text-[11px] text-muted-foreground">
+                    {CHANNEL_LABEL[c.channel] ?? c.channel} ·{" "}
+                    {c.messageCount > 0 && `${c.messageCount} msgs · `}
+                    {formatRelativeTime(c.updatedAt ?? c.createdAt)}
+                  </div>
+                </div>
+                <span
+                  className={`shrink-0 rounded-md border px-2 py-1 text-[11px] font-medium ${CONV_STATUS_TONE[c.status] ?? "bg-muted text-muted-foreground border-border"}`}
+                >
+                  {CONV_STATUS_LABEL[c.status] ?? c.status}
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
   );
 }

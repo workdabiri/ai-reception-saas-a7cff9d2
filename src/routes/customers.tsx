@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Avatar, PageHeader } from "@/components/ui-bits";
 import { useBusinessId } from "@/contexts/business-context";
 import { useCustomers } from "@/hooks/use-customers";
@@ -123,22 +123,25 @@ function CustomersPage() {
     filters,
   );
 
-  // Accumulate pages
+  // Accumulate pages when data arrives — dedup guard prevents duplicate rows
   const dataItems = data?.data;
-  const prevDataItems = useRef<Customer[] | undefined>();
-  if (dataItems && dataItems !== prevDataItems.current) {
-    prevDataItems.current = dataItems;
+  useEffect(() => {
+    if (!dataItems) return;
+
     if (!cursor) {
+      // First page or filter reset — replace
       setPages(dataItems);
     } else {
+      // Subsequent page — append with dedup guard
       setPages((prev) => {
         const seen = new Set(prev.map((item) => item.id));
-        const next = dataItems.filter((item) => !seen.has(item.id));
-        return [...prev, ...next];
+        const nextItems = dataItems.filter((item) => !seen.has(item.id));
+        return [...prev, ...nextItems];
       });
     }
-  }
+  }, [dataItems, cursor]);
 
+  // Track nextCursor so Load More button persists during fetch
   if (data?.nextCursor !== undefined) {
     lastKnownNextCursor.current = data.nextCursor;
   }
@@ -298,7 +301,6 @@ function CustomersPage() {
             value={customers.filter((c) => c.status === "ARCHIVED").length}
             accent="var(--color-muted-foreground)"
           />
-          <SummaryCard label="Showing" value={customers.length} accent="var(--color-info)" />
         </div>
 
         <div className="workspace-scoped-callout mt-4 flex items-start gap-2 px-4 py-3">
