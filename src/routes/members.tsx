@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Avatar, PageHeader } from "@/components/ui-bits";
-import { members, currentWorkspace, type WorkspaceRole } from "@/lib/mock-data";
+import { useBusinessId } from "@/contexts/business-context";
+import { useMembers } from "@/hooks/use-members";
+import type { MembershipRole, MembershipStatus } from "@/lib/api-types";
 import {
   Plus,
   MoreHorizontal,
@@ -16,6 +18,7 @@ import {
   UserCog,
   ShieldOff,
   Info,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Dialog,
@@ -47,7 +50,15 @@ import {
   presets as statePresets,
   RouteStatePage,
   RouteSkeleton,
+  StateBanner,
 } from "@/components/route-state";
+
+// ---------------------------------------------------------------------------
+// Local display types (no mock-data dependency)
+// ---------------------------------------------------------------------------
+
+/** Display-layer role label. Normalised from API role (OWNER → Owner, etc.). */
+type DisplayRole = "Owner" | "Admin" | "Operator" | "Viewer";
 
 export const Route = createFileRoute("/members")({
   head: () => ({
@@ -59,70 +70,87 @@ export const Route = createFileRoute("/members")({
   component: MembersPage,
 });
 
-type MemberStatus = "Active" | "Invited" | "Removed" | "Suspended";
+// ---------------------------------------------------------------------------
+// API → display helpers
+// ---------------------------------------------------------------------------
 
+/**
+ * Normalise API role (OWNER → Owner) for display.
+ * Keeps DisplayRole compatibility for the permission matrix.
+ */
+function normaliseRole(role: MembershipRole): DisplayRole {
+  const map: Record<MembershipRole, DisplayRole> = {
+    OWNER: "Owner",
+    ADMIN: "Admin",
+    OPERATOR: "Operator",
+    VIEWER: "Viewer",
+  };
+  return map[role];
+}
+
+/**
+ * Derive initials from a userId UUID when no user name is available.
+ * Uses the first two hex chars of the UUID, uppercased.
+ */
+function initialsFromUserId(userId: string): string {
+  const clean = userId.replace(/-/g, "");
+  return (clean[0] ?? "?").toUpperCase() + (clean[1] ?? "").toUpperCase();
+}
+
+/**
+ * Format an ISO date string as a relative-ish label.
+ * Honest fallback — shows the calendar date, not a fake "X min ago".
+ */
+function formatJoinedAt(joinedAt: string | null): string {
+  if (!joinedAt) return "—";
+  try {
+    return new Date(joinedAt).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return "—";
+  }
+}
+
+// Row type driven by the real API shape.
+// NOTE: name and email are absent from the memberships API response.
+// userId is the only user identity we have until /api/identity/users/:userId
+// is implemented on the backend.
 type Row = {
-  id: string;
-  name: string;
-  email: string;
-  role: WorkspaceRole;
-  status: MemberStatus;
+  id: string; // membership ID
+  userId: string; // user UUID (only identity available)
+  displayRole: DisplayRole;
+  apiStatus: MembershipStatus;
   initials: string;
-  lastActive: string;
-  workspace: string;
+  joinedLabel: string;
 };
 
-const baseRows: Row[] = members.map((m, i) => ({
-  ...m,
-  status: m.status as MemberStatus,
-  lastActive: ["2 min ago", "27 min ago", "1 hr ago", "Yesterday", "Invite pending"][i] ?? "—",
-  workspace: currentWorkspace.name,
-}));
-
-// Add a couple of extra states for visual completeness
-baseRows.push({
-  id: "u6",
-  name: "Renée Okafor",
-  email: "renee@tehrandental.co",
-  role: "Operator",
-  status: "Suspended",
-  initials: "RO",
-  lastActive: "5 days ago",
-  workspace: currentWorkspace.name,
-});
-baseRows.push({
-  id: "u7",
-  name: "Tomás Vidal",
-  email: "tomas@tehrandental.co",
-  role: "Viewer",
-  status: "Removed",
-  initials: "TV",
-  lastActive: "2 weeks ago",
-  workspace: currentWorkspace.name,
-});
-
 // Role pills: neutral surface + colored dot. Text always readable.
-const roleTone: Record<WorkspaceRole, string> = {
+const roleTone: Record<DisplayRole, string> = {
   Owner: "member-role member-role--owner",
   Admin: "member-role member-role--admin",
   Operator: "member-role member-role--operator",
   Viewer: "member-role member-role--viewer",
 };
 
-// Status pills: soft background + text-tuned color.
-const statusTone: Record<MemberStatus, string> = {
-  Active: "member-status member-status--active",
-  Invited: "member-status member-status--invited",
-  Removed: "member-status member-status--removed",
-  Suspended: "member-status member-status--suspended",
+// Status pills: real API statuses → CSS class + display label.
+const statusConfig: Record<MembershipStatus, { className: string; label: string }> = {
+  ACTIVE: { className: "member-status member-status--active", label: "Active" },
+  INVITED: { className: "member-status member-status--invited", label: "Invited" },
+  DECLINED: { className: "member-status member-status--removed", label: "Declined" },
+  EXPIRED: { className: "member-status member-status--suspended", label: "Expired" },
+  REMOVED: { className: "member-status member-status--removed", label: "Removed" },
+  LEFT: { className: "member-status member-status--suspended", label: "Left" },
 };
 
-const roles: WorkspaceRole[] = ["Owner", "Admin", "Operator", "Viewer"];
+const roles: DisplayRole[] = ["Owner", "Admin", "Operator", "Viewer"];
 
 type Perm = "full" | "read" | "none";
 type PermissionRow = {
   area: string;
-  perms: Record<WorkspaceRole, Perm>;
+  perms: Record<DisplayRole, Perm>;
 };
 
 const matrix: PermissionRow[] = [
@@ -164,37 +192,28 @@ function PermCell({ p }: { p: Perm }) {
 
 function MembersPage() {
   const stateOverride = useStateParam();
-  const [rows] = useState<Row[]>(
-    stateOverride === "pending"
-      ? [
-          {
-            id: "inv1",
-            name: "Priya Patel",
-            email: "priya@example.com",
-            role: "Operator",
-            status: "Invited",
-            initials: "PP",
-            lastActive: "Invite pending",
-            workspace: currentWorkspace.name,
-          },
-          {
-            id: "inv2",
-            name: "Marcus Lee",
-            email: "marcus@example.com",
-            role: "Viewer",
-            status: "Invited",
-            initials: "ML",
-            lastActive: "Invite pending",
-            workspace: currentWorkspace.name,
-          },
-        ]
-      : baseRows,
-  );
+  const businessId = useBusinessId();
+
+  // Fetch real memberships — disabled until businessId is available.
+  // includeRemoved=false by default; matches backend default.
+  const { data: memberships, isLoading, error } = useMembers(businessId, { includeRemoved: false });
+
+  // Map API response to display rows.
+  const rows: Row[] = (memberships ?? []).map((m) => ({
+    id: m.id,
+    userId: m.userId,
+    displayRole: normaliseRole(m.role),
+    apiStatus: m.status,
+    initials: initialsFromUserId(m.userId),
+    joinedLabel: formatJoinedAt(m.joinedAt),
+  }));
+
   const [invite, setInvite] = useState(false);
   const [changeRole, setChangeRole] = useState<Row | null>(null);
   const [removeRow, setRemoveRow] = useState<Row | null>(null);
   const [accessDenied, setAccessDenied] = useState(false);
 
+  // Dev-state overrides (for UI testing via ?state= param)
   if (stateOverride === "empty") {
     return (
       <RouteStatePage
@@ -218,12 +237,74 @@ function MembersPage() {
     );
   }
 
+  // No businessId — VITE_DEV_BUSINESS_ID not set (development only)
+  if (!businessId) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
+        <PageHeader title="Members & access" description="Manage workspace access and roles." />
+        <StateBanner
+          icon={AlertTriangle}
+          tone="warning"
+          title="No business configured"
+          description="Set VITE_DEV_BUSINESS_ID in your .env.local file to load members."
+          className="mt-6"
+        />
+      </div>
+    );
+  }
+
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <RouteStatePage title="Members & access" description="Loading members…">
+        <RouteSkeleton variant="table" />
+      </RouteStatePage>
+    );
+  }
+
+  // Error states
+  if (error) {
+    const e = error as { isForbidden?: boolean; isUnauthenticated?: boolean; message?: string };
+    if (e.isUnauthenticated) {
+      return (
+        <RouteStatePage title="Members & access">{statePresets.sessionExpired()}</RouteStatePage>
+      );
+    }
+    if (e.isForbidden) {
+      return (
+        <RouteStatePage title="Members & access">
+          {statePresets.membersAccessDenied()}
+        </RouteStatePage>
+      );
+    }
+    return (
+      <RouteStatePage title="Members & access">
+        {statePresets.genericError({
+          message: e.message ?? "Failed to load members.",
+          onRetry: () => window.location.reload(),
+        })}
+      </RouteStatePage>
+    );
+  }
+
+  // Empty state
+  if (rows.length === 0) {
+    return (
+      <RouteStatePage
+        title="Members & access"
+        description="Manage who can see and act in this workspace."
+      >
+        {statePresets.membersEmpty()}
+      </RouteStatePage>
+    );
+  }
+
   return (
     <>
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
         <PageHeader
           title="Members & access"
-          description="Manage who can see and act inside this workspace. Roles are illustrated in the prototype; enforcement is a planned capability."
+          description="Manage who can see and act inside this workspace. Server-side membership and RBAC checks are authoritative; this view is informational."
           action={
             <div className="flex items-center gap-2">
               <button
@@ -236,7 +317,7 @@ function MembersPage() {
                 onClick={() => setInvite(true)}
                 className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:opacity-95"
               >
-                <Plus className="h-3.5 w-3.5" /> Invite member
+                <Plus className="h-3.5 w-3.5" /> Invite member (mock)
               </button>
             </div>
           }
@@ -278,10 +359,10 @@ function MembersPage() {
         <div className="mt-6 hidden md:block overflow-hidden rounded-xl border border-border bg-card shadow-card">
           <div className="grid grid-cols-[1.6fr_1fr_0.8fr_0.7fr_0.8fr_0.6fr] items-center gap-3 border-b border-border bg-surface px-4 py-3 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
             <div>Member</div>
-            <div>Email</div>
+            <div>User ID</div>
             <div>Role</div>
             <div>Status</div>
-            <div>Last active</div>
+            <div>Joined</div>
             <div className="text-right">Actions</div>
           </div>
           <div className="divide-y divide-border">
@@ -293,27 +374,31 @@ function MembersPage() {
                 <div className="flex items-center gap-3 min-w-0">
                   <Avatar initials={m.initials} />
                   <div className="min-w-0">
-                    <div className="truncate font-medium">{m.name}</div>
-                    <div className="truncate text-[11px] text-muted-foreground">{m.workspace}</div>
+                    {/* Name not available — show role as primary identity label */}
+                    <div className="truncate font-medium">{m.displayRole}</div>
+                    <div className="truncate text-[11px] text-muted-foreground">Member</div>
                   </div>
                 </div>
-                <div className="truncate text-muted-foreground">{m.email}</div>
+                {/* Email not available from memberships API — show truncated userId */}
+                <div className="truncate font-mono text-[11px] text-muted-foreground">
+                  {m.userId.slice(0, 8)}&hellip;
+                </div>
                 <div>
                   <span
-                    className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[m.role]}`}
+                    className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[m.displayRole]}`}
                   >
-                    {m.role}
+                    {m.displayRole}
                   </span>
                 </div>
                 <div>
                   <span
-                    className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[m.status]}`}
+                    className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusConfig[m.apiStatus].className}`}
                   >
                     <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-                    {m.status}
+                    {statusConfig[m.apiStatus].label}
                   </span>
                 </div>
-                <div className="text-[12px] text-muted-foreground">{m.lastActive}</div>
+                <div className="text-[12px] text-muted-foreground">{m.joinedLabel}</div>
                 <div className="flex justify-end">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -323,17 +408,17 @@ function MembersPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem onClick={() => setChangeRole(m)}>
-                        <UserCog className="mr-2 h-4 w-4" /> Change role
+                        <UserCog className="mr-2 h-4 w-4" /> Change role (mock)
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Mail className="mr-2 h-4 w-4" /> Resend invite
+                        <Mail className="mr-2 h-4 w-4" /> Resend invite (mock)
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive focus:text-destructive"
                         onClick={() => setRemoveRow(m)}
                       >
-                        <UserMinus className="mr-2 h-4 w-4" /> Remove from workspace
+                        <UserMinus className="mr-2 h-4 w-4" /> Remove from workspace (mock)
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -352,8 +437,12 @@ function MembersPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">{m.name}</div>
-                      <div className="truncate text-[11px] text-muted-foreground">{m.email}</div>
+                      {/* Name not available — show role as primary identity label */}
+                      <div className="truncate text-sm font-medium">{m.displayRole}</div>
+                      {/* Email not available — show truncated userId */}
+                      <div className="truncate font-mono text-[11px] text-muted-foreground">
+                        {m.userId.slice(0, 8)}&hellip;
+                      </div>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -363,35 +452,35 @@ function MembersPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem onClick={() => setChangeRole(m)}>
-                          <UserCog className="mr-2 h-4 w-4" /> Change role
+                          <UserCog className="mr-2 h-4 w-4" /> Change role (mock)
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                          <Mail className="mr-2 h-4 w-4" /> Resend invite
+                          <Mail className="mr-2 h-4 w-4" /> Resend invite (mock)
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"
                           onClick={() => setRemoveRow(m)}
                         >
-                          <UserMinus className="mr-2 h-4 w-4" /> Remove
+                          <UserMinus className="mr-2 h-4 w-4" /> Remove (mock)
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <span
-                      className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[m.role]}`}
+                      className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[m.displayRole]}`}
                     >
-                      {m.role}
+                      {m.displayRole}
                     </span>
                     <span
-                      className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusTone[m.status]}`}
+                      className={`inline-flex items-center gap-2 rounded-md border px-2 py-1 text-[11px] font-medium ${statusConfig[m.apiStatus].className}`}
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-                      {m.status}
+                      {statusConfig[m.apiStatus].label}
                     </span>
                     <span className="ml-auto text-[11px] text-muted-foreground">
-                      {m.lastActive}
+                      {m.joinedLabel}
                     </span>
                   </div>
                 </div>
@@ -411,7 +500,7 @@ function MembersPage() {
               </p>
             </div>
             <span className="inline-flex items-center gap-1 rounded-md border border-dashed border-border bg-surface-muted px-2 py-1 text-[11px] text-muted-foreground">
-              <Info className="h-3 w-3" /> Planned capability
+              <Info className="h-3 w-3" /> Informational
             </span>
           </div>
           {/* Desktop/tablet matrix */}
@@ -508,7 +597,7 @@ function MembersPage() {
               <div key={role} className="rounded-lg border border-border bg-card p-3">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[role as WorkspaceRole]}`}
+                    className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[role as DisplayRole]}`}
                   >
                     {role}
                   </span>
@@ -543,8 +632,8 @@ function MembersPage() {
               never trusted for authorization.
             </li>
             <li className="flex gap-2">
-              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Suspended members keep records but
-              cannot access the workspace. Auth planned.
+              <Check className="mt-1 h-3.5 w-3.5 text-success" /> Expired, declined, removed, and
+              left memberships remain visible only when included by the backend query.
             </li>
             <li className="flex gap-2">
               <Check className="mt-1 h-3.5 w-3.5 text-success" /> Role changes are written to the
@@ -581,8 +670,7 @@ function MembersPage() {
                 </SelectContent>
               </Select>
               <p className="text-[11px] text-muted-foreground">
-                Invitee will only see data inside{" "}
-                <span className="font-medium text-foreground">{currentWorkspace.name}</span>.
+                Invitee will only see data inside this workspace.
               </p>
             </div>
           </div>
@@ -603,8 +691,12 @@ function MembersPage() {
             <DialogDescription>
               {changeRole && (
                 <>
-                  Update access for{" "}
-                  <span className="font-medium text-foreground">{changeRole.name}</span>.
+                  Update role for member{" "}
+                  <span className="font-mono text-[11px] font-medium text-foreground">
+                    {changeRole.userId.slice(0, 8)}&hellip;
+                  </span>{" "}
+                  (currently{" "}
+                  <span className="font-medium text-foreground">{changeRole.displayRole}</span>).
                 </>
               )}
             </DialogDescription>
@@ -618,7 +710,7 @@ function MembersPage() {
                 <input
                   type="radio"
                   name="role"
-                  defaultChecked={changeRole?.role === r}
+                  defaultChecked={changeRole?.displayRole === r}
                   className="mt-1"
                 />
                 <div>
@@ -656,10 +748,11 @@ function MembersPage() {
             <DialogDescription>
               {removeRow && (
                 <>
-                  <span className="font-medium text-foreground">{removeRow.name}</span> will lose
-                  access to{" "}
-                  <span className="font-medium text-foreground">{currentWorkspace.name}</span>{" "}
-                  immediately.
+                  Member{" "}
+                  <span className="font-mono text-[11px] font-medium text-foreground">
+                    {removeRow.userId.slice(0, 8)}&hellip;
+                  </span>{" "}
+                  will lose access to this workspace immediately.
                 </>
               )}
             </DialogDescription>
@@ -692,8 +785,7 @@ function MembersPage() {
               <ShieldOff className="h-4 w-4 text-destructive" /> Access denied
             </DialogTitle>
             <DialogDescription>
-              You don't have permission to view this resource in{" "}
-              <span className="font-medium text-foreground">{currentWorkspace.name}</span>.
+              You don&apos;t have permission to view this resource in this workspace.
             </DialogDescription>
           </DialogHeader>
           <div className="rounded-lg border border-border bg-surface p-3 text-[12px] text-muted-foreground">

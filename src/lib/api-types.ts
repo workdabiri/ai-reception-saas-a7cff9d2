@@ -341,3 +341,56 @@ export interface PaginatedCustomers {
   data: Customer[];
   nextCursor: string | null;
 }
+
+// ---------------------------------------------------------------------------
+// Membership domain
+// ---------------------------------------------------------------------------
+
+/**
+ * Membership role — matches backend MEMBERSHIP_ROLE_VALUES.
+ * Uppercase to match backend enum exactly.
+ */
+export const MEMBERSHIP_ROLES = ["OWNER", "ADMIN", "OPERATOR", "VIEWER"] as const;
+
+export type MembershipRole = (typeof MEMBERSHIP_ROLES)[number];
+
+/**
+ * Membership status — matches backend MEMBERSHIP_STATUS_VALUES.
+ * Richer than the mock (added DECLINED, EXPIRED, LEFT).
+ */
+export const MEMBERSHIP_STATUSES = [
+  "INVITED",
+  "ACTIVE",
+  "DECLINED",
+  "EXPIRED",
+  "REMOVED",
+  "LEFT",
+] as const;
+
+export type MembershipStatus = (typeof MEMBERSHIP_STATUSES)[number];
+
+/**
+ * Domain representation of a business membership.
+ * Matches backend BusinessMembershipIdentity.
+ *
+ * NOTE: Does NOT contain user name or email — those are resolved via
+ * GET /api/identity/users/:userId which is currently a placeholder (501).
+ * Display layer must handle name/email absence with honest fallbacks.
+ */
+export interface BusinessMembership {
+  id: UUID;
+  businessId: UUID;
+  userId: UUID;
+  role: MembershipRole;
+  status: MembershipStatus;
+  invitedByUserId: UUID | null;
+  joinedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Filters for listing business memberships */
+export interface ListMembershipsFilters {
+  /** Include REMOVED/LEFT memberships. Defaults to false. */
+  includeRemoved?: boolean;
+}
