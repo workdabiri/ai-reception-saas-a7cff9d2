@@ -8,18 +8,37 @@ import {
   HelpCircle,
   LogOut,
   Building2,
-  Plus,
-  ArrowLeftRight,
   Shield,
   ShieldAlert,
   Palette,
   Users,
+  Loader2,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { workspaces } from "@/lib/mock-data";
+import { useBusinessContext } from "@/contexts/business-context";
 import { currentUser } from "@/lib/notifications";
+import type { BusinessIdentity } from "@/lib/api-types";
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Derive 2-char initials from a business name. */
+function businessInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] ?? "A").toUpperCase() + (parts[1][0] ?? "I").toUpperCase();
+  }
+  return (name[0] ?? "A").toUpperCase() + (name[1] ?? "I").toUpperCase();
+}
+
+const statusLabel: Record<BusinessIdentity["status"], string> = {
+  ACTIVE: "Active",
+  SUSPENDED: "Suspended",
+  ARCHIVED: "Archived",
+};
 
 const roleTone: Record<string, string> = {
   Owner: "bg-primary-soft text-foreground ring-primary/25",
@@ -27,6 +46,10 @@ const roleTone: Record<string, string> = {
   Operator: "bg-success/10 text-foreground ring-success/25",
   Viewer: "bg-secondary text-muted-foreground ring-border",
 };
+
+// ---------------------------------------------------------------------------
+// MenuRow
+// ---------------------------------------------------------------------------
 
 function MenuRow({
   icon: Icon,
@@ -72,12 +95,18 @@ function MenuRow({
   );
 }
 
+// ---------------------------------------------------------------------------
+// ProfileBody
+// ---------------------------------------------------------------------------
+
 function ProfileBody({ onClose }: { onClose: () => void }) {
-  const [activeWs, setActiveWs] = useState(workspaces[0].id);
+  const { businessId, businesses, switchBusiness, isLoading } = useBusinessContext();
+
+  const activeBusiness = businesses.find((b) => b.id === businessId) ?? businesses[0] ?? null;
 
   return (
     <div className="flex flex-col max-h-[80vh] sm:max-h-[640px] overflow-y-auto">
-      {/* Identity */}
+      {/* Identity — still uses currentUser until /api/identity/me is implemented */}
       <div className="px-4 pt-4 pb-3 border-b border-border/60">
         <div className="flex items-center gap-3">
           <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-foreground to-foreground/80 text-background text-[12px] font-medium shadow-soft">
@@ -92,15 +121,17 @@ function ProfileBody({ onClose }: { onClose: () => void }) {
         </div>
         <div className="mt-3 flex items-center gap-2 text-[11px]">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${roleTone[currentUser.role]}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${roleTone[currentUser.role] ?? roleTone.Viewer}`}
           >
             <Shield className="h-3 w-3" />
             {currentUser.role}
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2 py-0.5 font-medium text-muted-foreground ring-1 ring-inset ring-border">
-            <Building2 className="h-3 w-3" />
-            <span className="truncate max-w-[160px]">{currentUser.workspace}</span>
-          </span>
+          {activeBusiness && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2 py-0.5 font-medium text-muted-foreground ring-1 ring-inset ring-border">
+              <Building2 className="h-3 w-3" />
+              <span className="truncate max-w-[160px]">{activeBusiness.name}</span>
+            </span>
+          )}
         </div>
       </div>
 
@@ -109,45 +140,46 @@ function ProfileBody({ onClose }: { onClose: () => void }) {
         <div className="px-2 pb-1 text-[10px] font-medium uppercase tracking-[0.06em] text-muted-foreground">
           Workspaces
         </div>
-        <ul className="space-y-px">
-          {workspaces.map((w) => {
-            const isActive = w.id === activeWs;
-            return (
-              <li key={w.id}>
-                <button
-                  onClick={() => setActiveWs(w.id)}
-                  className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-secondary"
-                >
-                  <div className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-secondary text-[10px] font-medium text-foreground">
-                    {w.initials}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-[12.5px] font-medium text-foreground">
-                      {w.name}
+        {isLoading ? (
+          <div className="flex items-center gap-2 px-2 py-3 text-[12px] text-muted-foreground">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Loading workspaces…
+          </div>
+        ) : businesses.length === 0 ? (
+          <div className="px-2 py-3 text-[12px] text-muted-foreground">
+            No workspaces available.
+          </div>
+        ) : (
+          <ul className="space-y-px">
+            {businesses.map((b) => {
+              const isActive = b.id === activeBusiness?.id;
+              return (
+                <li key={b.id}>
+                  <button
+                    onClick={() => {
+                      switchBusiness(b.id);
+                      onClose();
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-secondary"
+                  >
+                    <div className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-secondary text-[10px] font-medium text-foreground">
+                      {businessInitials(b.name)}
                     </div>
-                    <div className="truncate text-[10.5px] text-muted-foreground">
-                      {w.role} · {w.status}
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[12.5px] font-medium text-foreground">
+                        {b.name}
+                      </div>
+                      <div className="truncate text-[10.5px] text-muted-foreground">
+                        {statusLabel[b.status] ?? b.status}
+                      </div>
                     </div>
-                  </div>
-                  {isActive && <Check className="h-3.5 w-3.5 text-primary" />}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="mt-1 grid grid-cols-2 gap-1 px-1">
-          <button className="inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-surface px-2 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-secondary">
-            <ArrowLeftRight className="h-3 w-3" />
-            Manage
-          </button>
-          <button className="inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-surface px-2 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-secondary">
-            <Plus className="h-3 w-3" />
-            New
-          </button>
-        </div>
-        <p className="mt-1.5 px-2 text-[10.5px] text-muted-foreground">
-          Switching workspaces is mock-only in this prototype.
-        </p>
+                    {isActive && <Check className="h-3.5 w-3.5 text-primary" />}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
 
       {/* Account */}
@@ -200,6 +232,10 @@ function ProfileBody({ onClose }: { onClose: () => void }) {
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// ProfileMenu
+// ---------------------------------------------------------------------------
 
 export function ProfileMenu() {
   const [open, setOpen] = useState(false);
