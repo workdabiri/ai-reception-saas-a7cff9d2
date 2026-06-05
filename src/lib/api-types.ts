@@ -394,11 +394,3 @@ export interface ListMembershipsFilters {
   /** Include REMOVED/LEFT memberships. Defaults to false. */
   includeRemoved?: boolean;
 }
-
-/**
- * Display-layer normalisation of MembershipRole.
- * Maps OWNER → "Owner", ADMIN → "Admin", etc.
- * Used by the permission matrix and role pill renderers.
- * Self-contained — does not depend on mock-data.
- */
-export type MembershipRoleDisplay = "Owner" | "Admin" | "Operator" | "Viewer";

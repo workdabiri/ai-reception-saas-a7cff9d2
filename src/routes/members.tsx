@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Avatar, PageHeader } from "@/components/ui-bits";
 import { useBusinessId } from "@/contexts/business-context";
 import { useMembers } from "@/hooks/use-members";
-import type { MembershipRole, MembershipStatus, MembershipRoleDisplay } from "@/lib/api-types";
+import type { MembershipRole, MembershipStatus } from "@/lib/api-types";
 import {
   Plus,
   MoreHorizontal,
@@ -53,6 +53,13 @@ import {
   StateBanner,
 } from "@/components/route-state";
 
+// ---------------------------------------------------------------------------
+// Local display types (no mock-data dependency)
+// ---------------------------------------------------------------------------
+
+/** Display-layer role label. Normalised from API role (OWNER → Owner, etc.). */
+type DisplayRole = "Owner" | "Admin" | "Operator" | "Viewer";
+
 export const Route = createFileRoute("/members")({
   head: () => ({
     meta: [
@@ -69,10 +76,10 @@ export const Route = createFileRoute("/members")({
 
 /**
  * Normalise API role (OWNER → Owner) for display.
- * Used by the permission matrix and role pill renderers.
+ * Keeps DisplayRole compatibility for the permission matrix.
  */
-function normaliseRole(role: MembershipRole): MembershipRoleDisplay {
-  const map: Record<MembershipRole, MembershipRoleDisplay> = {
+function normaliseRole(role: MembershipRole): DisplayRole {
+  const map: Record<MembershipRole, DisplayRole> = {
     OWNER: "Owner",
     ADMIN: "Admin",
     OPERATOR: "Operator",
@@ -114,14 +121,14 @@ function formatJoinedAt(joinedAt: string | null): string {
 type Row = {
   id: string; // membership ID
   userId: string; // user UUID (only identity available)
-  displayRole: MembershipRoleDisplay;
+  displayRole: DisplayRole;
   apiStatus: MembershipStatus;
   initials: string;
   joinedLabel: string;
 };
 
 // Role pills: neutral surface + colored dot. Text always readable.
-const roleTone: Record<MembershipRoleDisplay, string> = {
+const roleTone: Record<DisplayRole, string> = {
   Owner: "member-role member-role--owner",
   Admin: "member-role member-role--admin",
   Operator: "member-role member-role--operator",
@@ -138,12 +145,12 @@ const statusConfig: Record<MembershipStatus, { className: string; label: string 
   LEFT: { className: "member-status member-status--suspended", label: "Left" },
 };
 
-const roles: MembershipRoleDisplay[] = ["Owner", "Admin", "Operator", "Viewer"];
+const roles: DisplayRole[] = ["Owner", "Admin", "Operator", "Viewer"];
 
 type Perm = "full" | "read" | "none";
 type PermissionRow = {
   area: string;
-  perms: Record<MembershipRoleDisplay, Perm>;
+  perms: Record<DisplayRole, Perm>;
 };
 
 const matrix: PermissionRow[] = [
@@ -590,7 +597,7 @@ function MembersPage() {
               <div key={role} className="rounded-lg border border-border bg-card p-3">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[role as MembershipRoleDisplay]}`}
+                    className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-medium ${roleTone[role as DisplayRole]}`}
                   >
                     {role}
                   </span>
