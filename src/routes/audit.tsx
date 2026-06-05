@@ -113,25 +113,6 @@ function actorLabel(
 }
 
 /**
- * Derive 2-char initials for the actor avatar.
- * For USER actors: use name initials when available, else "US".
- * For SYSTEM / AI_RECEPTIONIST: fixed initials.
- */
-function actorAvatarInitials(actorType: AuditActorType, actorUser?: UserDisplayInfo): string {
-  if (actorType === "AI_RECEPTIONIST") return "AI";
-  if (actorType === "SYSTEM") return "SY";
-  // USER
-  if (actorUser?.name) {
-    const parts = actorUser.name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      return (parts[0][0] ?? "?").toUpperCase() + (parts[1][0] ?? "").toUpperCase();
-    }
-    return (actorUser.name[0] ?? "?").toUpperCase() + (actorUser.name[1] ?? "").toUpperCase();
-  }
-  return "US";
-}
-
-/**
  * Format an ISO timestamp for the table (compact) and detail panel (full).
  */
 function formatTimestamp(iso: string): { compact: string; full: string } {
@@ -184,7 +165,6 @@ type Row = {
   fullTime: string;
   iso: string;
   actorLabel: string;
-  actorInitials: string;
   /** True when actorLabel is a real name (not a UUID fallback) — controls font rendering. */
   isUserWithName: boolean;
   displayActorType: DisplayActorType;
@@ -203,7 +183,6 @@ function toRow(e: AuditEvent): Row {
     fullTime: full,
     iso: e.createdAt,
     actorLabel: actorLabel(e.actorType, e.actorUserId, e.actorUser),
-    actorInitials: actorAvatarInitials(e.actorType, e.actorUser),
     isUserWithName: e.actorType === "USER" && !!e.actorUser?.name,
     displayActorType: normaliseActorType(e.actorType),
     actionRaw: e.action,
