@@ -142,9 +142,11 @@ function CustomersPage() {
   }, [dataItems, cursor]);
 
   // Track nextCursor so Load More button persists during fetch
-  if (data?.nextCursor !== undefined) {
-    lastKnownNextCursor.current = data.nextCursor;
-  }
+  useEffect(() => {
+    if (data?.nextCursor !== undefined) {
+      lastKnownNextCursor.current = data.nextCursor;
+    }
+  }, [data?.nextCursor]);
 
   const handleStatusChange = useCallback((v: StatusFilterValue) => {
     setStatusFilter(v);
