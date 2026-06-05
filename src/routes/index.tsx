@@ -157,6 +157,12 @@ function fmtAuditTime(iso: string): string {
   }
 }
 
+/** Parses an ISO timestamp to ms-since-epoch for sort comparisons. Returns 0 on invalid input. */
+function auditTimeMs(iso: string): number {
+  const value = Date.parse(iso);
+  return Number.isFinite(value) ? value : 0;
+}
+
 const deltaStyles = {
   up: "text-foreground/80",
   down: "text-muted-foreground",
@@ -177,8 +183,10 @@ function DashboardPage() {
   // Whether the current user lacks audit.read (403 = OPERATOR or VIEWER)
   const auditForbidden = auditError?.isForbidden ?? false;
 
-  // Latest 5 events for the dashboard panel (sorted newest-first from API)
-  const recentAuditEvents = auditData?.slice(0, 5) ?? [];
+  // Latest 5 events for the dashboard panel, sorted defensively by createdAt.
+  const recentAuditEvents = [...(auditData ?? [])]
+    .sort((a, b) => auditTimeMs(b.createdAt) - auditTimeMs(a.createdAt))
+    .slice(0, 5);
 
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-8 lg:py-8 space-y-6">
