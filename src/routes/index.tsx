@@ -614,6 +614,7 @@ function DashboardPage() {
                 const timeDisplay = conv.lastMessageAt
                   ? fmtRecentTime(conv.lastMessageAt)
                   : "\u2014";
+                const snippet = conv.lastMessageContent?.trim() ?? "";
                 return (
                   <li key={conv.id}>
                     <Link
@@ -632,7 +633,7 @@ function DashboardPage() {
                           </span>
                         </div>
                         <p className="mt-0.5 truncate text-[12px] text-foreground/80 leading-[1.4]">
-                          {conv.lastMessageContent}
+                          {snippet}
                         </p>
                         <div className="mt-1.5 flex items-center gap-1.5">
                           <span className="inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground ring-1 ring-inset ring-border">
