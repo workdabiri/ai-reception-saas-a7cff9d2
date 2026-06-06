@@ -18,19 +18,18 @@ import {
   TrendingDown,
   AlertCircle,
 } from "lucide-react";
-import { Avatar, ChannelChip, MockBanner, StatusChip } from "@/components/ui-bits";
+import { Avatar, MockBanner, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
-import {
-  channelLabel,
-  recentMessages,
-  operatorLoad,
-  draftQueue,
-  channelOverview,
-} from "@/lib/mock-data";
+import { operatorLoad, draftQueue, channelOverview } from "@/lib/mock-data";
 import { useBusinessContext } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
 import { useConversations } from "@/hooks/use-conversations";
-import type { ConversationStatus, ChannelType } from "@/lib/api-types";
+import type {
+  ConversationStatus,
+  ChannelType,
+  MessageDirection,
+  MessageSenderType,
+} from "@/lib/api-types";
 import { Lock } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -230,6 +229,38 @@ function calcWait(iso: string | null | undefined): string {
   return `${days}d`;
 }
 
+/** Formats an ISO timestamp to compact relative time for recent messages. */
+function fmtRecentTime(iso: string): string {
+  try {
+    const ms = Date.parse(iso);
+    if (!Number.isFinite(ms)) return "\u2014";
+    const diff = Math.max(0, Date.now() - ms);
+    const mins = Math.floor(diff / 60_000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m`;
+    const hrs = Math.floor(diff / 3_600_000);
+    if (hrs < 24) return `${hrs}h`;
+    const days = Math.floor(diff / 86_400_000);
+    if (days < 7) return `${days}d`;
+    return new Date(ms).toLocaleDateString([], { month: "short", day: "numeric" });
+  } catch {
+    return "\u2014";
+  }
+}
+
+/** Returns a concise direction/sender label for the recent messages panel. */
+function recentMsgDirectionLabel(
+  direction: MessageDirection | null,
+  senderType: MessageSenderType | null,
+): string | null {
+  if (direction === "INTERNAL") return "Internal";
+  if (direction === "SYSTEM" || senderType === "SYSTEM") return "System";
+  if (senderType === "AI_RECEPTIONIST") return "AI";
+  if (direction === "INBOUND" || senderType === "CUSTOMER") return "Inbound";
+  if (direction === "OUTBOUND" || senderType === "OPERATOR") return "Outbound";
+  return null;
+}
+
 /** Sort key: oldest waiting first. Returns 0 on invalid dates so they sink to bottom. */
 function queueSortKey(iso: string | null | undefined): number {
   if (!iso) return Number.MAX_SAFE_INTEGER;
@@ -256,7 +287,10 @@ function DashboardPage() {
     data: conversationsData,
     isLoading: conversationsLoading,
     error: conversationsError,
-  } = useConversations(businessId, { limit: 8 });
+  } = useConversations(businessId, { limit: 12 });
+  // limit increased to 12 (was 8) so the single shared query has enough
+  // conversations to populate both the attention queue and recent messages
+  // without a second API call.
 
   // Whether the current user lacks audit.read (403 = OPERATOR or VIEWER)
   const auditForbidden = auditError?.isForbidden ?? false;
@@ -274,6 +308,16 @@ function DashboardPage() {
         queueSortKey(a.lastMessageAt ?? a.updatedAt ?? a.createdAt) -
         queueSortKey(b.lastMessageAt ?? b.updatedAt ?? b.createdAt),
     );
+
+  // Recent messages: conversations with real last-message content, newest first.
+  const recentRows = [...(conversationsData?.data ?? [])]
+    .filter((c) => !!c.lastMessageContent)
+    .sort((a, b) => {
+      const ta = a.lastMessageAt ? Date.parse(a.lastMessageAt) : 0;
+      const tb = b.lastMessageAt ? Date.parse(b.lastMessageAt) : 0;
+      return (Number.isFinite(tb) ? tb : 0) - (Number.isFinite(ta) ? ta : 0);
+    })
+    .slice(0, 6);
 
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-8 lg:py-8 space-y-6">
@@ -522,32 +566,91 @@ function DashboardPage() {
               All <ArrowUpRight className="h-3 w-3" />
             </Link>
           </div>
-          <ul className="flex-1">
-            {recentMessages.map((m) => (
-              <li
-                key={m.id}
-                className="flex gap-3 px-4 py-3 border-b-[0.5px] border-border last:border-b-0 transition hover:bg-surface-hover cursor-pointer"
-              >
-                <Avatar initials={m.initials} size="md" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="truncate text-[13px] font-medium text-foreground">
-                      {m.customer}
-                    </span>
-                    <span className="shrink-0 text-[11px] text-muted-foreground font-mono-tab">
-                      {m.time}
-                    </span>
-                  </div>
-                  <p className="mt-0.5 truncate text-[12px] text-muted-foreground leading-[1.4]">
-                    {m.snippet}
-                  </p>
-                  <div className="mt-1.5 inline-flex [&>span]:h-[18px] [&>span]:px-1.5 [&>span]:py-0 [&>span]:text-[10px] [&>span]:leading-[18px]">
-                    <ChannelChip channel={m.channel} label={channelLabel[m.channel]} />
+
+          {conversationsLoading ? (
+            /* Loading skeleton */
+            <div className="divide-y divide-border flex-1">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex gap-3 px-4 py-3">
+                  <div className="h-8 w-8 rounded-full bg-secondary animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-2.5 w-1/2 rounded bg-secondary animate-pulse" />
+                    <div className="h-2 w-3/4 rounded bg-secondary animate-pulse" />
+                    <div className="h-2 w-1/3 rounded bg-secondary animate-pulse" />
                   </div>
                 </div>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+          ) : conversationsError ? (
+            /* Error state */
+            <div className="flex flex-col items-center justify-center gap-2 px-5 py-8 text-center flex-1">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-destructive/10 ring-1 ring-destructive/20">
+                <AlertCircle className="h-4 w-4 text-destructive" />
+              </div>
+              <p className="text-[12px] font-medium text-foreground">Could not load messages</p>
+              <p className="text-[11px] text-muted-foreground max-w-[180px] leading-relaxed">
+                {conversationsError.message ?? "An error occurred."}
+              </p>
+            </div>
+          ) : recentRows.length === 0 ? (
+            /* Empty state */
+            <div className="flex flex-col items-center justify-center gap-2 px-5 py-8 text-center flex-1">
+              <p className="text-[12px] text-muted-foreground">No recent messages yet.</p>
+            </div>
+          ) : (
+            <ul className="flex-1 divide-y divide-border">
+              {recentRows.map((conv) => {
+                const customerLabel = conv.customerId
+                  ? `Customer \u2022 ${conv.customerId.slice(0, 8)}`
+                  : "Unknown customer";
+                const customerInitials = conv.customerId
+                  ? conv.customerId.slice(0, 2).toUpperCase()
+                  : "??";
+                const channelDisplay = CHANNEL_DISPLAY[conv.channel] ?? conv.channel;
+                const dirLabel = recentMsgDirectionLabel(
+                  conv.lastMessageDirection,
+                  conv.lastMessageSenderType,
+                );
+                const timeDisplay = conv.lastMessageAt
+                  ? fmtRecentTime(conv.lastMessageAt)
+                  : "\u2014";
+                return (
+                  <li key={conv.id}>
+                    <Link
+                      to="/inbox/$conversationId"
+                      params={{ conversationId: conv.id }}
+                      className="flex gap-3 px-4 py-3 transition hover:bg-surface-hover"
+                    >
+                      <Avatar initials={customerInitials} size="md" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate text-[12px] font-medium text-muted-foreground">
+                            {customerLabel}
+                          </span>
+                          <span className="shrink-0 text-[11px] text-muted-foreground font-mono-tab">
+                            {timeDisplay}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 truncate text-[12px] text-foreground/80 leading-[1.4]">
+                          {conv.lastMessageContent}
+                        </p>
+                        <div className="mt-1.5 flex items-center gap-1.5">
+                          <span className="inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground ring-1 ring-inset ring-border">
+                            {channelDisplay}
+                          </span>
+                          {dirLabel && (
+                            <span className="inline-flex items-center rounded-full bg-secondary/60 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground ring-1 ring-inset ring-border/60">
+                              {dirLabel}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </section>
 
