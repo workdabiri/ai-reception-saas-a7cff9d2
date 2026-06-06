@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Avatar, MockBanner, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
-import { operatorLoad, draftQueue, channelOverview } from "@/lib/mock-data";
+import { operatorLoad, channelOverview } from "@/lib/mock-data";
 import { useBusinessContext } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
 import { useConversations } from "@/hooks/use-conversations";
@@ -791,39 +791,24 @@ function DashboardPage() {
               Human review
             </span>
           </div>
-          <ul className="divide-y divide-border">
-            {draftQueue.map((d) => (
-              <li key={d.id} className="px-5 py-4">
-                <div className="flex items-start gap-3">
-                  <Avatar initials={d.initials} size="sm" />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[13px] font-medium truncate">{d.customer}</span>
-                      <span className="text-[10.5px] text-muted-foreground tabular-nums shrink-0">
-                        {d.prepared}
-                      </span>
-                    </div>
-                    <div className="text-[11.5px] text-muted-foreground truncate">{d.subject}</div>
-                    <div className="mt-2 rounded-lg border border-dashed border-primary/25 bg-primary-soft/40 p-3 text-[12px] leading-snug text-foreground/90 line-clamp-2">
-                      {d.draft}
-                    </div>
-                    <div className="mt-2 flex items-center justify-between text-[10.5px]">
-                      <span className="text-muted-foreground">
-                        Confidence:{" "}
-                        <span className="font-medium text-foreground/80">{d.confidence}</span>
-                      </span>
-                      <Link
-                        to="/inbox"
-                        className="font-medium text-primary hover:underline inline-flex items-center gap-1"
-                      >
-                        Review & send <ArrowUpRight className="h-3 w-3" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {/* AI Draft Assist is a Stage 2 feature (R9 — Not Started).
+              No draft content, confidence scores, or approve/reject endpoints
+              exist in the backend yet. Fabricated rows removed. */}
+          <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary-soft text-primary ring-1 ring-primary/20">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[13px] font-medium tracking-tight">AI Draft Assist — Stage 2</p>
+              <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">
+                When enabled, AI-generated reply suggestions will appear here for operator review
+                before sending.
+              </p>
+            </div>
+            <p className="text-[10.5px] text-muted-foreground/70">
+              Every reply remains human-reviewed and human-sent.
+            </p>
+          </div>
         </div>
       </section>
 
