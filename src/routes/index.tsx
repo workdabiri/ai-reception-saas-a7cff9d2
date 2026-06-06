@@ -378,48 +378,60 @@ function DashboardPage() {
 
       <MockBanner />
 
-      {/* KPI row */}
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {stats.map((s) => {
-          const Icon = s.icon;
-          const Trend =
-            s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
-          return (
-            <div
-              key={s.label}
-              style={{ ["--kpi-accent" as never]: toneAccent[s.tone] }}
-              className="kpi-accent group relative overflow-hidden rounded-xl bg-surface py-5 px-6 shadow-card transition hover:shadow-elev"
-            >
-              <div className="relative flex items-start justify-between gap-2">
-                <span className="text-[10.5px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
-                  {s.label}
-                </span>
-                <div
-                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[s.tone]}`}
-                >
-                  <Icon className="h-4 w-4" />
-                </div>
-              </div>
-              <div className="relative mt-4 flex items-end justify-between gap-2">
-                <div className="text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground">
-                  {s.value}
-                </div>
-                {s.delta && (
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10.5px] font-medium tabular-nums ${deltaStyles[s.delta.dir]}`}
-                  >
-                    {Trend && <Trend className="h-3 w-3" />}
-                    {s.delta.value}
+      {/* KPI row — preview metrics until backend dashboard summary API ships */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-3 px-0.5">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center rounded-full border border-border bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Preview metrics
+            </span>
+            <span className="hidden sm:inline text-[11.5px] text-muted-foreground">
+              Live aggregate metrics require a dashboard summary API.
+            </span>
+          </div>
+        </div>
+        <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {stats.map((s) => {
+            const Icon = s.icon;
+            const Trend =
+              s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
+            return (
+              <div
+                key={s.label}
+                style={{ ["--kpi-accent" as never]: toneAccent[s.tone] }}
+                className="kpi-accent group relative overflow-hidden rounded-xl bg-surface py-5 px-6 shadow-card transition hover:shadow-elev"
+              >
+                <div className="relative flex items-start justify-between gap-2">
+                  <span className="text-[10.5px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
+                    {s.label}
                   </span>
-                )}
+                  <div
+                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[s.tone]}`}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="relative mt-4 flex items-end justify-between gap-2">
+                  <div className="text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground">
+                    {s.value}
+                  </div>
+                  {s.delta && (
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10.5px] font-medium tabular-nums ${deltaStyles[s.delta.dir]}`}
+                    >
+                      {Trend && <Trend className="h-3 w-3" />}
+                      {s.delta.value}
+                    </span>
+                  )}
+                </div>
+                <div className="relative mt-2 text-[12px] leading-snug text-muted-foreground truncate">
+                  {s.hint}
+                </div>
               </div>
-              <div className="relative mt-2 text-[12px] leading-snug text-muted-foreground truncate">
-                {s.hint}
-              </div>
-            </div>
-          );
-        })}
-      </section>
+            );
+          })}
+        </section>
+      </div>
 
       {/* Today's queue + recent messages */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
