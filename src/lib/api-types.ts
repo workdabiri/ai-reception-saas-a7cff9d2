@@ -172,10 +172,16 @@ export interface Conversation {
   updatedAt: string;
 }
 
-/** Conversation with message count summary */
+/** Conversation with message count summary — enriched with last-message snippet (backend PR #76) */
 export interface ConversationWithSummary extends Conversation {
   messageCount: number;
   lastMessageAt: string | null;
+  /** Text content of the most recent message. Null when the conversation has no messages. */
+  lastMessageContent: string | null;
+  /** Direction of the most recent message. Null when the conversation has no messages. */
+  lastMessageDirection: MessageDirection | null;
+  /** Sender type of the most recent message. Null when the conversation has no messages. */
+  lastMessageSenderType: MessageSenderType | null;
 }
 
 // ---------------------------------------------------------------------------
