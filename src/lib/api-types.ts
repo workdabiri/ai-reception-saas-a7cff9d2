@@ -518,3 +518,29 @@ export interface ListAuditEventsFilters {
   /** Client-side free-text search */
   query?: string;
 }
+
+// ---------------------------------------------------------------------------
+// Dashboard domain
+// ---------------------------------------------------------------------------
+
+/**
+ * Dashboard aggregate summary response.
+ * Matches backend GET /api/businesses/:businessId/dashboard/summary (PR #77).
+ *
+ * Field notes:
+ * - openConversations: all conversations not in RESOLVED status
+ * - waitingForOperator: conversations in WAITING_OPERATOR status
+ * - needsFollowUp: active conversations where latest message is INBOUND and >24h old
+ * - draftsPendingReview: conversations with aiDraftStatus=READY that are not RESOLVED
+ * - accessAlerts: count of DENIED audit events in last 24h;
+ *   null when the caller lacks audit.read (OPERATOR / VIEWER roles)
+ * - generatedAt: ISO timestamp when the backend computed this snapshot
+ */
+export interface DashboardSummary {
+  openConversations: number;
+  waitingForOperator: number;
+  needsFollowUp: number;
+  draftsPendingReview: number;
+  accessAlerts: number | null;
+  generatedAt: string;
+}

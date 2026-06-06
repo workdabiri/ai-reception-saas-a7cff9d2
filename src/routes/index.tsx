@@ -14,8 +14,6 @@ import {
   CircleDot,
   CheckCircle2,
   Clock3,
-  TrendingUp,
-  TrendingDown,
   AlertCircle,
 } from "lucide-react";
 import { Avatar, MockBanner, StatusChip } from "@/components/ui-bits";
@@ -24,6 +22,7 @@ import { operatorLoad, draftQueue, channelOverview } from "@/lib/mock-data";
 import { useBusinessContext } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
 import { useConversations } from "@/hooks/use-conversations";
+import { useDashboardSummary } from "@/hooks/use-dashboard-summary";
 import type {
   ConversationStatus,
   ChannelType,
@@ -48,58 +47,53 @@ export const Route = createFileRoute("/")({
 
 type Tone = "info" | "warning" | "attention" | "ai" | "danger" | "success" | "neutral";
 
-type Stat = {
-  label: string;
-  value: string;
-  hint: string;
-  icon: typeof Inbox;
-  tone: Tone;
-  delta?: { value: string; dir: "up" | "down" | "flat" };
-};
-
 // Neutral-first KPIs: only states that *demand* attention carry a semantic
 // tint. Operational counts (Open) stay fully neutral so the row reads as one
 // premium card family, not five colorful tiles.
-const stats: Stat[] = [
+//
+// KPI definitions — matches backend aggregate contract (PR #77):
+// - openConversations: all non-RESOLVED conversations
+// - waitingForOperator: conversations in WAITING_OPERATOR status
+// - needsFollowUp: active convs where last msg is INBOUND and >24h old
+// - draftsPendingReview: aiDraftStatus=READY, not RESOLVED
+// - accessAlerts: DENIED audit events in last 24h (null = lacks audit.read)
+type KpiCard = {
+  label: string;
+  hint: string;
+  icon: typeof Inbox;
+  tone: Tone;
+};
+
+const KPI_CARDS: KpiCard[] = [
   {
     label: "Open conversations",
-    value: "12",
-    hint: "Across email & web chat",
+    hint: "All active conversations",
     icon: Inbox,
     tone: "info",
-    delta: { value: "+3", dir: "up" },
   },
   {
     label: "Waiting for operator",
-    value: "4",
-    hint: "Median wait 18m",
+    hint: "Awaiting operator reply",
     icon: Timer,
     tone: "warning",
-    delta: { value: "-1", dir: "down" },
   },
   {
     label: "Needs follow-up",
-    value: "6",
-    hint: "Older than 24h",
+    hint: "Inbound, older than 24h",
     icon: Repeat2,
     tone: "attention",
-    delta: { value: "+2", dir: "up" },
   },
   {
     label: "Drafts pending review",
-    value: "7",
     hint: "Human review required",
     icon: Sparkles,
     tone: "ai",
-    delta: { value: "+4", dir: "up" },
   },
   {
     label: "Access alerts",
-    value: "1",
-    hint: "Blocked Viewer export",
+    hint: "DENIED events in last 24h",
     icon: ShieldAlert,
     tone: "danger",
-    delta: { value: "0", dir: "flat" },
   },
 ];
 
@@ -169,23 +163,29 @@ function fmtAuditTime(iso: string): string {
   }
 }
 
+/**
+ * Formats the dashboard summary generatedAt timestamp to a compact
+ * "Updated HH:MM" string. Returns null on missing/invalid input so the
+ * caller can suppress the element entirely.
+ */
+function fmtGeneratedAt(iso: string | undefined): string | null {
+  if (!iso) return null;
+  try {
+    const d = new Date(iso);
+    if (!Number.isFinite(d.getTime())) return null;
+    return `Updated ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+  } catch {
+    return null;
+  }
+}
+
 /** Parses an ISO timestamp to ms-since-epoch for sort comparisons. Returns 0 on invalid input. */
 function auditTimeMs(iso: string): number {
   const value = Date.parse(iso);
   return Number.isFinite(value) ? value : 0;
 }
 
-const deltaStyles = {
-  up: "text-foreground/80",
-  down: "text-muted-foreground",
-  flat: "text-muted-foreground",
-};
-
-// ---------------------------------------------------------------------------
-// Queue helpers
-// ---------------------------------------------------------------------------
-
-/** Subset of StatusChip-compatible keys used by the queue mapping below */
+/** Sort key: oldest waiting first. Returns 0 on invalid dates so they sink to bottom. */
 type QueueChipStatus = "new" | "open" | "waiting" | "urgent" | "closed";
 
 /** Map real ConversationStatus to a StatusChip-compatible key */
@@ -292,6 +292,12 @@ function DashboardPage() {
   // conversations to populate both the attention queue and recent messages
   // without a second API call.
 
+  const {
+    data: summaryData,
+    isLoading: summaryLoading,
+    error: summaryError,
+  } = useDashboardSummary(businessId);
+
   // Whether the current user lacks audit.read (403 = OPERATOR or VIEWER)
   const auditForbidden = auditError?.isForbidden ?? false;
 
@@ -378,54 +384,80 @@ function DashboardPage() {
 
       <MockBanner />
 
-      {/* KPI row — preview metrics until backend dashboard summary API ships */}
+      {/* KPI row — live aggregate metrics from backend dashboard summary API */}
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-3 px-0.5">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center rounded-full border border-border bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-              Preview metrics
+          {/* generatedAt timestamp — shown only when data is available */}
+          {summaryData?.generatedAt && (
+            <span className="text-[11px] text-muted-foreground tabular-nums">
+              {fmtGeneratedAt(summaryData.generatedAt)}
             </span>
-            <span className="hidden sm:inline text-[11.5px] text-muted-foreground">
-              Live aggregate metrics require a dashboard summary API.
+          )}
+          {summaryError && (
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-destructive/80">
+              <AlertCircle className="h-3 w-3" />
+              Could not load KPIs
             </span>
-          </div>
+          )}
         </div>
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {stats.map((s) => {
-            const Icon = s.icon;
-            const Trend =
-              s.delta?.dir === "up" ? TrendingUp : s.delta?.dir === "down" ? TrendingDown : null;
+          {KPI_CARDS.map((card, idx) => {
+            const Icon = card.icon;
+
+            // Resolve live value from summary, fall back gracefully
+            let displayValue: string;
+            let displayHint = card.hint;
+
+            if (summaryLoading) {
+              displayValue = "…";
+            } else if (summaryError) {
+              displayValue = "—";
+            } else if (summaryData) {
+              // Index-aligned to KPI_CARDS order
+              const raw = [
+                summaryData.openConversations,
+                summaryData.waitingForOperator,
+                summaryData.needsFollowUp,
+                summaryData.draftsPendingReview,
+                summaryData.accessAlerts,
+              ][idx];
+
+              if (raw === null) {
+                // accessAlerts === null means caller lacks audit.read
+                displayValue = "—";
+                displayHint = "Requires audit access";
+              } else {
+                displayValue = String(raw);
+              }
+            } else {
+              displayValue = "—";
+            }
+
             return (
               <div
-                key={s.label}
-                style={{ ["--kpi-accent" as never]: toneAccent[s.tone] }}
+                key={card.label}
+                style={{ ["--kpi-accent" as never]: toneAccent[card.tone] }}
                 className="kpi-accent group relative overflow-hidden rounded-xl bg-surface py-5 px-6 shadow-card transition hover:shadow-elev"
               >
                 <div className="relative flex items-start justify-between gap-2">
                   <span className="text-[10.5px] font-medium uppercase tracking-[0.10em] text-muted-foreground">
-                    {s.label}
+                    {card.label}
                   </span>
                   <div
-                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[s.tone]}`}
+                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${iconTone[card.tone]}`}
                   >
                     <Icon className="h-4 w-4" />
                   </div>
                 </div>
-                <div className="relative mt-4 flex items-end justify-between gap-2">
-                  <div className="text-[32px] font-medium leading-none tabular-nums tracking-tight text-foreground">
-                    {s.value}
+                <div className="relative mt-4">
+                  <div
+                    className={`text-[32px] font-medium leading-none tabular-nums tracking-tight ${summaryLoading ? "text-muted-foreground/40" : "text-foreground"}`}
+                  >
+                    {displayValue}
                   </div>
-                  {s.delta && (
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10.5px] font-medium tabular-nums ${deltaStyles[s.delta.dir]}`}
-                    >
-                      {Trend && <Trend className="h-3 w-3" />}
-                      {s.delta.value}
-                    </span>
-                  )}
                 </div>
                 <div className="relative mt-2 text-[12px] leading-snug text-muted-foreground truncate">
-                  {s.hint}
+                  {displayHint}
                 </div>
               </div>
             );
