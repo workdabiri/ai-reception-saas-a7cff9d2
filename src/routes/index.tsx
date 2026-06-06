@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Avatar, MockBanner, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
-import { operatorLoad, channelOverview } from "@/lib/mock-data";
+import { channelOverview } from "@/lib/mock-data";
 import { useBusinessContext } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
 import { useConversations } from "@/hooks/use-conversations";
@@ -817,53 +817,30 @@ function DashboardPage() {
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
           <div className="border-b border-border px-5 py-4">
             <h2 className="text-[13px] font-medium tracking-tight">Operator workload</h2>
-            <p className="text-[11.5px] text-muted-foreground">Today's distribution.</p>
+            <p className="text-[11.5px] text-muted-foreground">
+              Workload analytics require a dedicated endpoint.
+            </p>
           </div>
-          <ul className="divide-y divide-border">
-            {operatorLoad.map((op) => {
-              const total = op.open + op.drafts + op.resolvedToday;
-              const openPct = (op.open / total) * 100;
-              const draftPct = (op.drafts / total) * 100;
-              const resPct = (op.resolvedToday / total) * 100;
-              return (
-                <li key={op.id} className="px-5 py-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar initials={op.initials} size="sm" />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-[13px] font-medium">{op.name}</span>
-                        <span className="rounded-md border border-border bg-surface px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider text-muted-foreground">
-                          {op.role}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex h-1.5 w-full overflow-hidden rounded-full bg-surface-muted">
-                        <div className="bg-warning" style={{ width: `${openPct}%` }} />
-                        <div className="bg-primary" style={{ width: `${draftPct}%` }} />
-                        <div className="bg-success" style={{ width: `${resPct}%` }} />
-                      </div>
-                      <div className="mt-2 flex items-center gap-3 text-[10.5px] text-muted-foreground tabular-nums">
-                        <span className="inline-flex items-center gap-1">
-                          <Clock3 className="h-2.5 w-2.5" />
-                          <span className="font-medium text-foreground">{op.open}</span> open
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <Sparkles className="h-2.5 w-2.5" />
-                          <span className="font-medium text-foreground">{op.drafts}</span> drafts
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <CheckCircle2 className="h-2.5 w-2.5" />
-                          <span className="font-medium text-foreground">
-                            {op.resolvedToday}
-                          </span>{" "}
-                          done
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          {/* Operator Workload requires a per-operator aggregate endpoint.
+              No groupBy, no resolvedAt timestamp, no presence model exist.
+              OPERATOR lacks members.read — client-side derivation is not
+              RBAC-safe. AI Draft counts (R9) not yet built. Fabricated rows
+              removed. Real workload analytics are planned for Stage 2. */}
+          <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-secondary text-muted-foreground ring-1 ring-border">
+              <Inbox className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[13px] font-medium tracking-tight">Workload analytics — Stage 2</p>
+              <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">
+                Per-operator assignment counts require a dedicated workload endpoint.
+              </p>
+            </div>
+            <p className="text-[10.5px] text-muted-foreground/70">
+              Assignment distribution, resolution rates, and team capacity will appear here when
+              backend aggregation is available.
+            </p>
+          </div>
         </div>
 
         <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card">
