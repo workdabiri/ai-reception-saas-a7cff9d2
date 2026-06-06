@@ -724,16 +724,16 @@ function DashboardPage() {
               style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
             >
               {channelOverview.map((c) => {
-                const active = c.status === "Mock Active";
-                const planned = c.status === "Planned";
-                const healthDot =
-                  c.health === "healthy"
-                    ? "bg-success"
-                    : c.health === "degraded"
-                      ? "bg-warning"
-                      : c.health === "offline"
-                        ? "bg-destructive"
-                        : "bg-muted-foreground/40";
+                // Normalize display state from mock-data without mutating source.
+                //
+                // Backend currently only supports WEBSITE_CHAT conversations.
+                // Only web_chat is treated as operationally active in this surface.
+                // Email is demoted from "Mock Active" to Planned — no backend channel
+                // type or adapter exists for email yet.
+                // All other channels remain Planned/Future as in mock-data.
+                const active = c.key === "webchat";
+                const planned = c.key !== "webchat" && c.status !== "Future";
+
                 return (
                   <Link
                     key={c.key}
@@ -748,7 +748,7 @@ function DashboardPage() {
                       </div>
                       {active ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider text-foreground ring-1 ring-success/25">
-                          <span className={`h-1.5 w-1.5 rounded-full ${healthDot}`} /> Active
+                          <span className="h-1.5 w-1.5 rounded-full bg-success" /> Active
                         </span>
                       ) : (
                         <span
@@ -758,51 +758,17 @@ function DashboardPage() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="text-[13px] font-medium tracking-tight truncate">
-                        {c.name}
-                      </div>
-                      {c.unread > 0 && (
-                        <span className="rounded-full bg-primary px-2 py-1 text-[10px] font-medium text-primary-foreground tabular-nums shadow-soft">
-                          {c.unread}
-                        </span>
-                      )}
+                    <div className="text-[13px] font-medium tracking-tight truncate">{c.name}</div>
+                    {/* Description-only footer for all cards.
+                        Fabricated unread/customers/waiting/lastMessage stats removed —
+                        per-channel aggregates require a future channel summary API. */}
+                    <div
+                      className={`border-t pt-2 text-[10.5px] leading-snug text-muted-foreground/90 ${active ? "border-border/70" : "border-dashed border-border/70"}`}
+                    >
+                      {active
+                        ? "Website chat is the currently supported customer channel. Live counts require a future channel summary API."
+                        : c.description}
                     </div>
-                    {active ? (
-                      <div className="grid grid-cols-3 gap-1 border-t border-border/70 pt-2 text-center">
-                        <div>
-                          <div className="text-[12px] font-medium tabular-nums">{c.customers}</div>
-                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">
-                            Custs
-                          </div>
-                        </div>
-                        <div>
-                          <div
-                            className={`text-[12px] font-medium tabular-nums ${c.waiting > 0 ? "text-foreground" : ""}`}
-                          >
-                            {c.waiting}
-                          </div>
-                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">
-                            Wait
-                          </div>
-                        </div>
-                        <div>
-                          <div
-                            className="text-[10.5px] font-medium tabular-nums truncate"
-                            title={c.lastMessage}
-                          >
-                            {c.lastMessage}
-                          </div>
-                          <div className="text-[9.5px] uppercase tracking-wider text-muted-foreground">
-                            Last
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="border-t border-dashed border-border/70 pt-2 text-[10.5px] leading-snug text-muted-foreground/90">
-                        {c.description}
-                      </div>
-                    )}
                   </Link>
                 );
               })}
