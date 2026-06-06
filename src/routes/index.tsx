@@ -311,7 +311,7 @@ function DashboardPage() {
 
   // Recent messages: conversations with real last-message content, newest first.
   const recentRows = [...(conversationsData?.data ?? [])]
-    .filter((c) => !!c.lastMessageContent)
+    .filter((c) => !!c.lastMessageContent?.trim())
     .sort((a, b) => {
       const ta = a.lastMessageAt ? Date.parse(a.lastMessageAt) : 0;
       const tb = b.lastMessageAt ? Date.parse(b.lastMessageAt) : 0;
