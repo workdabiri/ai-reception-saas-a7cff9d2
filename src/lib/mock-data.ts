@@ -1,15 +1,6 @@
-export type ConvStatus = "open" | "pending" | "snoozed" | "closed";
-export type Channel = "email" | "webform" | "sms" | "whatsapp" | "voice";
-
-// Extended chip statuses for the dashboard surface
-export type ChipStatus =
-  | "new"
-  | "open"
-  | "waiting"
-  | "closed"
-  | "needs-review"
-  | "access-denied"
-  | "future";
+// These type aliases are defined in ui-types.ts and re-exported here for
+// backward compatibility with any future internal references.
+export type { ConvStatus, Channel, ChipStatus } from "./ui-types";
 
 export const channelLabel: Record<Channel, string> = {
   email: "Email",
