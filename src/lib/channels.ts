@@ -33,6 +33,15 @@ export type ChannelKey =
 
 export type ChannelState = "active" | "connecting" | "planned" | "not_connected";
 
+/**
+ * Static product roadmap status for a channel.
+ * Drives dashboard card styling and badge labels without a backend call.
+ * - active: operationally live (WEBSITE_CHAT today)
+ * - planned: on roadmap, adapter not yet built
+ * - future: longer-horizon, no committed timeline
+ */
+export type ChannelRoadmapStatus = "active" | "planned" | "future";
+
 export type ChannelDefinition = {
   key: ChannelKey;
   label: string;
@@ -44,6 +53,8 @@ export type ChannelDefinition = {
   description: string;
   /** Maps to --ch-* CSS variable. */
   cssVar: string;
+  /** Static product roadmap status — drives dashboard card badge and styling. */
+  roadmapStatus: ChannelRoadmapStatus;
 };
 
 export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
@@ -55,6 +66,7 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#7C7CFF",
     description: "Embedded reception form on your website.",
     cssVar: "--ch-webchat",
+    roadmapStatus: "active",
   },
   email: {
     key: "email",
@@ -64,6 +76,7 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#4A90E2",
     description: "Inbound customer email — manual reply.",
     cssVar: "--ch-email",
+    roadmapStatus: "planned",
   },
   whatsapp: {
     key: "whatsapp",
@@ -73,6 +86,7 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#25D366",
     description: "WhatsApp Business inbound messages.",
     cssVar: "--ch-whatsapp",
+    roadmapStatus: "planned",
   },
   instagram: {
     key: "instagram",
@@ -82,6 +96,7 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#E1306C",
     description: "Direct messages from Instagram.",
     cssVar: "--ch-instagram",
+    roadmapStatus: "planned",
   },
   telegram: {
     key: "telegram",
@@ -91,6 +106,7 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#0088CC",
     description: "Telegram bot inbound messages.",
     cssVar: "--ch-telegram",
+    roadmapStatus: "planned",
   },
   facebook: {
     key: "facebook",
@@ -100,6 +116,7 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#0084FF",
     description: "Facebook Messenger inbound messages.",
     cssVar: "--ch-facebook",
+    roadmapStatus: "planned",
   },
   sms: {
     key: "sms",
@@ -109,6 +126,7 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#7C3AED",
     description: "Inbound SMS via provider.",
     cssVar: "--ch-sms",
+    roadmapStatus: "planned",
   },
   call: {
     key: "call",
@@ -118,8 +136,24 @@ export const CHANNELS: Record<ChannelKey, ChannelDefinition> = {
     brandColorHex: "#D4A24C",
     description: "Voice reception with transcripts.",
     cssVar: "--ch-call",
+    roadmapStatus: "future",
   },
 };
+
+/**
+ * Dashboard display order for channel cards.
+ * Active channels first, then planned alphabetically, then future.
+ */
+export const CHANNEL_ORDER: readonly ChannelKey[] = [
+  "web_chat",
+  "email",
+  "instagram",
+  "whatsapp",
+  "telegram",
+  "facebook",
+  "sms",
+  "call",
+] as const;
 
 /**
  * Resolve any legacy channel key (from mock-data) to the unified ChannelKey.

@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Avatar, MockBanner, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
-import { channelOverview } from "@/lib/mock-data";
+import { CHANNELS, CHANNEL_ORDER } from "@/lib/channels";
 import { useBusinessContext } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
 import { useConversations } from "@/hooks/use-conversations";
@@ -723,16 +723,14 @@ function DashboardPage() {
               className="grid gap-3"
               style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
             >
-              {channelOverview.map((c) => {
-                // Normalize display state from mock-data without mutating source.
-                //
-                // Backend currently only supports WEBSITE_CHAT conversations.
-                // Only web_chat is treated as operationally active in this surface.
-                // Email is demoted from "Mock Active" to Planned — no backend channel
-                // type or adapter exists for email yet.
-                // All other channels remain Planned/Future as in mock-data.
-                const active = c.key === "webchat";
-                const planned = c.key !== "webchat" && c.status !== "Future";
+              {CHANNEL_ORDER.map((key) => {
+                const c = CHANNELS[key];
+                // roadmapStatus drives badge and UX — sourced from the typed
+                // static registry in src/lib/channels.ts.
+                // Only web_chat is operationally active (WEBSITE_CHAT is the
+                // only ChannelType in the backend schema today).
+                const active = c.roadmapStatus === "active";
+                const planned = c.roadmapStatus === "planned";
 
                 return (
                   <Link
@@ -754,13 +752,13 @@ function DashboardPage() {
                         <span
                           className={`rounded-full px-2 py-1 text-[9.5px] font-medium uppercase tracking-wider ring-1 ring-inset ${planned ? "bg-secondary text-muted-foreground ring-border" : "bg-surface-muted text-muted-foreground/70 ring-border"}`}
                         >
-                          {c.status === "Future" ? "Future" : "Planned"}
+                          {c.roadmapStatus === "future" ? "Future" : "Planned"}
                         </span>
                       )}
                     </div>
-                    <div className="text-[13px] font-medium tracking-tight truncate">{c.name}</div>
+                    <div className="text-[13px] font-medium tracking-tight truncate">{c.label}</div>
                     {/* Description-only footer for all cards.
-                        Fabricated unread/customers/waiting/lastMessage stats removed —
+                        Fabricated unread/customers/waiting/lastMessage stats absent —
                         per-channel aggregates require a future channel summary API. */}
                     <div
                       className={`border-t pt-2 text-[10.5px] leading-snug text-muted-foreground/90 ${active ? "border-border/70" : "border-dashed border-border/70"}`}
