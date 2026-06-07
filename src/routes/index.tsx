@@ -726,7 +726,7 @@ function DashboardPage() {
               {CHANNEL_ORDER.map((key) => {
                 const c = CHANNELS[key];
                 // roadmapStatus drives badge and UX — sourced from the typed
-                // static registry in src/lib/channels.ts, not mock-data.
+                // static registry in src/lib/channels.ts.
                 // Only web_chat is operationally active (WEBSITE_CHAT is the
                 // only ChannelType in the backend schema today).
                 const active = c.roadmapStatus === "active";
