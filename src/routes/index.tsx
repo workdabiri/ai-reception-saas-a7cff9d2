@@ -25,11 +25,13 @@ import { useAuditEvents } from "@/hooks/use-audit-events";
 import { useConversations } from "@/hooks/use-conversations";
 import { useDashboardSummary } from "@/hooks/use-dashboard-summary";
 import { useOperatorWorkload } from "@/hooks/use-operator-workload";
+import { useDashboardAiDrafts } from "@/hooks/use-dashboard-ai-drafts";
 import type {
   ConversationStatus,
   ChannelType,
   MessageDirection,
   MessageSenderType,
+  DashboardAiDraftStatus,
 } from "@/lib/api-types";
 import { Lock } from "lucide-react";
 
@@ -270,6 +272,23 @@ function queueSortKey(iso: string | null | undefined): number {
   return Number.isFinite(ms) ? ms : Number.MAX_SAFE_INTEGER;
 }
 
+/** Renders a small status badge for a reply draft's review status. */
+function AiDraftStatusChip({ status }: { status: DashboardAiDraftStatus }) {
+  if (status === "EDITED") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-warning/10 px-1.5 py-0.5 text-[10px] font-medium text-foreground ring-1 ring-inset ring-warning/25">
+        Edited
+      </span>
+    );
+  }
+  // PENDING_REVIEW
+  return (
+    <span className="inline-flex items-center rounded-full bg-ai-soft px-1.5 py-0.5 text-[10px] font-medium text-ai ring-1 ring-inset ring-ai/20">
+      Pending review
+    </span>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Dashboard
 // ---------------------------------------------------------------------------
@@ -306,6 +325,13 @@ function DashboardPage() {
     error: workloadError,
     refetch: refetchWorkload,
   } = useOperatorWorkload(businessId);
+
+  const {
+    data: aiDraftsData,
+    isLoading: aiDraftsLoading,
+    error: aiDraftsError,
+    refetch: refetchAiDrafts,
+  } = useDashboardAiDrafts(businessId);
 
   // Whether the current user lacks audit.read (403 = OPERATOR or VIEWER)
   const auditForbidden = auditError?.isForbidden ?? false;
@@ -789,31 +815,127 @@ function DashboardPage() {
               </div>
               <div>
                 <h2 className="text-[13px] font-medium tracking-tight">AI draft review</h2>
-                <p className="text-[11px] text-muted-foreground">Operator sends every reply.</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Review system-prepared drafts before any reply is sent.
+                </p>
               </div>
             </div>
-            <span className="rounded-md border border-primary/20 bg-primary-soft px-2 py-1 text-[10px] font-medium text-primary uppercase tracking-wider">
-              Human review
-            </span>
-          </div>
-          {/* AI Draft Assist is a Stage 2 feature (R9 — Not Started).
-              No draft content, confidence scores, or approve/reject endpoints
-              exist in the backend yet. Fabricated rows removed. */}
-          <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary-soft text-primary ring-1 ring-primary/20">
-              <Sparkles className="h-5 w-5" />
+            <div className="flex items-center gap-2">
+              {aiDraftsData && (
+                <span className="text-[10.5px] text-muted-foreground/70">
+                  {fmtGeneratedAt(aiDraftsData.generatedAt)}
+                </span>
+              )}
+              <span className="rounded-md border border-primary/20 bg-primary-soft px-2 py-1 text-[10px] font-medium text-primary uppercase tracking-wider">
+                Human review
+              </span>
             </div>
-            <div>
-              <p className="text-[13px] font-medium tracking-tight">AI Draft Assist — Stage 2</p>
-              <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">
-                When enabled, AI-generated reply suggestions will appear here for operator review
-                before sending.
+          </div>
+
+          {/* Loading state */}
+          {aiDraftsLoading && (
+            <div className="divide-y divide-border">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-start gap-3 px-5 py-3">
+                  <div className="h-7 w-7 rounded-full bg-secondary animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-2.5 w-2/3 rounded bg-secondary animate-pulse" />
+                    <div className="h-2 w-1/2 rounded bg-secondary animate-pulse" />
+                    <div className="h-2 w-3/4 rounded bg-secondary animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Error state */}
+          {!aiDraftsLoading && aiDraftsError && (
+            <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-destructive/10 ring-1 ring-destructive/20">
+                <AlertCircle className="h-4 w-4 text-destructive" />
+              </div>
+              <p className="text-[12px] font-medium text-foreground">Draft review unavailable</p>
+              <p className="text-[11px] text-muted-foreground max-w-[180px] leading-relaxed">
+                {aiDraftsError.message}
               </p>
+              <button
+                onClick={() => refetchAiDrafts()}
+                className="text-[11px] font-medium text-primary hover:underline"
+              >
+                Retry
+              </button>
             </div>
-            <p className="text-[10.5px] text-muted-foreground/70">
-              Every reply remains human-reviewed and human-sent.
-            </p>
-          </div>
+          )}
+
+          {/* Empty state */}
+          {!aiDraftsLoading &&
+            !aiDraftsError &&
+            aiDraftsData &&
+            aiDraftsData.drafts.length === 0 && (
+              <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+                <div className="grid h-9 w-9 place-items-center rounded-full bg-secondary ring-1 ring-border">
+                  <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <p className="text-[12px] font-medium text-foreground">No drafts pending review</p>
+                <p className="text-[11px] text-muted-foreground max-w-[200px] leading-relaxed">
+                  System-prepared drafts will appear here for operator review before any reply is
+                  sent.
+                </p>
+              </div>
+            )}
+
+          {/* Data state */}
+          {!aiDraftsLoading && !aiDraftsError && aiDraftsData && aiDraftsData.drafts.length > 0 && (
+            <div>
+              {/* Pending count header */}
+              <div className="flex items-center justify-between px-5 py-2.5 bg-surface-muted/40 border-b border-border">
+                <span className="text-[11px] text-muted-foreground">
+                  {aiDraftsData.pendingCount} pending review
+                </span>
+                <span className="text-[10px] text-muted-foreground/70">
+                  Operator sends every reply
+                </span>
+              </div>
+              <ul className="divide-y divide-border">
+                {aiDraftsData.drafts.map((draft) => (
+                  <li key={draft.id} className="px-5 py-3">
+                    <div className="flex items-start gap-3">
+                      {/* Source indicator */}
+                      <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary-soft text-primary ring-1 ring-primary/20 text-[9px] font-bold">
+                        {draft.source === "AI" ? "AI" : draft.source === "SYSTEM" ? "SY" : "OP"}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        {/* Customer + subject */}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate text-[12px] font-medium text-foreground">
+                            {draft.customerName ?? "Unknown customer"}
+                          </span>
+                          <span className="shrink-0 text-[10.5px] text-muted-foreground font-mono-tab">
+                            {fmtGeneratedAt(draft.createdAt) ?? ""}
+                          </span>
+                        </div>
+                        {/* Subject */}
+                        <p className="mt-0.5 truncate text-[11.5px] text-muted-foreground">
+                          {draft.subject ?? "Conversation"}
+                        </p>
+                        {/* Draft preview */}
+                        <p className="mt-1 text-[12px] text-foreground/80 leading-[1.4] line-clamp-2">
+                          {draft.draftTextPreview}
+                        </p>
+                        {/* Meta row */}
+                        <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+                          <span className="inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground ring-1 ring-inset ring-border">
+                            {draft.channel}
+                          </span>
+                          <AiDraftStatusChip status={draft.status} />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
 
