@@ -193,3 +193,169 @@ If any CLI validation or smoke test fails:
 - Fix only the failing scope.
 - Rerun validation and smoke tests.
 - Request CTO/Product review again.
+
+---
+
+## Risk-Based Merge Gate Policy
+
+> **Effective:** 2026-06-08 — derived from process learnings in PRs #39–#42.
+
+**Core principle:** Smoke testing must be proportional to actual risk. Repeating a full Dashboard + Channels + Inbox + Audit manual sweep for a type alias rename or dead-code deletion is wasteful and obscures genuinely risky PRs. Every PR declares its risk level; validation scope follows the level.
+
+> **No CLI Test + appropriate risk-based smoke = No Merge.**
+>
+> Manual smoke must be proportional to risk. Performing full-page sweeps on L0/L1 PRs is **forbidden** unless a specific regression concern is documented.
+
+---
+
+### Risk Levels
+
+#### L0 — Docs / Comment-only
+
+**Examples:** documentation, JSDoc comments, process policy updates, `.md` files.
+
+| Gate | Required |
+|---|---|
+| `git diff` scope (docs files only) | ✅ Always |
+| `bun run lint` / `pnpm lint` | Only if repo lints markdown |
+| `bun run build` | Not required |
+| Safety greps | Not required |
+| Manual PO smoke | ❌ Not required |
+| AUTH_URL preview switch | ❌ Not required |
+| Post-merge production check | ❌ Not required |
+
+---
+
+#### L1 — Type-only / dead-code / no runtime path
+
+**Examples:** moving type aliases between modules, deleting confirmed-dead files, renaming internal type-only modules, updating re-export chains with zero runtime consumers.
+
+| Gate | Required |
+|---|---|
+| `bun run lint` | ✅ Always |
+| `bun run build` | ✅ Always |
+| Safety greps (import scan, diff scope) | ✅ Always |
+| CI / Vercel status | ✅ Always |
+| Visual Regression CI (if available) | ✅ Strong substitute for manual smoke |
+| Manual PO smoke | ❌ Not required by default |
+| AUTH_URL preview switch | ❌ Not required |
+| Post-merge production check | ⚠️ Production error logs only (not full page sweep) |
+
+> **Note:** If Visual Regression CI (Snapshot Pills + Snapshot Pixels) passes, it independently validates zero rendering change and satisfies the smoke requirement for L1 PRs.
+
+---
+
+#### L2 — Frontend UI route change
+
+**Examples:** dashboard panel data source, `/channels` card layout, route copy or KPI changes, component refactors that touch rendered output.
+
+| Gate | Required |
+|---|---|
+| `bun run lint` | ✅ Always |
+| `bun run build` | ✅ Always |
+| Safety greps | ✅ Always |
+| Targeted preview smoke (changed routes only) | ✅ Yes |
+| Manual PO smoke | ✅ Yes — targeted to changed route(s) |
+| AUTH_URL preview switch | ⚠️ Only if authenticated preview smoke is required |
+| Post-merge production check | ✅ Targeted smoke on changed route + production error logs |
+
+> Full Dashboard + Channels + Inbox + Audit sweep is only needed when the change touches all of those routes. Scope smoke to the routes actually modified.
+
+---
+
+#### L3 — Auth / session / env / OAuth change
+
+**Examples:** AUTH_URL change, Auth.js callback URL, Google OAuth config, Vercel environment variable changes, session cookie behavior.
+
+| Gate | Required |
+|---|---|
+| `bun run lint` / `bun run build` (if frontend affected) | ✅ |
+| Auth/session `curl` health check | ✅ Always |
+| Full auth smoke (login → dashboard → logout) | ✅ Always |
+| ENV restore verification after testing | ✅ Always |
+| Manual PO smoke | ✅ Yes — full |
+| AUTH_URL preview switch | ✅ Required and must be restored post-smoke |
+| Post-merge production check | ✅ Auth/session health + production error logs |
+
+---
+
+#### L4 — Backend / API / schema / RBAC change
+
+**Examples:** Prisma schema migrations, new or changed API endpoints, auth adapter changes, tenant/RBAC logic, audit domain changes.
+
+| Gate | Required |
+|---|---|
+| `pnpm lint` | ✅ Always |
+| `pnpm typecheck` | ✅ Always |
+| `pnpm build` | ✅ Always |
+| `pnpm test` | ✅ Always |
+| Migration / schema validation (if applicable) | ✅ |
+| Frontend integration smoke (if a route consumes the endpoint) | ✅ |
+| Manual PO smoke | ✅ If user-facing behavior changes |
+| Post-merge production check | ✅ Production logs + endpoint health/smoke |
+
+---
+
+### AUTH_URL Preview Switching
+
+Switching `AUTH_URL` in Vercel env to a preview URL is only required when:
+1. The PR requires authenticated preview smoke (L2 with auth-gated routes, L3, or L4 with user-facing endpoints).
+2. The Vercel preview domain does not match the production `AUTH_URL`.
+
+**Always restore `AUTH_URL` to `https://dashboard.aiautomations.ae` immediately after preview smoke.**
+
+Switching `AUTH_URL` for L0 and L1 PRs is explicitly **forbidden** — it adds unnecessary production risk for changes that do not require authenticated preview smoke.
+
+---
+
+### Risk Level Decision Tree
+
+```
+Is this docs/comments only?
+  → Yes: L0
+
+Does it change any runtime import, render output, or API call?
+  → No:  L1 (type-only or dead-code)
+  → Yes: continue
+
+Does it change auth, session, env, or OAuth behavior?
+  → Yes: L3
+
+Does it change a backend domain, API endpoint, schema, or RBAC rule?
+  → Yes: L4
+
+Does it change a frontend route's rendered output, data source, or UX?
+  → Yes: L2
+```
+
+---
+
+### PR Risk Declaration (copy into every PR body)
+
+Every PR must include this block in its body:
+
+```markdown
+## Risk Declaration
+
+- **Risk Level:** L? — [type: docs / type-only / UI / auth / backend]
+- **Why this level:** [one sentence justification]
+- **Automated gates:** [lint ✅ / build ✅ / safety greps ✅ / CI ✅]
+- **Safety greps:** [list key greps run, or "N/A for L0"]
+- **Manual smoke required:** [Yes — scope: … / No — reason: L1 type-only, Visual Regression CI passed]
+- **Smoke URLs:** [preview URL or production URL, or "N/A"]
+- **AUTH_URL switch required:** [Yes — restored to production after smoke / No]
+- **Post-merge checks:** [production error logs / targeted route smoke / none]
+```
+
+---
+
+### Smoke Scope Reference Table
+
+| Risk | Manual PO Smoke | Scope | AUTH_URL Switch | Post-merge |
+|---|---|---|---|---|
+| L0 | ❌ | None | ❌ | None |
+| L1 | ❌ (default) | None — Visual Regression CI sufficient | ❌ | Error logs only |
+| L2 | ✅ Targeted | Changed route(s) only | Only if needed for auth-gated preview | Targeted route + error logs |
+| L3 | ✅ Full | Auth flow + affected routes | ✅ Required (must restore) | Auth health + error logs |
+| L4 | ✅ If user-facing | Affected endpoints + consuming routes | Only if auth-gated | Endpoint health + error logs |
+
