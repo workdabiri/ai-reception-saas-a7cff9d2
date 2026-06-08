@@ -163,10 +163,10 @@ export function MockBanner() {
       <Info className="callout-icon mt-0.5 shrink-0" />
       <div className="flex-1 callout-body">
         <span className="callout-title" style={{ marginBottom: 0, display: "inline" }}>
-          Prototype with mock data only.
+          MVP Preview.
         </span>{" "}
-        Async MVP, human-review-first. No backend, auth, or providers connected. AI prepares drafts;
-        an operator sends every reply.
+        Some tools are still in setup mode. Core connected data is live where available; operators
+        review and send every customer reply.
       </div>
       <button
         onClick={() => setDismissed(true)}

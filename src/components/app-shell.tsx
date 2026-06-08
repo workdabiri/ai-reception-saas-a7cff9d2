@@ -247,7 +247,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
                   className="h-1.5 w-1.5 shrink-0 rounded-full"
                   style={{ background: "var(--status-pending)" }}
                 />
-                Mock data
+                MVP Preview
               </span>
               <button className="hidden sm:inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 active:translate-y-px">
                 <Plus className="h-3.5 w-3.5" />

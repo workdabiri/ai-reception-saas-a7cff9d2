@@ -17,7 +17,7 @@ import {
   AlertCircle,
   Users,
 } from "lucide-react";
-import { Avatar, MockBanner, StatusChip } from "@/components/ui-bits";
+import { Avatar, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
 import { CHANNELS, CHANNEL_ORDER } from "@/lib/channels";
 import { useBusinessContext } from "@/contexts/business-context";
@@ -390,8 +390,6 @@ function DashboardPage() {
           </div>
         </div>
       </header>
-
-      <MockBanner />
 
       {/* KPI row — live aggregate metrics from backend dashboard summary API */}
       <div className="space-y-2">
