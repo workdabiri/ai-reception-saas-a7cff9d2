@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Clock3,
   AlertCircle,
+  Users,
 } from "lucide-react";
 import { Avatar, MockBanner, StatusChip } from "@/components/ui-bits";
 import { ChannelIcon } from "@/components/channel-icon";
@@ -23,6 +24,7 @@ import { useBusinessContext } from "@/contexts/business-context";
 import { useAuditEvents } from "@/hooks/use-audit-events";
 import { useConversations } from "@/hooks/use-conversations";
 import { useDashboardSummary } from "@/hooks/use-dashboard-summary";
+import { useOperatorWorkload } from "@/hooks/use-operator-workload";
 import type {
   ConversationStatus,
   ChannelType,
@@ -297,6 +299,13 @@ function DashboardPage() {
     isLoading: summaryLoading,
     error: summaryError,
   } = useDashboardSummary(businessId);
+
+  const {
+    data: workloadData,
+    isLoading: workloadLoading,
+    error: workloadError,
+    refetch: refetchWorkload,
+  } = useOperatorWorkload(businessId);
 
   // Whether the current user lacks audit.read (403 = OPERATOR or VIEWER)
   const auditForbidden = auditError?.isForbidden ?? false;
@@ -813,32 +822,125 @@ function DashboardPage() {
       {/* Operator workload + Audit + Planned */}
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         <div className="lg:col-span-5 rounded-xl border border-border bg-card shadow-card">
-          <div className="border-b border-border px-5 py-4">
-            <h2 className="text-[13px] font-medium tracking-tight">Operator workload</h2>
-            <p className="text-[11.5px] text-muted-foreground">
-              Workload analytics require a dedicated endpoint.
-            </p>
-          </div>
-          {/* Operator Workload requires a per-operator aggregate endpoint.
-              No groupBy, no resolvedAt timestamp, no presence model exist.
-              OPERATOR lacks members.read — client-side derivation is not
-              RBAC-safe. AI Draft counts (R9) not yet built. Fabricated rows
-              removed. Real workload analytics are planned for Stage 2. */}
-          <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-secondary text-muted-foreground ring-1 ring-border">
-              <Inbox className="h-5 w-5" />
-            </div>
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
-              <p className="text-[13px] font-medium tracking-tight">Workload analytics — Stage 2</p>
-              <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">
-                Per-operator assignment counts require a dedicated workload endpoint.
+              <h2 className="text-[13px] font-medium tracking-tight">Operator workload</h2>
+              <p className="text-[11.5px] text-muted-foreground">
+                Open assignments and resolutions today.
               </p>
             </div>
-            <p className="text-[10.5px] text-muted-foreground/70">
-              Assignment distribution, resolution rates, and team capacity will appear here when
-              backend aggregation is available.
-            </p>
+            {workloadData && (
+              <span className="text-[10.5px] text-muted-foreground/70">
+                {fmtGeneratedAt(workloadData.generatedAt)}
+              </span>
+            )}
           </div>
+
+          {/* Loading state */}
+          {workloadLoading && (
+            <div className="divide-y divide-border">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3 px-5 py-3">
+                  <div className="h-7 w-7 rounded-full bg-secondary animate-pulse" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-2.5 w-2/3 rounded bg-secondary animate-pulse" />
+                    <div className="h-2 w-1/3 rounded bg-secondary animate-pulse" />
+                  </div>
+                  <div className="h-2.5 w-8 rounded bg-secondary animate-pulse" />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Error state */}
+          {!workloadLoading && workloadError && (
+            <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-destructive/10 ring-1 ring-destructive/20">
+                <AlertCircle className="h-4 w-4 text-destructive" />
+              </div>
+              <p className="text-[12px] font-medium text-foreground">Workload unavailable</p>
+              <p className="text-[11px] text-muted-foreground max-w-[180px] leading-relaxed">
+                {workloadError.message}
+              </p>
+              <button
+                onClick={() => refetchWorkload()}
+                className="text-[11px] font-medium text-primary hover:underline"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!workloadLoading &&
+            !workloadError &&
+            workloadData &&
+            workloadData.operators.length === 0 &&
+            workloadData.unassigned.open === 0 && (
+              <div className="flex flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+                <div className="grid h-9 w-9 place-items-center rounded-full bg-secondary ring-1 ring-border">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <p className="text-[12px] font-medium text-foreground">
+                  No assigned conversations yet
+                </p>
+                <p className="text-[11px] text-muted-foreground max-w-[180px] leading-relaxed">
+                  Workload counts will appear once conversations are assigned to operators.
+                </p>
+              </div>
+            )}
+
+          {/* Data state */}
+          {!workloadLoading &&
+            !workloadError &&
+            workloadData &&
+            (workloadData.operators.length > 0 || workloadData.unassigned.open > 0) && (
+              <div>
+                {/* Per-operator rows — sorted backend-side (openAssigned DESC, name ASC) */}
+                {workloadData.operators.length > 0 && (
+                  <ul className="divide-y divide-border">
+                    {workloadData.operators.map((op) => (
+                      <li key={op.userId} className="flex items-center gap-3 px-5 py-3">
+                        {/* Avatar initial */}
+                        <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground ring-1 ring-border">
+                          {op.name.trim().charAt(0).toUpperCase()}
+                        </div>
+                        {/* Name + role */}
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[12px] font-medium truncate">{op.name}</p>
+                          <p className="text-[10.5px] text-muted-foreground capitalize">
+                            {op.role.charAt(0) + op.role.slice(1).toLowerCase()}
+                          </p>
+                        </div>
+                        {/* Counts */}
+                        <div className="flex items-center gap-3 shrink-0 text-right">
+                          <div>
+                            <p className="text-[12px] font-medium tabular-nums">
+                              {op.openAssigned}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground">open</p>
+                          </div>
+                          <div>
+                            <p className="text-[12px] font-medium tabular-nums text-success">
+                              {op.resolvedToday}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground">today</p>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* Unassigned open count */}
+                <div className="flex items-center justify-between border-t border-border px-5 py-3">
+                  <p className="text-[11.5px] text-muted-foreground">Unassigned open</p>
+                  <p className="text-[12px] font-medium tabular-nums">
+                    {workloadData.unassigned.open}
+                  </p>
+                </div>
+              </div>
+            )}
         </div>
 
         <div className="lg:col-span-4 rounded-xl border border-border bg-card shadow-card">

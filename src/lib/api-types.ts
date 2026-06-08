@@ -544,3 +544,39 @@ export interface DashboardSummary {
   accessAlerts: number | null;
   generatedAt: string;
 }
+
+/**
+ * Per-operator workload entry.
+ * Matches backend OperatorWorkloadEntry from PR #78.
+ *
+ * Field notes:
+ * - openAssigned: non-RESOLVED conversations currently assigned to this operator
+ * - resolvedToday: conversations this operator resolved today (closedAt >= start of UTC day)
+ * - role: membership role — typed as MembershipRole to share the existing union
+ */
+export interface OperatorWorkloadEntry {
+  userId: UUID;
+  name: string;
+  avatarUrl: string | null;
+  role: MembershipRole;
+  openAssigned: number;
+  resolvedToday: number;
+}
+
+/**
+ * Operator workload aggregate response.
+ * Matches backend GET /api/businesses/:businessId/dashboard/operator-workload (PR #78).
+ *
+ * Field notes:
+ * - operators: sorted by openAssigned DESC, then name ASC (backend-ordered — do not re-sort)
+ * - unassigned.open: conversations with no assignedUserId in non-RESOLVED status
+ * - generatedAt: ISO timestamp when the backend computed this snapshot
+ */
+export interface OperatorWorkloadResponse {
+  businessId: UUID;
+  generatedAt: string;
+  operators: OperatorWorkloadEntry[];
+  unassigned: {
+    open: number;
+  };
+}
