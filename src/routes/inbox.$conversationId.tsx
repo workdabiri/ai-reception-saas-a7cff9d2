@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AiDraftReviewPanel } from "@/components/inbox/ai-draft-review-panel";
 import { useBusinessId } from "@/contexts/business-context";
 import { useConversation, useChangeConversationStatus } from "@/hooks/use-conversations";
 import { useMessages, useCreateMessage } from "@/hooks/use-messages";
@@ -344,6 +345,9 @@ function ConversationDetailPage() {
 
       {/* Scroll sentinel — auto-scroll target */}
       <div ref={timelineEndRef} />
+
+      {/* AI Draft Review panel */}
+      {businessId && <AiDraftReviewPanel businessId={businessId} conversationId={conversationId} />}
 
       {/* Composer */}
       {businessId && <MessageComposer businessId={businessId} conversationId={conversationId} />}
