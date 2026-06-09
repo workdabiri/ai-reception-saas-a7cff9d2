@@ -30,6 +30,7 @@ import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InboxIndexRouteImport } from './routes/inbox.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as SettingsAiRouteImport } from './routes/settings.ai'
 import { Route as OnboardingWorkspaceRouteImport } from './routes/onboarding.workspace'
@@ -158,6 +159,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const InboxIndexRoute = InboxIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => InboxRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -319,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
   '/admin/': typeof AdminIndexRoute
+  '/inbox/': typeof InboxIndexRoute
   '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
 }
@@ -329,7 +336,6 @@ export interface FileRoutesByTo {
   '/channels': typeof ChannelsRouteWithChildren
   '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
-  '/inbox': typeof InboxRouteWithChildren
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
   '/members': typeof MembersRoute
@@ -363,6 +369,7 @@ export interface FileRoutesByTo {
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
   '/admin': typeof AdminIndexRoute
+  '/inbox': typeof InboxIndexRoute
   '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
   '/admin/businesses': typeof AdminBusinessesIndexRoute
 }
@@ -410,6 +417,7 @@ export interface FileRoutesById {
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
   '/admin/': typeof AdminIndexRoute
+  '/inbox/': typeof InboxIndexRoute
   '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
 }
@@ -458,6 +466,7 @@ export interface FileRouteTypes {
     | '/onboarding/workspace'
     | '/settings/ai'
     | '/admin/'
+    | '/inbox/'
     | '/admin/businesses/$businessId'
     | '/admin/businesses/'
   fileRoutesByTo: FileRoutesByTo
@@ -468,7 +477,6 @@ export interface FileRouteTypes {
     | '/channels'
     | '/customers'
     | '/forgot-password'
-    | '/inbox'
     | '/knowledge'
     | '/login'
     | '/members'
@@ -502,6 +510,7 @@ export interface FileRouteTypes {
     | '/onboarding/workspace'
     | '/settings/ai'
     | '/admin'
+    | '/inbox'
     | '/admin/businesses/$businessId'
     | '/admin/businesses'
   id:
@@ -548,6 +557,7 @@ export interface FileRouteTypes {
     | '/onboarding/workspace'
     | '/settings/ai'
     | '/admin/'
+    | '/inbox/'
     | '/admin/businesses/$businessId'
     | '/admin/businesses/'
   fileRoutesById: FileRoutesById
@@ -733,6 +743,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/inbox/': {
+      id: '/inbox/'
+      path: '/'
+      fullPath: '/inbox/'
+      preLoaderRoute: typeof InboxIndexRouteImport
+      parentRoute: typeof InboxRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -962,10 +979,12 @@ const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
 
 interface InboxRouteChildren {
   InboxConversationIdRoute: typeof InboxConversationIdRoute
+  InboxIndexRoute: typeof InboxIndexRoute
 }
 
 const InboxRouteChildren: InboxRouteChildren = {
   InboxConversationIdRoute: InboxConversationIdRoute,
+  InboxIndexRoute: InboxIndexRoute,
 }
 
 const InboxRouteWithChildren = InboxRoute._addFileChildren(InboxRouteChildren)
