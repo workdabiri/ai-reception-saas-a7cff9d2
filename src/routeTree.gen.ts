@@ -31,6 +31,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InboxIndexRouteImport } from './routes/inbox.index'
+import { Route as CustomersIndexRouteImport } from './routes/customers.index'
+import { Route as ChannelsIndexRouteImport } from './routes/channels.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as SettingsAiRouteImport } from './routes/settings.ai'
 import { Route as OnboardingWorkspaceRouteImport } from './routes/onboarding.workspace'
@@ -164,6 +166,16 @@ const InboxIndexRoute = InboxIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => InboxRoute,
+} as any)
+const CustomersIndexRoute = CustomersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CustomersRoute,
+} as any)
+const ChannelsIndexRoute = ChannelsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ChannelsRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -325,6 +337,8 @@ export interface FileRoutesByFullPath {
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
   '/admin/': typeof AdminIndexRoute
+  '/channels/': typeof ChannelsIndexRoute
+  '/customers/': typeof CustomersIndexRoute
   '/inbox/': typeof InboxIndexRoute
   '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
@@ -333,8 +347,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/audit': typeof AuditRoute
-  '/channels': typeof ChannelsRouteWithChildren
-  '/customers': typeof CustomersRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/knowledge': typeof KnowledgeRoute
   '/login': typeof LoginRoute
@@ -369,6 +381,8 @@ export interface FileRoutesByTo {
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
   '/admin': typeof AdminIndexRoute
+  '/channels': typeof ChannelsIndexRoute
+  '/customers': typeof CustomersIndexRoute
   '/inbox': typeof InboxIndexRoute
   '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
   '/admin/businesses': typeof AdminBusinessesIndexRoute
@@ -417,6 +431,8 @@ export interface FileRoutesById {
   '/onboarding/workspace': typeof OnboardingWorkspaceRoute
   '/settings/ai': typeof SettingsAiRoute
   '/admin/': typeof AdminIndexRoute
+  '/channels/': typeof ChannelsIndexRoute
+  '/customers/': typeof CustomersIndexRoute
   '/inbox/': typeof InboxIndexRoute
   '/admin/businesses/$businessId': typeof AdminBusinessesBusinessIdRoute
   '/admin/businesses/': typeof AdminBusinessesIndexRoute
@@ -466,6 +482,8 @@ export interface FileRouteTypes {
     | '/onboarding/workspace'
     | '/settings/ai'
     | '/admin/'
+    | '/channels/'
+    | '/customers/'
     | '/inbox/'
     | '/admin/businesses/$businessId'
     | '/admin/businesses/'
@@ -474,8 +492,6 @@ export interface FileRouteTypes {
     | '/'
     | '/access-denied'
     | '/audit'
-    | '/channels'
-    | '/customers'
     | '/forgot-password'
     | '/knowledge'
     | '/login'
@@ -510,6 +526,8 @@ export interface FileRouteTypes {
     | '/onboarding/workspace'
     | '/settings/ai'
     | '/admin'
+    | '/channels'
+    | '/customers'
     | '/inbox'
     | '/admin/businesses/$businessId'
     | '/admin/businesses'
@@ -557,6 +575,8 @@ export interface FileRouteTypes {
     | '/onboarding/workspace'
     | '/settings/ai'
     | '/admin/'
+    | '/channels/'
+    | '/customers/'
     | '/inbox/'
     | '/admin/businesses/$businessId'
     | '/admin/businesses/'
@@ -750,6 +770,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/inbox/'
       preLoaderRoute: typeof InboxIndexRouteImport
       parentRoute: typeof InboxRoute
+    }
+    '/customers/': {
+      id: '/customers/'
+      path: '/'
+      fullPath: '/customers/'
+      preLoaderRoute: typeof CustomersIndexRouteImport
+      parentRoute: typeof CustomersRoute
+    }
+    '/channels/': {
+      id: '/channels/'
+      path: '/'
+      fullPath: '/channels/'
+      preLoaderRoute: typeof ChannelsIndexRouteImport
+      parentRoute: typeof ChannelsRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -955,10 +989,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ChannelsRouteChildren {
   ChannelsChannelIdRoute: typeof ChannelsChannelIdRoute
+  ChannelsIndexRoute: typeof ChannelsIndexRoute
 }
 
 const ChannelsRouteChildren: ChannelsRouteChildren = {
   ChannelsChannelIdRoute: ChannelsChannelIdRoute,
+  ChannelsIndexRoute: ChannelsIndexRoute,
 }
 
 const ChannelsRouteWithChildren = ChannelsRoute._addFileChildren(
@@ -967,10 +1003,12 @@ const ChannelsRouteWithChildren = ChannelsRoute._addFileChildren(
 
 interface CustomersRouteChildren {
   CustomersCustomerIdRoute: typeof CustomersCustomerIdRoute
+  CustomersIndexRoute: typeof CustomersIndexRoute
 }
 
 const CustomersRouteChildren: CustomersRouteChildren = {
   CustomersCustomerIdRoute: CustomersCustomerIdRoute,
+  CustomersIndexRoute: CustomersIndexRoute,
 }
 
 const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
