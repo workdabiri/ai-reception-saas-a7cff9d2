@@ -520,6 +520,88 @@ export interface ListAuditEventsFilters {
 }
 
 // ---------------------------------------------------------------------------
+// Knowledge / Business-Context domain
+// ---------------------------------------------------------------------------
+
+/**
+ * Business-context lifecycle / verification status.
+ * Matches backend BUSINESS_CONTEXT_ITEM_STATUS_VALUES (UPPERCASE).
+ *
+ * - DRAFT    = unverified; NOT eligible as AI context.
+ * - VERIFIED = business-approved; the ONLY status eligible as AI context.
+ * - ARCHIVED = retired; NOT eligible as AI context.
+ */
+export const KNOWLEDGE_STATUSES = ["DRAFT", "VERIFIED", "ARCHIVED"] as const;
+export type KnowledgeStatus = (typeof KNOWLEDGE_STATUSES)[number];
+
+/**
+ * Business-context provenance/source type.
+ * Matches backend BUSINESS_CONTEXT_ITEM_SOURCE_TYPE_VALUES (UPPERCASE).
+ * The backend create endpoint validates this with a strict z.enum — only these
+ * values are accepted. SYSTEM_SEEDED is backend-only and not offered in the UI
+ * create form.
+ */
+export const KNOWLEDGE_SOURCE_TYPES = [
+  "OWNER_APPROVED",
+  "OPERATOR_APPROVED",
+  "SYSTEM_SEEDED",
+  "IMPORT",
+  "OTHER",
+] as const;
+export type KnowledgeSourceType = (typeof KNOWLEDGE_SOURCE_TYPES)[number];
+
+/**
+ * Domain representation of a business-context (knowledge) item.
+ * Matches backend BusinessContextItem in src/domains/knowledge/types.ts.
+ *
+ * `sourceMetadata` is intentionally typed as unknown and not surfaced in the
+ * UI — there is no safe generic metadata viewer for it yet.
+ */
+export interface BusinessContextItem {
+  id: UUID;
+  businessId: UUID;
+  category: string;
+  key: string;
+  value: string;
+  status: KnowledgeStatus;
+  sourceType: KnowledgeSourceType;
+  sourceLabel: string | null;
+  sourceUrl: string | null;
+  sourceMetadata: unknown;
+  verifiedByUserId: string | null;
+  verifiedAt: string | null;
+  createdByUserId: string | null;
+  createdAt: string; // ISO 8601
+  updatedAt: string; // ISO 8601
+}
+
+/**
+ * Input for creating a knowledge item (POST /knowledge).
+ *
+ * Server-controlled fields (businessId, status, verifiedByUserId, verifiedAt,
+ * createdByUserId, createdAt, updatedAt) are intentionally absent — the backend
+ * rejects them via a strict body schema. New items are always created as DRAFT.
+ */
+export interface CreateKnowledgeItemInput {
+  category: string;
+  key: string;
+  value: string;
+  sourceType: KnowledgeSourceType;
+  sourceLabel?: string | null;
+  sourceUrl?: string | null;
+}
+
+/** Filters for listing knowledge items. */
+export interface ListKnowledgeFilters {
+  /** Lifecycle-status filter; backend defaults to VERIFIED when omitted. */
+  status?: KnowledgeStatus;
+  /** Optional category filter. */
+  category?: string;
+  /** Maximum number of items to return. */
+  limit?: number;
+}
+
+// ---------------------------------------------------------------------------
 // Dashboard domain
 // ---------------------------------------------------------------------------
 
