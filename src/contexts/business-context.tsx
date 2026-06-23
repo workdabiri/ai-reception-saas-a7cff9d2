@@ -76,6 +76,41 @@ function getDevBusinessId(): string | undefined {
   return undefined;
 }
 
+/** Local display name for the dev business shortcut (optional override). */
+function getDevBusinessName(): string {
+  const fromEnv =
+    typeof import.meta !== "undefined" ? import.meta.env?.VITE_DEV_BUSINESS_NAME : undefined;
+  if (typeof fromEnv === "string" && fromEnv.trim().length > 0) return fromEnv.trim();
+  return "Local Smoke Business";
+}
+
+/**
+ * Builds a synthetic, clearly-local BusinessIdentity for the dev shortcut.
+ *
+ * Display-only: it lets the app shell render a real workspace name/initials
+ * during local smoke testing instead of falling back to "No workspace". It does
+ * NOT change the resolved businessId and grants no access — the backend still
+ * validates real membership on every tenant-scoped request via
+ * resolveTenantContext, so this cannot escalate scope.
+ *
+ * Dev-only: only reachable when getDevBusinessId() resolves (which itself
+ * requires import.meta.env.DEV === true), so this whole path is statically
+ * dead-code-eliminated from production builds.
+ */
+function getDevBusiness(businessId: string): BusinessIdentity {
+  return {
+    id: businessId,
+    name: getDevBusinessName(),
+    slug: "local-smoke-business",
+    status: "ACTIVE",
+    timezone: "UTC",
+    locale: "en-US",
+    createdByUserId: businessId, // synthetic placeholder; never sent to the backend
+    createdAt: "1970-01-01T00:00:00.000Z",
+    updatedAt: "1970-01-01T00:00:00.000Z",
+  };
+}
+
 // ---------------------------------------------------------------------------
 // localStorage helpers
 // ---------------------------------------------------------------------------
@@ -117,7 +152,10 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
       <BusinessContext.Provider
         value={{
           businessId: devBusinessId,
-          businesses: [],
+          // Synthetic, display-only identity so the shell shows a workspace name
+          // (e.g. "Local Smoke Business") instead of "No workspace" during local
+          // smoke testing. Backend still validates real membership per request.
+          businesses: [getDevBusiness(devBusinessId)],
           isLoading: false,
           isEmpty: false,
           error: null,

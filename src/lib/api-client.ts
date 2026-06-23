@@ -15,6 +15,7 @@
  */
 
 import type { ApiSuccessEnvelope, ApiErrorEnvelope } from "./api-types";
+import { getDevAuthHeaders } from "./dev-auth-headers";
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -119,6 +120,14 @@ export async function apiRequest<TData>(
     credentials: "include",
     headers: {
       Accept: "application/json",
+      // Dev-only backend auth headers (LOCAL SMOKE TESTING ONLY).
+      // Returns {} unless `import.meta.env.DEV === true` AND
+      // `VITE_DEV_AUTH_SESSION === "true"`, so this is inert and
+      // dead-code-eliminated in production builds. These `x-dev-*` headers let
+      // the local backend dev-header auth adapter resolve tenant context for
+      // tenant-scoped routes. See src/lib/dev-auth-headers.ts.
+      ...getDevAuthHeaders(),
+      // Explicit per-call headers win over the dev headers above.
       ...headers,
     },
   };
