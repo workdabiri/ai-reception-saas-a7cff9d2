@@ -847,3 +847,50 @@ export interface ApproveDraftResponse {
     updatedAt: string;
   };
 }
+
+/**
+ * Metadata for the outbound Message created when an approved draft is sent.
+ * Content is intentionally NOT returned — refetch the conversation transcript.
+ */
+export interface SentMessageMetadata {
+  id: UUID;
+  conversationId: UUID;
+  direction: string;
+  senderType: string;
+  senderUserId: string | null;
+  createdAt: string;
+}
+
+/**
+ * Response from POST .../reply-drafts/:draftId/send.
+ *
+ * Sends an APPROVED draft: transitions APPROVED → SENT and creates exactly one
+ * internal OUTBOUND operator message (no external channel/provider). The send is
+ * idempotent — a re-send returns `idempotent: true` and creates no new message.
+ *
+ * Field notes:
+ * - draft.sentMessageId: id of the created/linked outbound message (may be null
+ *   only in the rare window before the id is attached on an idempotent re-send).
+ * - message: metadata of the outbound message; null on an idempotent re-send if
+ *   the original message could not be re-read.
+ */
+export interface SendDraftResponse {
+  businessId: UUID;
+  conversationId: UUID;
+  draft: {
+    id: UUID;
+    conversationId: UUID;
+    status: string;
+    source: string;
+    draftTextPreview: string;
+    reviewedAt: string | null;
+    reviewedByUserId: string | null;
+    sentMessageId: string | null;
+    sentAt: string | null;
+    sentByUserId: string | null;
+    updatedAt: string;
+  };
+  message: SentMessageMetadata | null;
+  sent: boolean;
+  idempotent: boolean;
+}
