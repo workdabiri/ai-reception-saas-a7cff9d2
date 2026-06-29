@@ -7,9 +7,12 @@
  * - Edit and save draft text
  * - Discard a draft
  * - Approve a draft (operator approval only — NOT delivery)
+ * - Send an APPROVED draft (operator-triggered; creates the outbound message)
  *
- * IMPORTANT: This panel does NOT send messages.
- * There is no send endpoint. Approval means operator approval only.
+ * Approve and Send are distinct, sequential operator actions. Approval marks a
+ * draft APPROVED and creates NO message; Send (offered only for APPROVED drafts)
+ * creates one internal OUTBOUND message in the conversation. Sending does NOT
+ * dispatch to any external channel (WhatsApp/email/SMS) or provider.
  *
  * Backend endpoints used:
  * - GET .../reply-drafts/current (PR #85)
@@ -17,6 +20,7 @@
  * - POST .../reply-drafts/:draftId/edit (PR #83)
  * - POST .../reply-drafts/:draftId/discard (PR #82)
  * - POST .../reply-drafts/:draftId/approve (PR #84)
+ * - POST .../reply-drafts/:draftId/send
  *
  * @module
  */
@@ -32,6 +36,7 @@ import {
   AlertTriangle,
   FileText,
   ShieldCheck,
+  Send,
   Info,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -41,6 +46,7 @@ import {
   useEditDraft,
   useDiscardDraft,
   useApproveDraft,
+  useSendDraft,
 } from "@/hooks/use-reply-draft-actions";
 import type { CurrentReplyDraftItem } from "@/lib/api-types";
 
@@ -190,7 +196,9 @@ export function AiDraftReviewPanel({ businessId, conversationId }: AiDraftReview
 
   // ── Draft exists — APPROVED ──────────────────────────────────────────
   if (draft.status === "APPROVED") {
-    return <ApprovedDraftView draft={draft} />;
+    return (
+      <ApprovedDraftView draft={draft} businessId={businessId} conversationId={conversationId} />
+    );
   }
 
   // ── Draft exists — PENDING_REVIEW or EDITED ──────────────────────────
@@ -203,9 +211,37 @@ export function AiDraftReviewPanel({ businessId, conversationId }: AiDraftReview
 // Approved draft (read-only)
 // ---------------------------------------------------------------------------
 
-function ApprovedDraftView({ draft }: { draft: CurrentReplyDraftItem }) {
+function ApprovedDraftView({
+  draft,
+  businessId,
+  conversationId,
+}: {
+  draft: CurrentReplyDraftItem;
+  businessId: string;
+  conversationId: string;
+}) {
+  const sendDraft = useSendDraft(businessId, conversationId);
   const badge = STATUS_BADGE[draft.status] ?? STATUS_BADGE.APPROVED;
   const srcBadge = SOURCE_BADGE[draft.source] ?? SOURCE_BADGE.SYSTEM;
+
+  function handleSend() {
+    // Confirm: sending creates a real outbound message in the conversation.
+    const confirmed = window.confirm(
+      "Send this approved reply? This adds an outbound message to the conversation.",
+    );
+    if (!confirmed) return;
+    sendDraft.mutate(
+      { draftId: draft.id },
+      {
+        onSuccess: () => toast.success("Reply sent"),
+        onError: (err) => {
+          if (err.isUnauthenticated) toast.error("Session expired. Please sign in again.");
+          else if (err.isForbidden) toast.error("You don't have permission to send drafts.");
+          else toast.error("Failed to send draft. Please try again.");
+        },
+      },
+    );
+  }
 
   return (
     <div className="rounded-xl border border-border bg-card shadow-soft overflow-hidden">
@@ -237,14 +273,39 @@ function ApprovedDraftView({ draft }: { draft: CurrentReplyDraftItem }) {
       </div>
 
       {/* Approval notice */}
-      <div className="mx-4 mb-3 rounded-md border border-success/20 bg-success/5 px-3 py-2 space-y-1">
+      <div className="mx-4 mb-2 rounded-md border border-success/20 bg-success/5 px-3 py-2 space-y-1">
         <p className="text-[11px] font-medium text-foreground flex items-center gap-1.5">
           <CheckCircle2 className="h-3 w-3 text-success" />
           Approved
         </p>
         <p className="text-[10px] text-muted-foreground">
-          Approval does not send this message. Sending will be added in a separate step.
+          Approved drafts are not sent automatically. Send when you&apos;re ready to add this reply
+          to the conversation. Sending does not deliver to any external channel.
         </p>
+      </div>
+
+      {/* Send error */}
+      {sendDraft.isError && (
+        <div className="mx-4 mb-2 rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-[11px] text-foreground">
+          {sendDraft.error?.message || "Failed to send draft. Please try again."}
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex items-center justify-end gap-2 border-t border-border bg-card/60 px-4 py-3">
+        <button
+          type="button"
+          onClick={handleSend}
+          disabled={sendDraft.isPending}
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground shadow-soft transition hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {sendDraft.isPending ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Send className="h-3.5 w-3.5" />
+          )}
+          {sendDraft.isPending ? "Sending…" : "Send approved draft"}
+        </button>
       </div>
     </div>
   );
@@ -403,7 +464,8 @@ function ReviewableDraftView({
       {/* No-autosend assurance */}
       <div className="mx-4 mb-3 flex items-center gap-2 rounded-md bg-surface-muted/60 px-3 py-2 text-[10px] text-muted-foreground">
         <Info className="h-3 w-3 shrink-0" />
-        Approval does not send this message. Sending will be added in a separate step.
+        Approving does not send this message — nothing is sent automatically. After approval you can
+        send it as a separate, explicit step.
       </div>
 
       {/* Actions */}

@@ -6,13 +6,18 @@
  * - Edit draft (POST .../reply-drafts/:draftId/edit)
  * - Discard draft (POST .../reply-drafts/:draftId/discard)
  * - Approve draft (POST .../reply-drafts/:draftId/approve)
+ * - Send draft (POST .../reply-drafts/:draftId/send)
  *
- * NO send mutation. Send is not implemented in this MVP step.
+ * Send is the explicit, operator-triggered step that transitions an APPROVED
+ * draft to SENT and creates one internal OUTBOUND message in the conversation.
+ * It does NOT dispatch to any external channel (WhatsApp/email/SMS) or provider.
  *
  * On success, mutations invalidate:
  * - Current draft query (conversation-level)
  * - Dashboard AI drafts query (dashboard aggregate)
  * - Dashboard summary query (KPI draftsPendingReview count)
+ * Send additionally invalidates the conversation transcript + conversation lists
+ * (a new outbound message changes message count / last-message ordering).
  *
  * @module
  */
@@ -24,10 +29,13 @@ import type {
   EditDraftResponse,
   DiscardDraftResponse,
   ApproveDraftResponse,
+  SendDraftResponse,
 } from "@/lib/api-types";
 import { currentDraftKeys } from "./use-current-reply-draft";
 import { dashboardAiDraftsKeys } from "./use-dashboard-ai-drafts";
 import { dashboardKeys } from "./use-dashboard-summary";
+import { messageKeys } from "./use-messages";
+import { conversationKeys } from "./use-conversations";
 
 // ---------------------------------------------------------------------------
 // API path helpers
@@ -47,6 +55,10 @@ function discardDraftPath(businessId: string, conversationId: string, draftId: s
 
 function approveDraftPath(businessId: string, conversationId: string, draftId: string): string {
   return `/api/businesses/${businessId}/conversations/${conversationId}/reply-drafts/${draftId}/approve`;
+}
+
+function sendDraftPath(businessId: string, conversationId: string, draftId: string): string {
+  return `/api/businesses/${businessId}/conversations/${conversationId}/reply-drafts/${draftId}/send`;
 }
 
 // ---------------------------------------------------------------------------
@@ -160,7 +172,8 @@ export interface ApproveDraftInput {
  * Approves a draft (operator approval only — does NOT send).
  * POST .../reply-drafts/:draftId/approve (backend PR #84)
  *
- * Approval does not send this message. Sending will be added in a separate step.
+ * Approval does not send this message; sending is a separate, explicit operator
+ * action (see useSendDraft). Nothing is ever sent automatically.
  * No request body required.
  */
 export function useApproveDraft(businessId: string, conversationId: string) {
@@ -171,6 +184,48 @@ export function useApproveDraft(businessId: string, conversationId: string) {
       apiPost<ApproveDraftResponse>(approveDraftPath(businessId, conversationId, input.draftId)),
     onSuccess: () => {
       invalidateDraftQueries(queryClient, businessId, conversationId);
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Send draft
+// ---------------------------------------------------------------------------
+
+export interface SendDraftInput {
+  draftId: string;
+}
+
+/**
+ * Sends an APPROVED draft (operator-triggered): transitions APPROVED → SENT and
+ * creates one internal OUTBOUND message in the conversation.
+ * POST .../reply-drafts/:draftId/send
+ *
+ * This creates a real outbound message in the conversation transcript, but does
+ * NOT dispatch to any external channel/provider. Idempotent: a re-send returns
+ * success without creating a duplicate message.
+ *
+ * On success it invalidates the draft queries (the current draft typically
+ * disappears, since SENT is excluded from the active draft) AND the conversation
+ * message/list queries (the new outbound message must appear in the transcript).
+ *
+ * No request body required.
+ */
+export function useSendDraft(businessId: string, conversationId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<SendDraftResponse, ApiClientError, SendDraftInput>({
+    mutationFn: (input) =>
+      apiPost<SendDraftResponse>(sendDraftPath(businessId, conversationId, input.draftId)),
+    onSuccess: () => {
+      invalidateDraftQueries(queryClient, businessId, conversationId);
+      // A new outbound message was created — refresh the conversation transcript
+      // and the conversation lists (message count / last-message ordering change).
+      queryClient.invalidateQueries({ queryKey: messageKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: conversationKeys.detail(businessId, conversationId),
+      });
+      queryClient.invalidateQueries({ queryKey: conversationKeys.lists() });
     },
   });
 }
